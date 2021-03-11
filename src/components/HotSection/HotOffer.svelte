@@ -336,7 +336,7 @@
     <div class="props-wrapper">
         <div class="main-prop">
             <div class="type">{estate.type === "house" ? "Дом" : estate.type === "flat" ? "Квартира" : estate.type === "land" ? "Участок" : "Коммерция"}</div>
-            <div class="deal">{estate.deal === "sell" ? "Продажа" : "Аренда"}</div>
+            <div class="deal">{estate.deal === "buy" ? "Продажа" : "Аренда"}</div>
             {#if estate.extras.fee === false}
                 <div class="fee">0% комиссии</div>
             {/if}
