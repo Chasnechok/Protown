@@ -1,22 +1,39 @@
 <script>
 	import Nav from '../components/Nav.svelte';
-
+	import Footer from '../components/Footer.svelte';
 	export let segment;
 </script>
 
 <style>
 	main {
 		position: relative;
-		max-width: 56em;
-		background-color: white;
-		padding: 2em;
-		margin: 0 auto;
-		box-sizing: border-box;
+		min-height: 100vh;
+		min-height: calc(100vh - 7.5em);
 	}
+	:global(main > section) {
+		margin-top: 5em;
+		max-width: 1650px;
+        margin: 5em auto 0;
+	}
+	header {
+		position: fixed;
+		width: 100%;
+		background-color: #fff;
+		box-shadow: 0 2px 2px #7d7d7d63;
+		z-index: 999;
+		top: 0;
+	}
+
 </style>
 
-<Nav {segment}/>
+
+<header>
+	<Nav {segment}/>
+</header>
+
 
 <main>
 	<slot></slot>
 </main>
+
+<Footer />

@@ -1,50 +1,24 @@
 <script>
-	import successkid from 'images/successkid.jpg';
+    import FilterBar1 from "../components/FilterBar/FilterBar1.svelte";
+    import HotCarousel from "../components/HotSection/HotCarousel.svelte";
+    import EstateList from "../components/Grid/EstatesList.svelte"
 </script>
 
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
+    section {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
 
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
 </style>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>Rich House</title>
 </svelte:head>
 
-<h1>Great success!</h1>
-
-<figure>
-	<img alt="Success Kid" src="{successkid}">
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
-
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<section>
+    <FilterBar1 />
+    <HotCarousel />
+    <EstateList />
+</section>
