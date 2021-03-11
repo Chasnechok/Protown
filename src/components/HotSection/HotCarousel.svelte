@@ -3,14 +3,11 @@
     import HotOffer from "./HotOffer.svelte";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition"
-    import LdsSpinner from "../../helpers/LdsSpinner.svelte";
     import axios from "axios";
     
     let carousel, innerWidth;
-    let mounted = false;
-    let hotEstates = [];
+    let hotEstates;
     onMount(()=> {
-        mounted = true;
         axios.get('estates/getTop')
         .then(({data}) => {
            hotEstates = data;
@@ -73,22 +70,18 @@
 </style>
 
 <svelte:window bind:innerWidth/>
-{#if hotEstates[0]}
-<section in:fade class="hot-section-wrapper" class:notmounted={!mounted} 
+{#if hotEstates}
+<section in:fade class="hot-section-wrapper" 
 on:mouseenter={()=> {carousel.pause()}} on:mouseleave={()=> {carousel.resume()}}
 >
 
     <div class="hot-section">
         <span class="hot-header-text">Лучшие предложения 🔥</span>
-        {#if mounted}
         <Carousel bind:this={carousel} controls={false} perPage={{1650: 2}} autoplay={0} duration={800} > 
             {#each hotEstates as estate}
             <HotOffer {estate} {carousel}/>
             {/each}
         </Carousel>
-        {:else}
-        <LdsSpinner />
-        {/if}
     </div>
 
 

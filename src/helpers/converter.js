@@ -11,7 +11,7 @@ export const kFormatter = (num) => {
 }
 
 export const currencyCalculator = (price, ccy, base_ccy, currencyRates) => {
-    if(base_ccy === ccy) return price;
+    if(base_ccy === ccy || !currencyRates) return price;
     if(base_ccy === "UAH"){
         return Math.round((price / currencyRates.filter(el=>el.ccy === ccy)[0].sale).toFixed(2))
     } else {

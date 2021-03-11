@@ -5,7 +5,6 @@
   import { SyncLoader } from 'svelte-loading-spinners';
   import { scrollToBottom } from "svelte-scrollto";
   import { filters, items, noMore, districtSelector } from "../../helpers/filterStore";
-  import { fade } from "svelte/transition"
   import Estate from "./Estate.svelte";
   let mountedToDom = false;
   let ig;
@@ -24,9 +23,8 @@
     }
    )
    .then(r => {
-     console.log(r.data.estates);
     if(r.data.noMore) $noMore = true;
-    console.log("FETCHED");
+    if (r.data.estates) console.log("FETCHED");
     nextItems = r.data.estates
     })
    .catch(e => console.log(e))
@@ -44,6 +42,7 @@
     //const nextGroupKey = (parseFloat(groupKey) || 0) + 1
     const nextKey = $items.length;
     $items = [...$items, ...await loadItems(nextKey, 8)];
+    console.log($items);
   }
   
   const onLayoutComplete = ({ detail: { isLayout, endLoading } }) => { endLoading() }
