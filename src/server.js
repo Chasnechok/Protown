@@ -41,14 +41,14 @@ polka()
 			saveUninitialized: true,
 			cookie: {
 			  maxAge: 3 * 60 * 60 * 1000,
-			  secure: dev ? false : true
+			  secure: false
 			},
 			store: new MongoStore({ mongooseConnection: db, ttl: 3 * 60 * 60 * 1000 })
 		  }),
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: (req, res) => {
-			//console.log(req.session);
+			res.setHeader('cache-control', 'no-cache, no-store')
 			  return ({
 				token: req.session && req.session.token,
 				agentIdentifier: req.session && req.session.agentIdentifier
