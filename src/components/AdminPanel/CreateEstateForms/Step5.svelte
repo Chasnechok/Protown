@@ -10,8 +10,8 @@
         Object.keys(imgs).map(async (img, i, arr) => {
         new Compressor(imgs[img], {
 					quality: 0.7,
-					convertSize: 100000,
-					mimeType: "image/jpg",
+					convertSize: 100,
+					mimeType: "image/jpeg",
 					maxWidth: 1920,
 					maxHeight: 1080,
 					drew(context, canvas) {

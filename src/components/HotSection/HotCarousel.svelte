@@ -6,14 +6,14 @@
     import axios from "axios";
     
     let carousel, innerWidth;
-    let hotEstates;
+    let hotEstates = [];
+    $: console.log(hotEstates);
     onMount(()=> {
         axios.get('estates/getTop')
         .then(({data}) => {
            hotEstates = data;
         })
         .catch(err => {
-            hotEstates = [];
             console.log(err);
         })
     });
@@ -70,14 +70,14 @@
 </style>
 
 <svelte:window bind:innerWidth/>
-{#if hotEstates}
+{#if hotEstates[0]}
 <section in:fade class="hot-section-wrapper" 
 on:mouseenter={()=> {carousel.pause()}} on:mouseleave={()=> {carousel.resume()}}
 >
 
     <div class="hot-section">
         <span class="hot-header-text">Лучшие предложения 🔥</span>
-        <Carousel bind:this={carousel} controls={false} perPage={{1650: 2}} autoplay={0} duration={800} > 
+        <Carousel bind:this={carousel} controls={false} perPage={{1650: hotEstates[1] ? 2 : 1}} autoplay={0} duration={800} > 
             {#each hotEstates as estate}
             <HotOffer {estate} {carousel}/>
             {/each}

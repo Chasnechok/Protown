@@ -10,11 +10,20 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import fileUpload from "express-fileupload";
 const MongoStore = require('connect-mongo')(session);
+import AWS from "aws-sdk";
 
 /* CONFIG */
 dotenv.config();
 const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET } = process.env;
 const dev = NODE_ENV === 'development';
+
+/*  DIGITAL OCEAN SPACES INIT */
+const spacesEndpoint = new AWS.Endpoint('fra1.digitaloceanspaces.com');
+const s3 = new AWS.S3({
+    endpoint: spacesEndpoint,
+    accessKeyId: process.env.SPACES_KEY,
+    secretAccessKey: process.env.SPACES_SECRET
+});
 
 /* MONGO DB CONNECTION */
 mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -63,7 +72,8 @@ polka()
  /* middleware */
  function auth(req, res, next) {
 	const token = req.headers.authorization;
-
+	req.s3 = s3;
+	return next();
 	if(!token || token == 'undefined'){
 		res
 		.writeHead(401, {

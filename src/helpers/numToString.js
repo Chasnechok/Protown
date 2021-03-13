@@ -2,7 +2,6 @@ export const numberToPhrase = (c, price) =>
 // сумма прописью для чисел от 0 до 999 триллионов
 // можно передать параметр "валюта": UAH,USD,EUR (по умолчанию UAH)
 {
-    console.log(price);
   let x=Math.round(price);
   if (x<0 || x>999999999999999.99) return false;
 

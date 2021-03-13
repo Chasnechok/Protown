@@ -5,7 +5,8 @@
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     export let estate;
-    const images = estate.images && estate.images[0] ? estate.images.map(el => `https://www.dropbox.com/s/${el}?raw=1`) : undefined;
+    const images = estate.images && estate.images[0] ? estate.images.map(el => `https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`) : undefined;
+    console.log(images);
     $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
 </script>
 

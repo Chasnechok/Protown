@@ -6,7 +6,7 @@
     import { numberToPhrase } from "../../helpers/numToString";
     export let estate;
 
-    const images = estate.images[0] ? estate.images.map(el => `https://www.dropbox.com/s/${el}?raw=1`) : undefined;
+    const images = estate.images[0] ? estate.images.map(el => `https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`) : undefined;
     $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
     //console.log(estate);
 
@@ -263,9 +263,6 @@
         .right {
             flex: 1 0 30%;
         }
-        .image-wrapper {
-            max-width: 478px !important;
-        }
     }
     @media only screen and (max-width: 1060px) {
         .contact-href, .or {
@@ -273,12 +270,6 @@
         }
         .right {
             padding: 0 1em 0 0;
-        }
-    }
-    @media only screen and (min-width: 1650px) {
-        .hot-offer-l .left {
-            flex: 0 0 65%;
-            max-width: 65%;
         }
     }
 
@@ -352,6 +343,7 @@
         </div>
     </div>
     <div class="images-wrapper-ms">
+        {#if images[0]}
         <Carousel controls={false} perPage={1} > 
             {#each images as image,i}
             <div class="image-wrapper">
@@ -365,7 +357,7 @@
             </div>
             {/each}
         </Carousel>
-        
+        {/if}
     </div>
 </div>
 
@@ -375,7 +367,7 @@
             <span>0% комиссии</span>
         </div>
     {/if}
-    {#if images}
+    {#if images[0]}
     <div class="left">
         <div class="main-image">
             <Carousel controls={false} perPage={1} > 

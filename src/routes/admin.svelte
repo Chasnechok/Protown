@@ -56,9 +56,9 @@
             }
         }
         if(images[0]){
+            console.log(images);
             images.forEach(img => {
-                console.log(img.image);
-                estate.append(img.id, img.image);
+                estate.append(img.id, img.image, img.image.name);
             });
         }
         axios({
