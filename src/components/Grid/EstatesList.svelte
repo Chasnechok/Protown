@@ -26,69 +26,19 @@
    )
    .then(r => {
     if(r.data.noMore) $noMore = true, onLayoutComplete(detail);
-    if (r.data.estates) console.log("FETCHED");
+    //if (r.data.estates) console.log("FETCHED");
     nextItems = r.data.estates
     })
    .catch(e => console.log(e))
     return nextItems;
   }
-  const loadItems1 = (nextGroupKey, nextKey, itemCount) => {
-    let nextItems = [];
-    for (let i = 0; i <= itemCount; i++) {
-      nextItems.push({
-    "_id": Math.random(),
-    "groupKey": nextGroupKey,
-    "images": ["25c21fac7c8b9cd81e5827a79bbf8cfa.jpg", "f7bb0488e426088cda36916ada83e7a6.jpg", "5cc941e9b6704adfa10a9b169cf93dce.jpg", "8ebf0ffc945715ad5579ed8391cd89ec.jpg", "8b1cac53e23435e66e43ca9877457e80.jpg", "aa577c42870c08f9d6725f53a0fe3585.jpg", "560f1e01579aa5dbdca110d27d506701.jpg", "549d4e6f501c0fd792f57b30118d6ee2.jpg"],
-    "agent": "MAR",
-    "label": "3-комнатная квартира на Княжем затоне",
-    "type": "flat",
-    "deal": "lease",
-    "price": 110000,
-    "currency": "USD",
-    "adress": {
-        "country": "UA",
-        "city": {
-            "ru": "Киев"
-        },
-        "district": "DR",
-        "street": {
-            "ru": "Княжий Затон",
-            "en": "Kniazhyi Zaton"
-        }
-    },
-    "details": {
-        "floor": 10,
-        "gfloor": 22,
-        "fond": false,
-        "area": {
-            "g": 104,
-            "l": 60,
-            "k": 12
-        },
-        "rooms": 4,
-        "state": false
-    },
-    "extras": {
-        "metro": {
-            "ru": "Позняки",
-            "ua": "Позняки"
-        },
-        "included": ["fur", "boi", "con", "kam", "sig"],
-        "top": false,
-        "fee": true
-    },
-    "__v": 0
-});
-    }
-    return nextItems;
-  }
   
   const onAppend = async ({detail}) => {
     //let groupKey = event.detail.groupKey;
-    if (detail.currentTarget.isProcessing()) { return console.log("PROCCESSING");; }
+    if (detail.currentTarget.isProcessing()) { return; }
     let startLoading = detail.startLoading;
     if ($noMore) {
-    console.log("NO MORE");
+    //console.log("NO MORE");
     return onLayoutComplete(detail);
     }
     startLoading();
@@ -97,7 +47,7 @@
     const nextKey = $items.length;
     const nextGroupKey = (typeof detail.groupKey === "undefined" ? 0 : +detail.groupKey || 0) + 1;
     $items = [...$items, ...await loadItems(nextGroupKey, nextKey, 8, detail)];
-    console.log($items);
+    //console.log($items);
   }
   
   const onLayoutComplete = (e) => { !e.isLayout && e.endLoading(); }
@@ -167,12 +117,12 @@
     bind:this={ig}
     let:visibleItems 
     itemBy={item => item._id}
-    layoutOptions={{ align: "center", margin: 50, column: [1,4] }}
+    layoutOptions={{ align: "center", margin: 50, column: [1,4], itemSize: 340 }}
     on:append={onAppend}
     on:layoutComplete={({detail: e}) => onLayoutComplete(e)}
     groupBy={item => item.groupKey}
     status={null}
-    options={{ isConstantSize: true, transitionDuration: 0.7, isEqualSize: true, useFit: true, useRecycle: false }}
+    options={{ isConstantSize: true, transitionDruation: 0.7, isEqualSize: true, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}
         <div class="estate-wrapper">

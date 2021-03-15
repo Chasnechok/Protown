@@ -4,6 +4,7 @@
 	import { currencyOnPage } from "../helpers/parametres";
 	let y;
 	let prevY = 0;
+	let displayFlag = false;
 	let fixed = false; let opened = false;
 	$: if(y){
 		fixed = y > prevY ? true : false;
@@ -27,11 +28,18 @@
 		display: flex;
 		margin: 0 auto;
 		transition: .5s;
+		overflow: hidden;
+		position: relative;
 	}
 	
 
 	a {
 		text-decoration: none;
+		transition: .5s;
+	}
+	a:not(.logo-link):hover {
+		color:#4a40d4;
+		letter-spacing: 1px;
 	}
 
 	.nav-opener, .navigation-mini {
@@ -49,6 +57,18 @@
 		font-size: 24px;
 		text-transform: uppercase;
 		justify-content: center;
+		position: relative;
+		
+	}
+	.logo.displayFlag::after {
+		content: "";
+		display: block;
+		width: 100%;
+		height: 200%;
+		background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='40' height='50' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,1)'/><path d='M-4.798 13.573C-3.149 12.533-1.446 11.306 0 10c2.812-2.758 6.18-4.974 10-5 4.183.336 7.193 2.456 10 5 2.86 2.687 6.216 4.952 10 5 4.185-.315 7.35-2.48 10-5 1.452-1.386 3.107-3.085 4.793-4.176'  stroke-width='2' stroke='hsla(231, 48%, 48%, 1)' fill='none'/><path d='M-4.798 33.573C-3.149 32.533-1.446 31.306 0 30c2.812-2.758 6.18-4.974 10-5 4.183.336 7.193 2.456 10 5 2.86 2.687 6.216 4.952 10 5 4.185-.315 7.35-2.48 10-5 1.452-1.386 3.107-3.085 4.793-4.176'  stroke-width='2' stroke='hsla(54, 100%, 62%, 1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
+		position: absolute;
+		transform: rotate(-30deg);
+		filter: blur(10px);
 	}
 
 	.navigation {
@@ -115,10 +135,9 @@
 
 </style>
 <svelte:window bind:scrollY={y}/>
-
 <nav class:fixed>
-	<div class="logo">
-		<a href=".">Rich-House</a>
+	<div class="logo" on:click={()=>displayFlag = !displayFlag} class:displayFlag>
+		<a class="logo-link" style="z-index: 2;" href=".">Rich-House</a>
 	</div>
 	<div class="navigation">
 		<a rel=prefetch  href="/">Этапы покупки</a>

@@ -8,7 +8,6 @@
     import { onMount } from "svelte";
     export let estate;
     let currentSlide = 0;
-    $: console.log(currentSlide)
     let mounted;
     onMount(()=>mounted=true)
 
@@ -137,10 +136,14 @@
     .contact-href:hover, .details-show-button:hover{
         cursor: pointer;
     }
+    .details-show-button:hover{
+        letter-spacing: 1px;
+    }
     .contact-href{
         font-size: var(--answerFontSize, 14px);
         font-weight: 600;
         color: #6262DB;
+        transition: .5s;
     }
     .details-show-button{
         color: white;
@@ -148,6 +151,7 @@
         padding: 0.5em 1em;
         background: rgba(98, 98, 219, 0.8);
         border-radius: 10px;
+        transition: .5s;
     }
     .question, .or{
         font-size: var(--questionFontSize);
@@ -199,6 +203,21 @@
         }
         .right {
             flex: 1 0 30%;
+        }
+        .right .question, .right .answer .contact-href {
+            font-size: 0;
+        }
+        
+        .right .question::after {
+            font-size: 16px;
+            content: "Есть вопросы?"
+        }
+        .right .answer .contact-href::after {
+            font-size: 14px;
+            content: "Позвонить"
+        }
+        .right .question-box, .right .answer {
+            margin-top: .5em;
         }
     }
     @media only screen and (max-width: 1060px) {

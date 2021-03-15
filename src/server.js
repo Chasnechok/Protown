@@ -72,8 +72,6 @@ polka()
  /* middleware */
  function auth(req, res, next) {
 	const token = req.headers.authorization;
-	req.s3 = s3;
-	return next();
 	if(!token || token == 'undefined'){
 		res
 		.writeHead(401, {
@@ -87,6 +85,7 @@ polka()
 	try {
 		const ver = jwt.verify(token.replace('Bearer ',''), process.env.JWT_SECRET);
 		req.user = ver;
+		req.s3 = s3;
 		next();
 	} catch (error) {
 		res

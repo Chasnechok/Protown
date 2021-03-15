@@ -7,6 +7,7 @@
     
     let carousel, innerWidth;
     let hotEstates = [];
+    let carouselPaused = false;
     onMount(()=> {
         axios.get('estates/getTop')
         .then(({data}) => {
@@ -58,12 +59,12 @@
 <svelte:window bind:innerWidth/>
 {#if hotEstates[0]}
 <section in:fade class="hot-section-wrapper" 
-on:mouseenter={()=> {carousel&&carousel.pause()}} on:mouseleave={()=> {carousel&&carousel.resume()}}
+on:mouseenter={()=> {carousel&&carousel.pause(); carouselPaused = true;}} on:mouseleave={()=> {carousel&&carousel.resume();  carouselPaused = false;}}
 >
 
     <div class="hot-section">
         <span class="hot-header-text">Лучшие предложения 🔥</span>
-        <Carousel bind:this={carousel} controls={false} perPage={{1650: hotEstates[1] ? 2 : 1}} autoplay={0} duration={800} > 
+        <Carousel bind:this={carousel} controls={false} perPage={{1650: hotEstates[1] ? 2 : 1}} autoplay={5000} duration={800} loop={true} > 
             {#each hotEstates as estate}
             <HotOffer {estate} {carousel}/>
             {/each}

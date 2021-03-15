@@ -8,10 +8,14 @@
     export let placeholderHeight = '270px';
     export let styling = '';
     export let currentSlide = 0; 
-    let image = {src: undefined};
+    let image;
     let mounted = false;
     let imageCashed = false;
     onMount(()=>mounted=true);
+    $: if(mounted&&image&&!image.src&&(currentSlide == imageIndex || currentSlide == imageIndex - 1 || currentSlide == imageIndex + 1)) {
+        image.src = image.dataset.src;
+        delete image.dataset.src;
+    }
 </script>
 
 <style>
@@ -32,12 +36,10 @@
     }
 </style>
 {#if mounted}
-    {#if (currentSlide == imageIndex || currentSlide == imageIndex - 1 || currentSlide == imageIndex + 1)}
-    <img data-width="100%" data-height="270px" on:load={()=>imageCashed = true} src={url} alt="{alt}" style="{styling}" bind:this={image} />
-    {/if}
+    <img data-width="100%" data-height="270px" on:load={()=>imageCashed = true} data-src={url} alt="{alt}" style="{styling}" bind:this={image} />
     {#if !imageCashed}
     <div class="placeholder" style="width: {placeholderWidth}; height: {placeholderHeight};">
-        FETCHING IMAGE
+        <Jumper color="#6262DB" />
     </div>
     {/if}
 {/if}

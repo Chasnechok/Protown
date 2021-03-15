@@ -1,7 +1,7 @@
 import Estate from "../../models/estate";
 import { estateValidation } from "../../validation_types/estate";
 import send from '@polka/send-type';
-import dropboxV2Api from "dropbox-v2-api";
+//import dropboxV2Api from "dropbox-v2-api";
 const { Readable } = require('stream');
 const basePath = "/statics/estates/";
 export async function post(req, res) {
