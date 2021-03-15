@@ -3,26 +3,24 @@
     import { Jumper } from 'svelte-loading-spinners'
 
     export let url = '';
+    export let imageIndex;
     export let alt = 'image';
     export let imageWidth = 'unset';
     export let imageHeight = '';
     export let imageMaxWidth = 'unset';
     export let imageMaxHeight = '';
     export let placeholderWidth = '100%';
-    export let placeholderHeight = '400px';
+    export let placeholderHeight = '270px';
     export let styling = '';
-    let image, placeholder;
-    let loaded = false;
-
-    // $: {
-    //     if (loaded) {
-    //         image.src = url;
-    //     }
-    // }
-
-    // onMount(() => {
-    //     image.src = url;
-    // });
+    export let currentSlide = 0; 
+    let image;
+    let mounted = false;
+    $: if(mounted&&!image.src&&(currentSlide == imageIndex || currentSlide == imageIndex - 1 || currentSlide == imageIndex + 1)){
+        image.style.cssText = `width:${imageWidth}; height:${imageHeight}; max-height:${imageMaxHeight}; max-width:${imageMaxWidth};` + styling;
+        image.src = url;
+        delete image["data-src"];
+    }
+    onMount(()=>mounted=true)
 </script>
 
 <style>
@@ -30,9 +28,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        position: absolute;
-        left: 0;
-        top: 0;
         z-index: -1;
     }
     img {
@@ -40,18 +35,11 @@
     }
 </style>
 
-
-<img on:load={()=>{
-    loaded = true;
-    image.style.cssText = `width: ${imageWidth}; height: ${imageHeight}; max-height: ${imageMaxHeight}; max-width: ${imageMaxWidth};` + styling;
-}} src={url} alt="{alt}" bind:this={image} style="width:{imageWidth}; height:{imageHeight}; max-height:{imageMaxHeight}; max-width:{imageMaxWidth};" />
-
-{#if !loaded}
-    <slot>
-        <div bind:this={placeholder} class="placeholder" style="width: {placeholderWidth}; height: {placeholderHeight};">
-            <Jumper color="#6262DB" />
-        </div>
-    </slot>
+<img data-src={url} alt="{alt}" style="display: none;" bind:this={image} >
+{#if !image || !image.src}
+<div class="placeholder" style="width: {placeholderWidth}; height: {placeholderHeight};">
+    <Jumper color="#6262DB" />
+</div>
 {/if}
 
 

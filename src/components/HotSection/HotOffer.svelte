@@ -1,12 +1,18 @@
 <script>
     import Carousel from '@beyonk/svelte-carousel';
-    import ImagePlaceholder from "../../helpers/ImagePlaceholder.svelte";
+    import LazyImageCarousel from "../../helpers/LazyImageCarousel.svelte";
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
+    import Estate from "../Grid/Estate.svelte";
+    import { onMount } from "svelte";
     export let estate;
+    let currentSlide = 0;
+    $: console.log(currentSlide)
+    let mounted;
+    onMount(()=>mounted=true)
 
-    const images = estate.images[0] ? estate.images.map(el => `https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`) : undefined;
+    const images = estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
     //console.log(estate);
 
@@ -19,9 +25,8 @@
         padding: 3px 1em;
         margin: 0 auto;
         max-width: 900px;
-        min-height: 650px;
+        min-height: 580px;
         position: relative;
-        min-height: 620px;
         display: flex;
     }
     
@@ -157,8 +162,8 @@
         position: relative;
     }
     .main-image .image-wrapper {
-        max-height: 100%;
-        max-width: 100%;
+        height: 370px;
+        max-width: 510px;
         overflow: hidden;
         position: relative;
         border-radius: .3em;
@@ -181,75 +186,7 @@
     .hot-offer-ms {
         display: none;
         position: relative;
-        padding: 1em;
-        background-color: white;
-        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
         width: 100%;
-        border-radius: .3em;
-        flex-direction: column;
-    }
-    .hot-offer-ms .props-wrapper {
-        display: flex;
-        width: 100%;
-        flex-direction: column;
-        align-items: center;
-        position: absolute;
-        left: 0;
-        backdrop-filter: blur(4px);
-        background-color: rgba(255, 255, 255, 0.5);
-        padding-bottom: .5em;
-        z-index: 2;
-    }
-    .hot-offer-ms .props-wrapper .main-prop {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 500;
-        text-transform: uppercase;
-        color: rgba(0, 0, 0, 0.5);
-    }
-    .hot-offer-ms .main-prop .deal, .hot-offer-ms .main-prop .fee {
-        display: flex;
-        align-items: center;
-    }
-    .hot-offer-ms .main-prop .deal::before, .hot-offer-ms .main-prop .fee::before {
-        content: "";
-        width: 8px;
-        height: 8px;
-        display: block;
-        border-radius: 50%;
-        background-color: rgba(0, 0, 0, 0.5);
-        margin: 0 1em;
-    }
-    .hot-offer-ms .estate-label-header {
-        text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: .2em;
-        color: #2c3e50;
-    }
-    .hot-offer-ms .estate-label-adress {
-        margin-top: -5px;
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.5);
-    }
-    .images-wrapper-ms {
-        border-radius: .3em;
-        height: 270px;
-        width: 100%;
-        margin-top: .5em;
-        overflow: hidden;
-    }
-   
-    .hot-offer-ms .estate-price-wrapper {
-        display: flex;
-        align-items: center;
-        margin-top: .5em;
-        cursor: default;
-    }
-    .hot-offer-ms .estate-price-wrapper .price {
-        font-weight: 500;
     }
     
     @media only screen and (min-width: 1650px) {
@@ -258,7 +195,7 @@
         }
         .left {
             flex: 0 0 70%;
-            max-width: 70%;
+            max-width: 69%;
         }
         .right {
             flex: 1 0 30%;
@@ -273,7 +210,7 @@
         }
     }
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 767px) {
         .hot-offer-wrapper {
             padding: 3px .5em;
             min-height: unset;
@@ -296,69 +233,13 @@
         }
 
     }
-    @media only screen and (max-width: 375px) {
-        .hot-offer-ms .props-wrapper {
-            padding: .5em 1em;
-        }
-        .hot-offer-ms .props-wrapper .main-prop {
-            font-size: 12px;
-        }
-        .hot-offer-ms .estate-label-header {
-            font-size: 14px;
-            text-align: initial;
-        }
-    }
-    @media only screen and (max-width: 325px) {
-        .hot-offer-ms .main-prop .deal::before, .hot-offer-ms .main-prop .fee::before {
-            margin: 0 .5em;
-            width: 5px;
-            height: 5px;
-        }
-    }
-
-    
-
     
 </style>
 
 <div class="hot-offer-wrapper">
 
 <div class="hot-offer-ms">
-    <div class="props-wrapper">
-        <div class="main-prop">
-            <div class="type">{estate.type === "house" ? "Дом" : estate.type === "flat" ? "Квартира" : estate.type === "land" ? "Участок" : "Коммерция"}</div>
-            <div class="deal">{estate.deal === "buy" ? "Продажа" : "Аренда"}</div>
-            {#if estate.extras.fee === false}
-                <div class="fee">0% комиссии</div>
-            {/if}
-        </div>
-        <div class="estate-label">
-            <div class="estate-label-header">{estate.label}</div>
-            <div class="estate-label-adress">
-                {estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street.ru ? `, ${estate.adress.street.ru}` : "")+(estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}
-            </div>
-            <div class="estate-price-wrapper" title={priceInWords}>
-                <span class="price">{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
-            </div>
-        </div>
-    </div>
-    <div class="images-wrapper-ms">
-        {#if images[0]}
-        <Carousel controls={false} perPage={1} > 
-            {#each images as image,i}
-            <div class="image-wrapper">
-            <ImagePlaceholder
-            url={image} alt={`estateImage ${i}`}
-            imageHeight="270px"
-            imageWidth="unset"
-            placeholderHeight="270px"
-            styling="border-radius: .3em; display: block; object-fit: contain; margin: 0 auto; "
-            />
-            </div>
-            {/each}
-        </Carousel>
-        {/if}
-    </div>
+    <Estate {estate} />
 </div>
 
 <div class="hot-offer-l">
@@ -367,18 +248,18 @@
             <span>0% комиссии</span>
         </div>
     {/if}
-    {#if images[0]}
+    {#if images[0] && mounted}
     <div class="left">
         <div class="main-image">
-            <Carousel controls={false} perPage={1} > 
-                {#each images as image,i}
+            <Carousel on:change={({detail: {currentSlide: a}}) => currentSlide = a ? a : 0} controls={false} perPage={1} > 
+                {#each images as image (image.id)}
                     <div class="image-wrapper">
-                        <ImagePlaceholder
-                        url={image} alt={`estateImage ${i}`}
-                        imageMaxHeight="100%"
-                        imageMaxWidth="100%"
+                        <LazyImageCarousel
+                        {currentSlide}
+                        imageIndex={image.id ? image.id : 0}
+                        url={image.src} alt={`estateImage ${image.id}`}
                         placeholderHeight="370px"
-                        styling="border-radius: .3em; display: block; object-fit: contain; margin: auto;"
+                        styling="max-width: 100%; max-height: 100%; border-radius: .3em; display: block; object-fit: contain; margin: auto;"
                         />
                     </div>
                 {/each}

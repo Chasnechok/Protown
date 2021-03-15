@@ -8,8 +8,9 @@ export async function get(req, res) {
     const fee = filters.included.some(el=> el.value === "fee" && el.c) ? false : true;
     //const soonFree = filters.included.some(el => el.value === "soonFree" && el.c) ? true : false;
     filters.included = filters.included.filter(el => el.value !== "soonFree" && el.value !== "fee" && el.c);
-    const from = req.query.nextKey;
-    const to = req.query.nextKey + req.query.count + 1;
+    const from = parseInt(req.query.nextKey, 10);
+    const to = from + parseInt(req.query.count, 10);
+    const nextGroupKey = parseInt(req.query.nextGroupKey, 10);
     try {
         await Estate.find({
             type: filters.type,
@@ -26,7 +27,7 @@ export async function get(req, res) {
             //console.log(r);
             send(res, 200,  {
                 noMore: r.length <= to,
-                estates: r.slice(from, to)
+                estates: r.slice(from, to).map(el => ({groupKey: nextGroupKey, ...el._doc}))
             })})
     } catch (error) {
         send(res, 500, error)

@@ -20,8 +20,8 @@
     let innerWidth;
     let extrasN = $extras;
     let filtersProps;
-    onMount(()=>axios.get("/estates/getParametres").then(({data})=> {if(!filtersProps){console.log("UHIU");} filtersProps = data}));
-    $: if(filtersProps) console.log(filtersProps)
+    onMount(()=>axios.get("/estates/getParametres").then(({data})=> {if(!filtersProps)filtersProps = data}));
+    //$: if(filtersProps) console.log(filtersProps)
     
 
 </script>

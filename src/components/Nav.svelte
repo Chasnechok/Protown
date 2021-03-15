@@ -78,7 +78,11 @@
 		margin-right: 16px;
 	}
 
-
+	@media only screen and (max-width: 1024px) {
+		.navigation {
+			padding: 0 2em 0 2em;
+		}
+	}
 	@media only screen and (max-width: 750px) {
 		nav {
 			padding: var(--mobile-padding);

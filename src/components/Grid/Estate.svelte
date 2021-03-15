@@ -1,12 +1,12 @@
 <script>
     import Carousel from '@beyonk/svelte-carousel';
-    import ImagePlaceholder from "../../helpers/ImagePlaceholder.svelte";
+    import LazyImageCarousel from "../../helpers/LazyImageCarousel.svelte";
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     export let estate;
-    const images = estate.images && estate.images[0] ? estate.images.map(el => `https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`) : undefined;
-    console.log(images);
+    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
+    let currentSlide = 0;
     $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
 </script>
 
@@ -131,16 +131,16 @@
     </div>
     <div class="images-wrapper-ms">
         {#if images}
-        <Carousel controls={false} perPage={1} > 
-            {#each images as image,i}
-            <div class="image-wrapper">
-            <ImagePlaceholder
-            url={image} alt={`estateImage ${i}`}
-            imageHeight="270px"
-            imageWidth="unset"
-            placeholderHeight="270px"
-            styling="border-radius: .3em; display: block; object-fit: contain; margin: 0 auto; "
-            />
+        <Carousel on:change={({detail: {currentSlide: a}}) => currentSlide = a ? a : 0} controls={false} perPage={1} > 
+            {#each images as image, i}
+            <div class="image-wrapper" style="height: 270px; position: relative;">
+                <LazyImageCarousel
+                {currentSlide}
+                imageIndex={image.id ? image.id : 0}
+                url={`https://naver.github.io/egjs-infinitegrid/assets/image/${Math.floor(Math.random() * 60) + 1}.jpg`} alt={`estateImage ${image.id}`}
+                placeholderHeight="270px"
+                styling="max-width: 100%; height: 270px; border-radius: .3em; display: block; object-fit: cover; margin: 0 auto;"
+                />
             </div>
             {/each}
         </Carousel>
