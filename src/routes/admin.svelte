@@ -11,9 +11,11 @@
     import Step3 from "../components/AdminPanel/CreateEstateForms/Step3.svelte";
     import Step4 from "../components/AdminPanel/CreateEstateForms/Step4.svelte";
     import Step5 from "../components/AdminPanel/CreateEstateForms/Step5.svelte";
+
     
     let carousel;
 	const { session } = stores();
+    $: console.log($session.agentIdentifier);
     let mounted = false, showSuccess = false;
     let page = "create";
     let newEstate;
@@ -269,7 +271,7 @@
 
 {#if !$session.token}
 
- <LoginForm bind:newEstate {createBlankEstate} bind:token={$session.token} />
+ <LoginForm bind:newEstate {createBlankEstate} bind:token={$session.token} bind:agentIdentifier={$session.agentIdentifier} />
 
 {:else}
 <section class="admin-panel">

@@ -1,7 +1,7 @@
 <script>
 	import axios from "axios";
     import { AlertCircleIcon } from 'svelte-feather-icons'
-	export let token, newEstate, createBlankEstate;
+	export let token, newEstate, createBlankEstate, agentIdentifier;
     let username, password, input1, input2;
     let invalidCredentials = false;
     let loading = false;
@@ -17,6 +17,7 @@
 	.then(res => {
         newEstate = createBlankEstate();
 		token = res.data.token;
+        agentIdentifier = res.data.agentIdentifier;
         loading = false;
   })
   	.catch(err => {

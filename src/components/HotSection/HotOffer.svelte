@@ -11,7 +11,7 @@
     let mounted;
     onMount(()=>mounted=true)
 
-    const images = estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
+    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
     //console.log(estate);
 
@@ -267,7 +267,7 @@
             <span>0% комиссии</span>
         </div>
     {/if}
-    {#if images[0] && mounted}
+    {#if images&&images[0] && mounted}
     <div class="left">
         <div class="main-image">
             <Carousel on:change={({detail: {currentSlide: a}}) => currentSlide = a ? a : 0} controls={false} perPage={1} > 
