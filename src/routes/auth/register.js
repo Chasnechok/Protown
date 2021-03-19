@@ -12,6 +12,10 @@ export async function post(req, res) {
      send(res, 400, error);
      return;
     }
+
+    const userPhoto = req.files;
+    console.log(userPhoto);
+    return;
    
     // check if user exists
     if(await User.findOne({username: req.body.username})) {

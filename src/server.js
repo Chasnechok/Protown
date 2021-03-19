@@ -37,6 +37,7 @@ mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
 /* WEB SERVER START AND CONFIG */
 polka()
 	.use('/estates/create', auth)
+	.use('/auth/register', authRegister)
 	.use(
 		compression({ threshold: 0 }),
 		json(),
@@ -95,4 +96,9 @@ polka()
 		.end(JSON.stringify(error));
 		return;
 	}
+}
+
+function authRegister(req, res, next) {
+	req.s3 = s3;
+	next();
 }

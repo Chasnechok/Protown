@@ -5,6 +5,9 @@
 </script>
 
 <style>
+    :root {
+	--pagebg-color: #e5e5e5;
+    }
     section {
         display: flex;
         flex-wrap: wrap;

@@ -10,8 +10,8 @@ export const kyivDistricts = [{value: 'GL', label: 'Голосеевский'}, 
 export const flatPlanning = [{value: "studio", label: "Студия"}, {value: "separ", label: "Раздельная"}, {value: "sm-separ", label: "Смежно-раздельная"}, {value: "sm", label: "Смежная"},
 {value: "mlevel", label: "Многоуровневая"}, {value: "other", label: "Другая"}];
 
-export const flatExtras = [{value: "fur", label: "С мебелью"}, {value: "con", label: "Кондиционер"}, {value: "boi", label: "Бойлер"}, {value: "kam", label: "Камин"}, {value: "saun", label: "Сауна"},
-{value: "ter", label: "Терраса"}, {value: "par", label: "Парковка"}, {value: "sig", label: "Сигнализация"}]
+export const flatExtras = [{value: "fur", label: "С мебелью"}, {value: "aircon", label: "Кондиционер"}, {value: "boi", label: "Бойлер"}, {value: "kam", label: "Камин"}, {value: "saun", label: "Сауна"},
+{value: "ter", label: "Терраса"}, {value: "par", label: "Парковка"}, {value: "sig", label: "Сигнализация"}, {value: "bal", label:"Балкон"}, {value: "gar", label:"Гараж"}]
 
 export const communicationsList = [{value: "vod", label: "Вода"}, {value: "gas", label: "Газ"}, {value: "can", label: "Канализация"}, {value: "skv", label: "Скважина"}, {value: "el", label: "Электричество"}]
 

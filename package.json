@@ -58,6 +58,7 @@
     "svelte-range-slider-pips": "^1.7.0",
     "svelte-scrollto": "^0.2.0",
     "svelte-select": "^3.16.1",
-    "svelte-sortable-list": "^1.1.0"
+    "svelte-sortable-list": "^1.1.0",
+    "swiper": "^6.5.0"
   }
 }

@@ -17,6 +17,15 @@ const userSchema = new Schema({
         required: true,
         min: 12,
         max: 1024
+    },
+    fullName: {
+        type: String
+    },
+    photoLink: {
+        type: String
+    },
+    mobile: {
+        type: String
     }
 });
 

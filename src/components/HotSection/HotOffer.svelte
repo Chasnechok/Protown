@@ -6,6 +6,7 @@
     import { numberToPhrase } from "../../helpers/numToString";
     import Estate from "../Grid/Estate.svelte";
     import { onMount } from "svelte";
+    import { goto } from '@sapper/app';
     export let estate;
     let currentSlide = 0;
     let mounted;
@@ -361,9 +362,12 @@
                 <div class="question header">Понравилась квартира или есть вопросы?</div>
                 <div class="answer">
                     <span class="contact-href header">Свяжитесь с нами</span><span class="or header">&nbspили&nbsp</span>
-                    <div class="details-show-button">
-                        детали
-                    </div>
+                    <a style="text-decoration: none;" rel=prefetch href={`/${estate.type}/${estate._id}`}>
+                        <div class="details-show-button">
+                            детали
+                        </div>
+                    </a>
+                   
                 </div>
             </div>   
     </div>

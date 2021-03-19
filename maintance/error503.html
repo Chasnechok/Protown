@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="theme-color" content="#333333">
+</head>
+<title>Rich House</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url("data:image/svg+xml,<svg id='patternId' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><defs><pattern id='a' patternUnits='userSpaceOnUse' width='30' height='30' patternTransform='scale(2) rotate(0)'><rect x='0' y='0' width='100%' height='100%' fill='hsla(0, 0%, 90%, 1)'/><path d='M0 22.5h30v15H0zm15-15h30v15H15m-30-15h30v15h-30zm15-15h30v15H0z'  stroke-width='0.5' stroke='hsla(259, 0%, 65%, 1)' fill='none'/></pattern></defs><rect width='800%' height='800%' transform='translate(0,0)' fill='url(%23a)'/></svg>");
+    background-repeat: repeat;
+    line-height: 1.5;
+	color: #333;
+    min-height: 100vh;
+}
+
+
+header, footer {
+    width: 100%;
+	background-color: #fff;
+	box-shadow: 0 2px 2px #7d7d7d63;
+	height: 74px;
+    display: flex;
+}
+
+footer {
+    height: 50px;
+    position: absolute;
+    bottom: 0;
+    box-shadow: 0;
+}
+footer > span {
+    display: block;
+    margin: auto;
+    color: #333333;
+    opacity: .7;
+}
+
+header > a {
+    text-decoration: none;
+    display: block;
+    margin: auto;
+    font-weight: 800;
+    font-size: 24px;
+    color: #333333;
+}
+
+.warning {
+    background-color: #fff;
+    box-shadow: 0 0 8px 4px #7d7d7d63;
+    margin-top: 2em;
+    max-width: 900px;
+    min-height: 190px;
+    margin: 2em auto;
+    padding: 2em;
+    border-radius: 9px;
+}
+
+.warning .message {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    flex-wrap: wrap;
+}
+
+.warning .message svg {
+   margin-right: 1em;
+}
+
+summary {
+    cursor: pointer;
+    padding: 8px;
+}
+summary:focus {
+    box-shadow: 0 0 2px 0px #33333363;
+    border-radius: 5px;
+    outline: none;
+}
+details span {
+    margin-top: .3em;
+    display: flex;
+    padding-left: 8px;
+}
+
+@media only screen and (max-width: 666px) {
+    .warning .message {
+    justify-content: center;
+    gap: .3em;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .warning {
+    border-radius: 0;
+    }
+}
+
+</style>
+<body>
+	<header>
+        <a href="https://rich-house.online">RICH HOUSE</a>
+    </header>
+    <div class="warning">
+        <div class="message">
+            <svg style="width: 40px; height: 40px; margin-left: .5em;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3>Сайт находится в активной разработке<wbr> и пока не доступен.</h3>
+        </div> 
+        <details>
+            <summary>Когда будет доступен?</summary>
+            <span>Как только так сразу <svg style="width: 24px; height: 24px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg></span>
+        </details>
+    </div>
+    <footer>
+        <span> 2021 Все права защищены </span>
+    </footer>
+</body>
+</html>

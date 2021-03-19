@@ -12,10 +12,9 @@ body {
 	font-size: 14px;
 	line-height: 1.5;
 	color: #333;
-	--primary-rgb: #6262DB;
-	--onsurface-rgb: rgba(0, 0, 0, 0.5);
+	--primary-color: #6262DB;
 	--onprimary-rgb: #6262DB;
-	background-color: #e5e5e5;
+	--test: #f9f9f9 !important;
 }
 
 h1, h2, h3, h4, h5, h6 {

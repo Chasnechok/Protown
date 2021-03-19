@@ -7,7 +7,7 @@
     export let estate;
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     let currentSlide = 0;
-    $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
+    $: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates));
 </script>
 
 <style>
