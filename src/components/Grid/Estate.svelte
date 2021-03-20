@@ -84,7 +84,7 @@
         --swiper-theme-color: #6262DB;
     }
     .estate-image-lazy {
-        width: 308px;
+        width: 100%;
         height: 268px;
         border-radius: 8px;
         background-size: cover;
@@ -136,7 +136,7 @@
             <div class="estate-label-header">{estate.label ? estate.label : "Бог знает что"}</div>
             <div class="estate-label-adress">
                 {estate.adress ? 
-                estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street.ru ? `, ${estate.adress.street.ru}` : "")+(estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")
+                estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "")+(estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")
             : 'Шевченко 48'}
             </div>
             <div class="estate-price-wrapper" title={priceInWords}>

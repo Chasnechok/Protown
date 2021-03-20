@@ -86,7 +86,7 @@
     
     <div class="prop">
         <span class="prop-header">Дополнительно</span>
-        <Select listPlacement="bottom" showIndicator={!extras.included} isMulti placeholder="" items={type === "flat" ? flatExtras : [{value: "bas", label: "Бассейн"}, {value: "hoz", label: "Хоз. постройки"}, {value: "gar", label: "Гараж"}, ...flatExtras]} on:clear={()=>extras.included=undefined} on:select={({detail}) => extras.included = detail ? detail.map(el=> el.value) : undefined } />
+        <Select listPlacement="bottom" showIndicator={!extras.included} isMulti placeholder="" items={type === "flat" ? flatExtras : [{value: "bas", label: "Бассейн"}, {value: "hoz", label: "Хоз. постройки"}, ...flatExtras]} on:clear={()=>extras.included=undefined} on:select={({detail}) => extras.included = detail ? detail.map(el=> el.value) : undefined } />
     </div>
 
     <div class="prop metro-prop">

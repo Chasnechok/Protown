@@ -46,7 +46,7 @@ export const estateValidation = dtoIn => {
                 ua: Joi.string(),
                 en: Joi.string()
             }),
-
+            communications: Joi.array()
         }),
         extras: Joi.object()
 

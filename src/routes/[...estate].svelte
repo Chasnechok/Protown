@@ -370,11 +370,11 @@
 				{#if fetchedEstate.extras.included&&fetchedEstate.extras.included[0]&&fetchedEstate.type!=="land"}
 				<div class="extras-scroll-wrapper">
 					{#each fetchedEstate.extras.included as extra}
-						<div title={flatExtras.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icons/{extra}.png)" />
+						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.png)" />
 					{/each}
 				</div>
 				{/if}
-				{#if fetchedEstate.details.communications&&fetchedEstate.details.communications[0]&&fetchedEstate.type==="land"}
+				{#if fetchedEstate.details.communications&&fetchedEstate.details.communications[0]&&(fetchedEstate.type==="land"||fetchedEstate.type==="house")}
 				<div class="extras-scroll-wrapper communications">
 					{#each fetchedEstate.details.communications as extra}
 						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.png)" />
@@ -388,8 +388,8 @@
 						<div class="area-poperties">
 							{#each Object.keys(fetchedEstate.details.area) as areaProp}
 								<div class="area-prop">
-									<span class="label">{areaProp === "g" || areaProp === "whole"?"Общая":areaProp === "l"?"Жилая":"Кухня"}</span>
-									<span class="value">{fetchedEstate.details.area[areaProp]}{#if areaProp!=="whole"}м<sup>2</sup>  {/if}</span>
+									<span class="label">{areaProp === "g"?"Общая":areaProp === "l"?"Жилая":areaProp === "whole"? "Участок":"Кухня"}</span>
+									<span class="value">{fetchedEstate.details.area[areaProp]}{#if areaProp!=="whole"}м<sup>2</sup> {:else}&nbspсоток{/if}</span>
 								</div>
 							{/each}
 						</div>
