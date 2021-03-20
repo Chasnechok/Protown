@@ -1,13 +1,19 @@
 <script>
-    import Carousel from '@beyonk/svelte-carousel';
-    import LazyImageCarousel from "../../helpers/LazyImageCarousel.svelte";
+    import { Swiper, SwiperSlide } from 'swiper/svelte';
+	import SwiperCore, { Navigation, Lazy, A11y } from 'swiper';
+    SwiperCore.use([Navigation, Lazy, A11y]);
+    import 'swiper/swiper-bundle.min.css';
+    import { onMount } from "svelte";
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     export let estate;
+    export let isHot = false;
+    //console.log(estate);
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
-    let currentSlide = 0;
     $: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates));
+    let mounted = false;
+    onMount(()=>mounted=true);
 </script>
 
 <style>
@@ -20,6 +26,7 @@
         width: 100%;
         border-radius: .3em;
         flex-direction: column;
+        height: 100%;
     }
     .estate-label {
         padding: 0 20px;
@@ -72,10 +79,17 @@
     }
     .images-wrapper-ms {
         border-radius: .3em;
-        height: 270px;
+        height: 100%;
         width: 100%;
-        margin-top: .5em;
-        overflow: hidden;
+        --swiper-theme-color: #6262DB;
+    }
+    .estate-image-lazy {
+        width: 308px;
+        height: 268px;
+        border-radius: 8px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
     }
    
     .estate-card .estate-price-wrapper {
@@ -117,6 +131,7 @@
                 <div class="fee">0% комиссии</div>
             {/if}
         </div>
+        <a style="text-decoration: none;" rel=prefetch href={isHot?`/${estate.type}/${estate._id}`:"."}>
         <div class="estate-label">
             <div class="estate-label-header">{estate.label ? estate.label : "Бог знает что"}</div>
             <div class="estate-label-adress">
@@ -128,22 +143,37 @@
                 <span class="price">{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
             </div>
         </div>
+        </a>
     </div>
     <div class="images-wrapper-ms">
-        {#if images}
-        <Carousel on:change={({detail: {currentSlide: a}}) => currentSlide = a ? a : 0} controls={false} perPage={1} > 
-            {#each images as image, i}
-            <div class="image-wrapper" style="height: 270px; position: relative;">
-                <LazyImageCarousel
-                {currentSlide}
-                imageIndex={image.id ? image.id : 0}
-                url={`https://naver.github.io/egjs-infinitegrid/assets/image/${Math.floor(Math.random() * 60) + 1}.jpg`} alt={`estateImage ${image.id}`}
-                placeholderHeight="270px"
-                styling="max-width: 100%; height: 270px; border-radius: .3em; display: block; object-fit: cover; margin: 0 auto;"
-                />
-            </div>
-            {/each}
-        </Carousel>
+        {#if estate.images && mounted}
+        <Swiper
+			spaceBetween={4}
+			slidesPerView={1}
+			speed={700}
+			a11y={{
+				containerMessage: "Секция с изображениями объекта",
+				firstSlideMessage: "Первое изображение",
+				lastSlideMessage: "Последнее изображение",
+				nextSlideMessage: "Следующее изображение",
+				prevSlideMessage: "Предыдущее изображение",
+				paginationBulletMessage: "Изменить слайд с изображением"
+			}}
+			pagination={{ clickable: true, dynamicBullets: true }}
+            lazy={{	
+				loadPrevNext: true, elementClass: "estate-image-lazy",
+				loadedClass: "estate-image-lazy-loaded", loadingClass: "estate-image-lazy-loading"
+				}}
+		>
+			{#each images as estateImage}
+			<SwiperSlide>
+				<div data-background={!isHot?`https://naver.github.io/egjs-infinitegrid/assets/image/${Math.floor(Math.random() * 60) + 1}.jpg`:estateImage.src} class="estate-image-lazy">
+                    <div class="swiper-lazy-preloader"></div>
+                  </div>
+			</SwiperSlide>
+			{/each}
+		</Swiper>
+
         {:else}
         <div>
             <span>Изображений нет</span>

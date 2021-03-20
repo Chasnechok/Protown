@@ -35,6 +35,6 @@
 
 <p>{error.message}</p>
 
-{#if dev && error.stack}
+{#if error.stack}
 	<pre>{error.stack}</pre>
 {/if}

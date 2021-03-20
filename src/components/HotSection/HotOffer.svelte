@@ -1,15 +1,16 @@
 <script>
-    import Carousel from '@beyonk/svelte-carousel';
-    import LazyImageCarousel from "../../helpers/LazyImageCarousel.svelte";
+    import { Swiper, SwiperSlide } from 'swiper/svelte';
+	import SwiperCore, { Navigation, Pagination, Lazy, A11y } from 'swiper';
+    SwiperCore.use([Navigation, Pagination, Lazy, A11y]);
+    import 'swiper/swiper-bundle.min.css';
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     import Estate from "../Grid/Estate.svelte";
     import { onMount } from "svelte";
-    import { goto } from '@sapper/app';
+    import { preventRightClick } from '../../helpers/preventRightClick';
     export let estate;
-    let currentSlide = 0;
-    let mounted;
+    let mounted, swiper, imageCarousel;
     onMount(()=>mounted=true)
 
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
@@ -41,24 +42,45 @@
         padding: 1em;
         margin: auto 0;
     }
-    .left { 
+    :global(.image-carousel .swiper-button-prev, .image-carousel .swiper-button-next) {
+		display: none;
+		transition: .5s;
+	}
+	:global(.image-carousel:hover .swiper-button-prev, .image-carousel:hover .swiper-button-next) {
+		display: block;
+	}
+    .image-carousel {
+		margin: 2em 0;
+		--swiper-theme-color: #6262DB;
+		position: relative;
+		border-radius: 8px;
+    	background-color: white;
+    	overflow: hidden;	
+		transition: .7s;
+        max-width: 70%;
+    	flex: 1 1 70%;
+	}
+    .estate-image-lazy {
+		max-height: 500px;
+    	max-width: 100%;
+    	display: block;
+    	border-radius: 8px;
+		object-fit: cover;
+		margin: auto;
+	}
+	.image-wrapper {
+    	background-color: white;
+    	border-radius: 8px;
+        min-height: 400px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 1em 1em 1em 0;
-        max-width: 60%;
-        flex: 0 0 60%;
-    }
+	}
     .right {
         display: flex;
         flex-direction: column;
         padding: 1em;
         justify-content: space-between;
         flex: 0 0 40%;
-    }
-    .main-image {
-        width: 100%;
-        margin: auto;
+        max-width: 30%;
     }
     .right .label{
         font-weight: bold;
@@ -104,10 +126,10 @@
         font-size: 16px;
         color: rgba(0, 0, 0, 0.5);
     }
-    .value-label{
+    .value-label {
         color: black;
     }
-    .prop{
+    .prop {
         display:flex;
         flex-direction: column;
         justify-content: center;
@@ -166,14 +188,6 @@
         flex-direction: column;
         position: relative;
     }
-    .main-image .image-wrapper {
-        height: 370px;
-        max-width: 510px;
-        overflow: hidden;
-        position: relative;
-        border-radius: .3em;
-        display: flex;
-    }
     .zero-fee {
         position: absolute;
         background-color: rgb(98, 98, 219, .8);
@@ -198,12 +212,9 @@
         .hot-offer-wrapper {
             max-width: 1000px;
         }
-        .left {
-            flex: 0 0 70%;
-            max-width: 69%;
-        }
         .right {
             flex: 1 0 30%;
+            max-width: 30%;
         }
         .right .question, .right .answer .contact-href {
             font-size: 0;
@@ -241,7 +252,7 @@
         .hot-offer-ms {
             display: flex;
         }
-        .left, .right {
+        .right {
             max-width: 100%;
             padding: 0;
         }
@@ -259,7 +270,7 @@
 <div class="hot-offer-wrapper">
 
 <div class="hot-offer-ms">
-    <Estate {estate} />
+    <Estate {estate} isHot={true} />
 </div>
 
 <div class="hot-offer-l">
@@ -268,23 +279,40 @@
             <span>0% комиссии</span>
         </div>
     {/if}
-    {#if images&&images[0] && mounted}
-    <div class="left">
-        <div class="main-image">
-            <Carousel on:change={({detail: {currentSlide: a}}) => currentSlide = a ? a : 0} controls={false} perPage={1} > 
-                {#each images as image (image.id)}
-                    <div class="image-wrapper">
-                        <LazyImageCarousel
-                        {currentSlide}
-                        imageIndex={image.id ? image.id : 0}
-                        url={image.src} alt={`estateImage ${image.id}`}
-                        placeholderHeight="370px"
-                        styling="max-width: 100%; max-height: 100%; border-radius: .3em; display: block; object-fit: contain; margin: auto;"
-                        />
-                    </div>
-                {/each}
-            </Carousel>
-        </div>
+    {#if images&&images.length===estate.images.length && mounted}
+        <div class="image-carousel" bind:this={imageCarousel}>
+            <Swiper
+				spaceBetween={10}
+				slidesPerView={1}
+				navigation
+				speed={700}
+				grabCursor
+                nested
+				a11y={{
+					containerMessage: "Секция с изображениями объекта",
+					firstSlideMessage: "Первое изображение",
+					lastSlideMessage: "Последнее изображение",
+					nextSlideMessage: "Следующее изображение",
+					prevSlideMessage: "Предыдущее изображение",
+					paginationBulletMessage: "Изменить слайд с изображением"
+
+				}}
+				pagination={{ clickable: true, dynamicBullets: true }}
+				lazy={{	
+					loadPrevNext: true, elementClass: "estate-image-lazy",
+					loadedClass: "estate-image-lazy-loaded", loadingClass: "estate-image-lazy-loading"
+					}}
+				on:swiper={({detail}) => {swiper = detail[0]; if(imageCarousel)imageCarousel.style="display: flex; align-items: center;"}}
+				>
+					{#each images as estateImage}
+					<SwiperSlide>
+						<div class="image-wrapper">
+							<img use:preventRightClick data-src="{estateImage.src}" alt="{estate.type&&estate.type} image #{estateImage.id}" class="estate-image-lazy" />
+						</div>
+						<div class="swiper-lazy-preloader"></div>
+					</SwiperSlide>
+					{/each}
+				</Swiper>
     </div>
     {/if}
 

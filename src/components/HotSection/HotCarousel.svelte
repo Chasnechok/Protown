@@ -1,13 +1,14 @@
 <script>
-    import Carousel from '@beyonk/svelte-carousel';
+    import { Swiper, SwiperSlide } from 'swiper/svelte';
+	import SwiperCore, { Pagination, Autoplay } from 'swiper';
+    SwiperCore.use([ Pagination, Autoplay]);
+    import 'swiper/swiper-bundle.min.css';
     import HotOffer from "./HotOffer.svelte";
     import { onMount } from "svelte";
     import { fade } from "svelte/transition"
     import axios from "axios";
     
-    let carousel, innerWidth;
     let hotEstates = [];
-    let carouselPaused = false;
     onMount(()=> {
         axios.get('estates/getTop')
         .then(({data}) => {
@@ -22,10 +23,9 @@
 <style>
 
     section {
-        display: flex;
-        flex-direction: column;
         padding: 0;
         max-width: 100%;
+        --swiper-theme-color: #6262DB;
     }
 
     .hot-section > span {
@@ -37,16 +37,6 @@
         padding-left: 0 !important;
         margin: .5em 0 .3em 0;
     }
-    :global(.hot-section > .carousel > ul) {
-        margin-top: 0;
-    }
-    :global(.hot-section .carousel > ul > li) {
-        background-color: #2c3e50a1;
-        border: 1px solid white;
-    }
-    :global(.hot-section .carousel > ul > li.active) {
-        background-color: #4a40d4;
-    }
 
     @media only screen and (max-width: 400px) {
         .hot-section > .hot-header-text {
@@ -56,19 +46,30 @@
     
 </style>
 
-<svelte:window bind:innerWidth/>
 {#if hotEstates[0]}
-<section in:fade class="hot-section-wrapper" 
-on:mouseenter={()=> {carousel&&carousel.pause(); carouselPaused = true;}} on:mouseleave={()=> {carousel&&carousel.resume();  carouselPaused = false;}}
->
+<section in:fade class="hot-section-wrapper" >
 
     <div class="hot-section">
         <span class="hot-header-text">Лучшие предложения 🔥</span>
-        <Carousel bind:this={carousel} controls={false} perPage={{1650: hotEstates[1] ? 2 : 1}} autoplay={5000} duration={800} loop={true} > 
-            {#each hotEstates as estate}
-            <HotOffer {estate} {carousel}/>
-            {/each}
-        </Carousel>
+        <Swiper
+			spaceBetween={10}
+			slidesPerView={1}
+			speed={700}
+            autoplay={{delay: 8000}}
+            direction="horizontal"
+            breakpoints={{
+                1650: {
+                  slidesPerView: 2
+                }
+            }}
+			pagination={{ clickable: true, dynamicBullets: true }}
+		>
+			{#each hotEstates as estate}
+				<SwiperSlide>
+                    <HotOffer {estate}/>
+				</SwiperSlide>
+			{/each}
+		</Swiper>
     </div>
 
 

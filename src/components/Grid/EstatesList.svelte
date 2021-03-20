@@ -7,7 +7,6 @@
   import { filters, items, noMore, districtSelector } from "../../helpers/filterStore";
   import Estate from "./Estate.svelte";
   let mountedToDom = false;
-  let ig;
   let loading;
   $: nothingFound = $noMore && !$items[0] ? true : false;
   onMount(()=>mountedToDom=true)
@@ -114,15 +113,14 @@
     class="container gridlayout"
     items={$items}
     {loading}
-    bind:this={ig}
     let:visibleItems 
     itemBy={item => item._id}
-    layoutOptions={{ align: "center", margin: 50, column: [1,4], itemSize: 340 }}
+    layoutOptions={{ align: "center", margin: 50, column: [1,4] }}
     on:append={onAppend}
+    status={null}
     on:layoutComplete={({detail: e}) => onLayoutComplete(e)}
     groupBy={item => item.groupKey}
-    status={null}
-    options={{ isConstantSize: true, transitionDruation: 0.7, isEqualSize: true, useFit: true, useRecycle: false }}
+    options={{ isConstantSize: true, isEqualSize: true, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}
         <div class="estate-wrapper">

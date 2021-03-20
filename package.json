@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "sapper dev",
-    "build": "sapper build --legacy",
+    "build": "sapper build",
     "export": "sapper export --legacy",
     "start": "node __sapper__/build"
   },
@@ -53,6 +53,7 @@
     "svelte-dragdroplist": "^1.1.1",
     "svelte-feather-icons": "^3.3.0",
     "svelte-file-dropzone": "^0.0.15",
+    "svelte-infinite-scroll": "^1.5.2",
     "svelte-loading-spinners": "^0.1.4",
     "svelte-material-icons": "^1.0.3",
     "svelte-range-slider-pips": "^1.7.0",

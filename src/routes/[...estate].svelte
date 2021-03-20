@@ -11,7 +11,6 @@
 	import { Swiper, SwiperSlide } from 'swiper/svelte';
 	import SwiperCore, { Navigation, Pagination, Lazy, Autoplay, A11y } from 'swiper';
 	import { onMount } from "svelte";
-	import { slide } from 'svelte/transition';
 	import { countries1, kyivDistricts, landTypes, flatExtras, flatPlanning, communicationsList } from "../helpers/locations";
 	import viewport from "../helpers/useViewPortAction";
 	import { changeRates, currencyOnPage } from "../helpers/parametres";
@@ -66,6 +65,7 @@
     	background-color: white;
     	overflow: hidden;	
 		transition: .7s;
+		margin-right: 2em;
 	}
 	.estate-wrapper::before {
 		content: "";
@@ -102,10 +102,13 @@
 	.estate-wrapper {
 		display: flex;
     	flex-wrap: wrap;
-    	gap: 2em;
 		position: relative;
 		justify-content: center;
 	}
+	.estate-info-wrapper > *:not(:first-child) {
+		margin-top: 1.5em;
+	}
+
 	.estate-info-wrapper {
 		background-color: transparent;
 		flex: 0 1 47%;
@@ -113,7 +116,6 @@
 		display: flex;
 		flex-direction: column;
 		margin: 2em 0;
-		gap: 1.5em;
 		max-width: 47%;
 	}
 	.estate-info {
@@ -169,7 +171,9 @@
 		flex-wrap: wrap;
 		overflow: auto;
 		justify-content: center;
-		gap: 1.5em;	
+	}
+	.extras-scroll-wrapper > * {
+		margin: 0 .75em;
 	}
 	.extra-icon {
 		background-size: contain;
@@ -215,7 +219,6 @@
 		color: black;
 	}
 	.estate-comment-field {
-		border: none;
     	padding: 2em;
     	flex: 1;
     	box-shadow: inset rgb(0 0 0 / 10%) 0px 1px 8px;
@@ -229,12 +232,14 @@
 		padding: 0 1em;
     	z-index: 3;
     	background-color: white;
-    	display: flex;
-    	align-items: center;
     	box-shadow: rgb(0 0 0 / 10%) 0px 1px 8px;
     	border-radius: 8px;
     	margin: 0 auto;
 		border: 1px solid rgb(221, 221, 221);
+	}
+	.legend-content-wrapper {
+		display: flex;
+    	align-items: center;
 	}
 	.estate-comment-field .avatar {
 		width: 100px;
@@ -265,10 +270,14 @@
 	@media only screen and (max-width: 1132px) {
 		.image-carousel, .estate-info-wrapper {
 			max-width: unset;
+			margin-right: 0 !important;
 		}
 		.estate-info-wrapper {
 			margin: 0 0 2em 0;
 			flex: 1 1 100%;
+		}
+		.estate-image-lazy {
+			max-height: 400px !important;
 		}
 	}
 	@media only screen and (max-width: 580px) {
@@ -318,14 +327,6 @@
 				<Swiper
 					spaceBetween={10}
 					slidesPerView={1}
-					breakpoints={{
-						1440: {
-      					slidesPerView: 1
-						},
-						768: {
-						slidesPerView: 2
-						}
-					}}
 					navigation
 					speed={700}
 					grabCursor
@@ -471,10 +472,12 @@
 			<section class="estate-comment-section" use:viewport on:enterViewport={({target}) => !target.className.includes("inView") ? target.className += " inView" : null}>
 				<fieldset class="estate-comment-field">
 					<legend>
-						<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
-						<div class="rieltor">
-							<span>Комментарий риелтора</span>
-							<span>Марина, 093 480 41 41</span>
+						<div class="legend-content-wrapper">
+							<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
+							<div class="rieltor">
+								<span>Комментарий риелтора</span>
+								<span>Марина, 093 480 41 41</span>
+							</div>
 						</div>
 					</legend>
 					<div class="comment-wrapper">
