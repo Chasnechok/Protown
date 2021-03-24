@@ -38,7 +38,7 @@
         align-items: center;
         position: absolute;
         left: 0;
-        backdrop-filter: blur(4px);
+        /* backdrop-filter: blur(4px); */
         background-color: rgba(255, 255, 255, 0.5);
         padding-bottom: .5em;
         z-index: 2;

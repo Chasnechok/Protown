@@ -25,6 +25,7 @@ export async function get(req, res) {
                 $project: {
                     _id: 0,
                     maxPrice: 1, minPrice: 1, maxArea: 1, minArea: 1, maxRooms: 1, minRooms: 1, currency: {$first: "$currency"},
+                    // remove duplicates
                     countries: { $setUnion: [ "$countries", [] ] },
                     cities: { $setUnion: [ "$cities", [] ] }
                 }

@@ -1,8 +1,8 @@
 {
-	"background_color": "#ffffff",
+	"background_color": "#edeef0",
 	"theme_color": "#333333",
-	"name": "TODO",
-	"short_name": "TODO",
+	"name": "Rich House Web",
+	"short_name": "Rich House",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [

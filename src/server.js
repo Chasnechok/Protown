@@ -26,7 +26,7 @@ const s3 = new AWS.S3({
 });
 
 /* MONGO DB CONNECTION */
-mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   const db = mongoose.connection;
 	db.on('error', console.error.bind(console, 'connection error:'));
 	db.once('open', function() {

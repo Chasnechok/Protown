@@ -32,7 +32,7 @@ export async function post(req, res) {
     try {
         req.session.token = token;
         req.session.agentIdentifier = user.agentIdentifier;
-        send(res, 200, {token: token})
+        send(res, 200, {token: token, agentIdentifier: user.agentIdentifier })
     } catch (error) {
         send(res, 400, error)
     }

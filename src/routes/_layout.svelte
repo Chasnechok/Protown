@@ -39,7 +39,7 @@
 </header>
 
 
-<main style={!segment ? "--main-bg: #e5e5e5;" : "--main-bg: #fff;"}>
+<main style={!segment ? "--main-bg: #efefef;" : "--main-bg: #fff;"}>
 	<slot></slot>
 </main>
 <footer style={!segment ? "" : "background-color: #efefef;"}>

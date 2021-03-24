@@ -5,7 +5,7 @@
     import LoginForm from "../components/AdminPanel/LoginForm.svelte";
     import Carousel from '@beyonk/svelte-carousel';
     import { onMount } from "svelte";
-    import LdsSpinner from "../helpers/LdsSpinner.svelte";
+    import { Jumper } from 'svelte-loading-spinners';
     import Step1 from "../components/AdminPanel/CreateEstateForms/Step1.svelte";
     import Step2 from "../components/AdminPanel/CreateEstateForms/Step2.svelte";
     import Step3 from "../components/AdminPanel/CreateEstateForms/Step3.svelte";
@@ -309,7 +309,7 @@
 
 {:else}
 <div class="spinner" style="display: flex; justify-content: center;">
-    <LdsSpinner />
+    <Jumper color="#6262DB" />
 </div>
 
 {/if}

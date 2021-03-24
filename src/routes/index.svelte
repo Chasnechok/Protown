@@ -1,7 +1,7 @@
 <script>
-    import FilterBar1 from "../components/FilterBar/FilterBar1.svelte";
+    import FilterBar from "../components/FilterBar/FilterBar.svelte";
     import HotCarousel from "../components/HotSection/HotCarousel.svelte";
-    import EstateList from "../components/Grid/EstatesList.svelte"
+    import EstateList from "../components/Grid/EstatesList.svelte";
 </script>
 
 <style>
@@ -21,7 +21,7 @@
 </svelte:head>
 
 <section>
-    <FilterBar1 />
+    <FilterBar />
     <HotCarousel />
     <EstateList />
 </section>

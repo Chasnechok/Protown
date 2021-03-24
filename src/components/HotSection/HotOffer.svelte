@@ -43,11 +43,11 @@
         margin: auto 0;
     }
     :global(.image-carousel .swiper-button-prev, .image-carousel .swiper-button-next) {
-		display: none;
-		transition: .5s;
+		opacity: 0;
+		transition: .3s;
 	}
 	:global(.image-carousel:hover .swiper-button-prev, .image-carousel:hover .swiper-button-next) {
-		display: block;
+		opacity: 1;
 	}
     .image-carousel {
 		margin: 2em 0;
