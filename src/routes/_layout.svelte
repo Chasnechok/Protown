@@ -15,7 +15,7 @@
 	}
 	:global(main > section) {
 		max-width: 1650px;
-        margin: 5em auto;
+        margin: 6.5em auto 5em auto;
 	}
 	header {
 		position: fixed;
@@ -23,6 +23,7 @@
 		background-color: #fff;
 		z-index: 999;
 		top: 0;
+		box-shadow: rgb(0 0 0 / 8%) 0px 1px 12px;
 	}
 	footer {
         width: 100%;
@@ -34,12 +35,12 @@
 </style>
 
 
-<header style={segment ? "box-shadow: rgb(0 0 0 / 8%) 0px 1px 12px;" : "box-shadow: 0 2px 2px #7d7d7d63;"}>
+<header>
 	<Nav {segment}/>
 </header>
 
 
-<main style={!segment ? "--main-bg: #efefef;" : "--main-bg: #fff;"}>
+<main style={!segment&&2==1 ? "--main-bg: #efefef;" : "--main-bg: #fff;"}>
 	<slot></slot>
 </main>
 <footer style={!segment ? "" : "background-color: #efefef;"}>

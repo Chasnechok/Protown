@@ -155,8 +155,8 @@
 			<a rel=prefetch transition:slide href="/">Напишите нам</a>
 			{:else}
 			<div class="selector" transition:slide>
-				<span>Русский</span>
-				<span>|</span>
+				<!-- <span>Русский</span>
+				<span>|</span> -->
 				<Select on:select={({detail})=>{$currencyOnPage = detail.value}} items={currencies} isClearable={false} isSearchable={false} selectedValue={currencies.find(v=>v.value===$currencyOnPage)} />
 			</div>
 			{/if}

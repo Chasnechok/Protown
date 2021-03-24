@@ -15,8 +15,8 @@
     let deals = [{value: "buy", label: "Купить"}, {value: "lease", label: "Арендовать"}];
     let types = [{value: "house", label: "Дом"}, {value: "flat", label: "Квартиру"}, {value: "commersion", label: "Коммерцию"}, {value: "land", label: "Участок"}];
     let selectedDistricts = [];
-    $: priceRangeMax = currency === "UAH" ? 30000 : 1000;
-    let filterBarExpanded = false;
+    $: priceRangeMax = !filtersProps || !$changeRates ? 99999999 : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates);
+    $: filterBarExpanded = innerWidth&&innerWidth>=650?true:false;
     let innerWidth;
     let extrasN = $extras;
     let filtersProps;
@@ -31,24 +31,60 @@
         margin: 0 auto;
         min-width: 100%;
         position: relative;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0 1em;
+    }
+    .filter-bar-wrapper h2 {
+        text-align: center;
+        min-width: 26ch;
+    }
+    .filter-bar-wrapper h2 span{
+        position: relative;
+        display: inline-block;
+        text-transform: lowercase;
+    }
+    .filter-bar-wrapper h2 span::after{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 4px;
+        background-color: rgb(98 98 219 / 90%);
+        transition: .7s;
     }
     .loading-filter-props {
         position: absolute;
-        width: 101%;
+        width: 100%;
         height: 100%;
         left: 50%;
         transform: translateX(-50%);
-        top: -3%;
+        top: -8%;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: default;
         z-index: 100;
-        background-color: #ebedef9e;
-        backdrop-filter: blur(2px);
+        background-color: transparent;
+    }
+    .filter-bar-l {
+        background-color: white;
+        border-radius: .3em;
+        box-shadow: inset 0px 0px 6px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1em;
+        --indicatorColor: rgb(98 98 219 / 90%);
+        --placeholderColor: #2c3e50;
+        border: 1px solid #e2e2e2;
+        flex: 1 1 60%;
+        max-width: 800px;
     }
 
-    .button-minimized:hover, .filter-bar-minimized:hover, .location-selector :global(.selectContainer:hover), .location-selector :global(input:hover), .range-selector span:not(:first-child):not(.active) {
+    .location-selector :global(.selectContainer:hover), .location-selector :global(input:hover), .range-selector span:not(:first-child):not(.active) {
         cursor: pointer;
     }
    
@@ -122,9 +158,10 @@
     }
     .controls {
         display: flex;
-        justify-content: space-around;
         margin-top: 1.5em;
         position: relative;
+        justify-content: center;
+        margin-bottom: 1em;
     }
   
     .controls button {
@@ -145,28 +182,8 @@
         background-color: rgb(98, 98, 219, 0.9);
         color: white;
     }
-    .filter-bar-l {
-        display: none;
-        position: relative;
-        margin-bottom: 1em;
-    }
     .line1 {
         margin-top: 0 !important;
-    }
-    .filter-bar-l svg {
-        height: 2em;
-    }
-    .filter-bar-minimized {
-        text-align: center;
-        width: 100%;
-        font-size: 16px;
-    }
-    .button-minimized {
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        color: #2c3e50;
-        transform: translate(-50%, 50%);
     }
 
     .location-selector {
@@ -219,30 +236,39 @@
     .controls > button {
         padding: .5em 2em;
     }
-    .filter-bar-l {
-        background-color: white;
-        border-radius: .3em;
-        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 1em;
-        --indicatorColor: rgb(98 98 219 / 90%);
-        --placeholderColor: #2c3e50;
+    .location-selector > * {
+        transition: .7s;
+    }
+    .filters-close-button, .filters-open-button {
+        display: none;
+        cursor: pointer;
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        bottom: 0;
+        transform: translateY(50%);
     }
 
-    @media only screen and (min-width: 1024px) {
+    @media only screen and (max-width: 1024px){
+        .filter-bar-wrapper h2 {
+            display: none;
+        }
+    }
+    @media only screen and (max-width: 750px){
+        .controls.filterBarNotExpanded {
+            display: none;
+        }
+        .line2.filterBarExpanded, .line3.filterBarExpanded, .line4.filterBarExpanded, .filters-close-button.filterBarExpanded, .filters-open-button.filterBarNotExpanded {
+            display: block;
+        }
         .filter-bar-wrapper {
-            min-width: 868px;
+            padding: 0;
+        }
+        .filter-bar-wrapper .filter-bar-l{
+            border-radius: 0;
         }
     }
 
-    @media only screen and (min-width: 1650px) {
-        .filter-bar-wrapper {
-            min-width: 968px;
-        }
-    }
 
     @media only screen and (max-width: 375px) {
         .location-selector :global(.selection) {
@@ -256,13 +282,14 @@
 </style>
 <svelte:window bind:innerWidth/>
 <div class="filter-bar-wrapper" >
-    {#if !filtersProps}
-    <div class="loading-filter-props">
-        <BarLoader color="#d7dada"/>
-    </div>
-    {/if}
+    <h2>Найдите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h2>
     <div class="filter-bar-l">
-        <div transition:slide={{delay: 100}} class="line1 location-selector">
+        {#if !filtersProps}
+        <div class="loading-filter-props">
+            <BarLoader color="#d7dada"/>
+        </div>
+        {/if}
+        <div style="opacity: {!filtersProps? "0":"1"};" transition:slide={{delay: 100}} class="line1 location-selector">
             <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) $items = []; $noMore = false}} items={deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
             <Select on:select={({detail})=>{$filters.type=detail.value; extrasN = $extras; if(!filterBarExpanded) $items = []; $noMore = false}} items={types} isClearable={false} isSearchable={false} selectedValue={types.find(v=>v.value===$filters.type)} />
             <span>в <Select items={!filtersProps ? countries : countries.filter(el=>filtersProps.countries.indexOf(el.value)>=0)} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) $items = []; $noMore = false}} /></span>
@@ -270,7 +297,7 @@
         </div>
         {#if filterBarExpanded}
         {#if $filters.city && $filters.city.toLowerCase() === "киев"}
-            <div transition:slide={{delay: 200}} class="line2 location-selector">
+            <div transition:slide={{delay: 200}} class:filterBarExpanded class="line2 location-selector">
                 <div>
                     <span style="font-size: 18px; font-weight: bold;">В</span>
                     <Select
@@ -285,10 +312,10 @@
                 </div>
             </div>
         {/if}
-        <div transition:slide={{delay: 300}} class="range-selectors line3">
+        <div transition:slide={{delay: 300}} class="range-selectors line3" class:filterBarExpanded>
             <div class="range-selector budget">
                 <span>Бюджет</span>
-                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={currency === "UAH" ? "₴" : currency === "EUR" ? "€" : "$"} max={!filtersProps && !$changeRates ? priceRangeMax : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates)} range bind:values={$filters.price}  />
+                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={currency === "UAH" ? "₴" : currency === "EUR" ? "€" : "$"} max={!filtersProps || !$changeRates ? priceRangeMax : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates)} range bind:values={$filters.price}  />
                 <span style="cursor: default;">{$filters.price[0]} - {$filters.price[1]}&nbsp</span>
                 <span on:click={()=>currency="UAH"} class:active={currency==="UAH"}>гривен&nbsp</span>
                 <span on:click={()=>currency="USD"} class:active={currency==="USD"}>долларов&nbsp</span>
@@ -304,7 +331,7 @@
                 <RangeSlider pips all='label' min={!filtersProps ? 1 : filtersProps.minRooms} max={!filtersProps ? 10 : filtersProps.maxRooms} range bind:values={$filters.rooms}  />
             </div>
         </div>
-        <div transition:slide={{delay: 400}} class="extras-selector">
+        <div transition:slide={{delay: 400}} class="extras-selector line4" class:filterBarExpanded>
             <span>Дополнительно</span>
             <div class="checkboxes-group">
                 {#each extrasN as val}
@@ -315,7 +342,7 @@
                 {/each}
             </div>
         </div>
-        <div transition:slide={{delay: 450}} class="controls">
+        <div transition:slide={{delay: 450}} class="controls" class:filterBarNotExpanded={!filterBarExpanded} >
             <button on:click={()=>(filters.reset($districtSelector), $items = [], $noMore = false)}>Сбросить</button>
             <button on:click={()=> {
                 $filters.included = extrasN;
@@ -323,19 +350,19 @@
                 $noMore = false;
             }}>Искать</button>
         </div>
-        <div transition:slide class="button-minimized" on:click={()=>filterBarExpanded=!filterBarExpanded}>
+        {/if}
+        <div class="filters-close-button"  class:filterBarExpanded on:click={()=>filterBarExpanded=!filterBarExpanded}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
             </svg>
         </div>
-        {:else}
-        <div  class="filter-bar-minimized">
-            <div transition:slide={{delay: 100}} class="button-minimized" on:click={()=>filterBarExpanded=!filterBarExpanded}>
+        
+        <div  class="filters-open-button" class:filterBarNotExpanded={!filterBarExpanded}> 
+            <div transition:slide={{delay: 100}} class="button-minimized" on:click={()=>filtersProps?filterBarExpanded=!filterBarExpanded:null}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
                 </svg>
             </div>
         </div>
-        {/if}
     </div>
 </div>

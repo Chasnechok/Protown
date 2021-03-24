@@ -59,9 +59,9 @@
     width: 100%;
     margin: 2em 0;
   }
-  .hot-header {
+  .hot-header h3 {
     text-align: center;
-    font-weight: 800;
+    font-weight: 600;
     font-size: 26px;
     margin-bottom: 1em;
   }
@@ -105,8 +105,8 @@
 </style>
 
 <section id="all-estates-section" class="all-estates-section">
-<div class="hot-header">
-  <span class="hot-header-text">Все предложения 👇</span>
+  <div class="hot-header">
+    <h3 class="hot-header-text">Все предложения 👇</h3>
   </div>
   {#if mountedToDom}
     <GridLayout

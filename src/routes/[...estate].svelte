@@ -80,11 +80,11 @@
     	background-color: #efefef;
 	}
 	:global(.image-carousel .swiper-button-prev, .image-carousel .swiper-button-next) {
-		display: none;
-		transition: .5s;
+		opacity: 0;
+		transition: .3s;
 	}
 	:global(.image-carousel.mouseOverImages .swiper-button-prev, .image-carousel.mouseOverImages .swiper-button-next) {
-		display: block;
+		opacity: 1;
 	}
 	.estate-image-lazy:not(div) {
 		max-height: 500px;

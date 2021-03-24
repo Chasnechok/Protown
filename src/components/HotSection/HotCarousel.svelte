@@ -25,17 +25,33 @@
     section {
         padding: 0;
         max-width: 100%;
+        margin-top: 1em;
         --swiper-theme-color: #6262DB;
     }
 
-    .hot-section > span {
-        font-weight: 800;
-        font-size: 26px;
+    .hot-section > h2 {
+        font-weight: 600;
+        /* font-size: 26px; */
         padding-left: 1em;
-        display: block;
         text-align: center;
         padding-left: 0 !important;
-        margin: .5em 0 .3em 0;
+        margin: .5em 0 1em 0;
+    }
+    .swiper-container-wrapper {
+        position: relative;
+    }
+    .swiper-container-wrapper::before{
+        content: "";
+        display: block;
+        position: absolute;
+        width: 200vw;
+        left: -100vw;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 100%;
+        z-index: 0;
+        background-color: #efefef;
+        padding: 1em 0;
     }
 
     @media only screen and (max-width: 400px) {
@@ -50,8 +66,9 @@
 <section in:fade class="hot-section-wrapper" >
 
     <div class="hot-section">
-        <span class="hot-header-text">Лучшие предложения 🔥</span>
-        <Swiper
+        <h2 class="hot-header-text">Лучшие предложения 🔥</h2>
+        <div class="swiper-container-wrapper">
+            <Swiper
 			spaceBetween={10}
 			slidesPerView={1}
 			speed={700}
@@ -63,13 +80,15 @@
                 }
             }}
 			pagination={{ clickable: true, dynamicBullets: true }}
-		>
+		    >
 			{#each hotEstates as estate}
 				<SwiperSlide>
                     <HotOffer {estate}/>
 				</SwiperSlide>
 			{/each}
-		</Swiper>
+		    </Swiper>
+        </div>
+        
     </div>
 
 
