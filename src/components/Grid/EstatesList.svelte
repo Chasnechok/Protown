@@ -3,7 +3,6 @@
   import { onMount } from 'svelte';
   import { GridLayout } from '@egjs/svelte-infinitegrid';
   import { SyncLoader } from 'svelte-loading-spinners';
-  import { scrollToBottom } from "svelte-scrollto";
   import { filters, items, noMore, districtSelector } from "../../helpers/filterStore";
   import Estate from "./Estate.svelte";
   let mountedToDom = false;
@@ -59,15 +58,30 @@
     width: 100%;
     margin: 2em 0;
   }
-  .hot-header h3 {
-    text-align: center;
+  .hot-header h2 {
     font-weight: 600;
-    font-size: 26px;
-    margin-bottom: 1em;
+    text-align: center;
+    margin: .5em 0 2em 0;
+    position: relative;
+    padding: 0 2em;
   }
-  .estate-wrapper {
-    width: 340px;
-    height: 300px;
+  h2 span {
+    padding: 0 2em;
+    background-color: #ffffff;
+    z-index: 1;
+    position: relative;
+  }
+  .hot-header > h2::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background-color: #333;
+    z-index: 0;
   }
   .loading {
     left: 50%;
@@ -96,17 +110,29 @@
     transform: scaleX(1.1);
   }
   
-  @media only screen and (max-width: 400px) {
+  @media only screen and (max-width: 768px) {
     section > .hot-header > .hot-header-text {
-      font-size: 22px;
+      padding: 0;
     }
+    section > .hot-header > .hot-header-text span {
+      padding: 0 1em;
+    }
+  }
+  @media only screen and (max-width: 500px) {
+        .hot-header-text span {
+            font-size: 20px;
+        }
+    }
+  @media only screen and (max-width: 374px) {
+      .hot-header-text span {
+          font-size: 16px;
+      }
   }
 
 </style>
-
-<section id="all-estates-section" class="all-estates-section">
+<section class="all-estates-section" id="all-estates-section">
   <div class="hot-header">
-    <h3 class="hot-header-text">Все предложения 👇</h3>
+    <h2 class="hot-header-text"><span>{$filters.isInitial?"Все предложения 👇":"Применили фильтры 👇"}</span></h2>
   </div>
   {#if mountedToDom}
     <GridLayout
@@ -115,17 +141,15 @@
     {loading}
     let:visibleItems 
     itemBy={item => item._id}
-    layoutOptions={{ align: "center", margin: 50, column: [1,4] }}
+    layoutOptions={{ align: "center", margin: 10, column: [1,4] }}
     on:append={onAppend}
     status={null}
     on:layoutComplete={({detail: e}) => onLayoutComplete(e)}
     groupBy={item => item.groupKey}
-    options={{ isConstantSize: true, isEqualSize: true, useFit: true, useRecycle: false }}
+    options={{ isConstantSize: false, isEqualSize: false, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}
-        <div class="estate-wrapper">
           <Estate {estate} />
-        </div>
       {/each}
       <div bind:this={loading} slot="loading" class="loading">
         <SyncLoader color="#6262DB"/>
@@ -134,7 +158,7 @@
     {#if nothingFound}
       <div class="nothing-found">
         <span>По заданным фильтрам ничего не нашли</span>
-        <button on:click={()=>(filters.reset($districtSelector), $items = [], $noMore = false, scrollToBottom())}>Сбросить фильтры</button>
+        <button on:click={()=>{filters.reset($districtSelector); $items = []; $noMore = false; let grid = document.getElementById("all-estates-section"); grid.scrollIntoView({behavior: "smooth"});}}>Сбросить фильтры</button>
       </div>
     {/if}
   {/if}

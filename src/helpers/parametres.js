@@ -1,4 +1,4 @@
-import { writable, readable } from "svelte/store";
+import { writable } from "svelte/store";
 import axios from "axios";
 const { NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';

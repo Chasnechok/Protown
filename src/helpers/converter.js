@@ -26,6 +26,7 @@ export const createBlankEstate = () => {
         type: 'flat',
         deal: 'buy',
         price: undefined,
+        realised: false,
         currency: "UAH",
         adress: {
             country: "UA",

@@ -1,5 +1,6 @@
 <script>
     import Select from 'svelte-select';
+    import { scrollto } from "svelte-scrollto";
     import RangeSlider from "svelte-range-slider-pips";
     import { countries, obce, kyivDistricts } from "../../helpers/locations";
     import { BarLoader } from 'svelte-loading-spinners';
@@ -21,7 +22,7 @@
     let extrasN = $extras;
     let filtersProps;
     onMount(()=>axios.get("/estates/getParametres").then(({data})=> {if(!filtersProps)filtersProps = data}));
-    //$: if(filtersProps) console.log(filtersProps)
+    //$: if($filters) console.log($filters)
     
 
 </script>
@@ -37,22 +38,16 @@
         justify-content: center;
         padding: 0 1em;
     }
-    .filter-bar-wrapper h2 {
+    .filter-bar-wrapper h1 {
         text-align: center;
         min-width: 26ch;
+        position: relative;
     }
-    .filter-bar-wrapper h2 span{
+    .filter-bar-wrapper h1 span{
         position: relative;
         display: inline-block;
         text-transform: lowercase;
-    }
-    .filter-bar-wrapper h2 span::after{
-        content: "";
-        display: block;
-        width: 100%;
-        height: 4px;
-        background-color: rgb(98 98 219 / 90%);
-        transition: .7s;
+        box-shadow: 0 4px rgb(98 98 219 / 90%);
     }
     .loading-filter-props {
         position: absolute;
@@ -60,7 +55,6 @@
         height: 100%;
         left: 50%;
         transform: translateX(-50%);
-        top: -8%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -82,6 +76,8 @@
         border: 1px solid #e2e2e2;
         flex: 1 1 60%;
         max-width: 800px;
+        position: relative;
+        min-height: 410px;
     }
 
     .location-selector :global(.selectContainer:hover), .location-selector :global(input:hover), .range-selector span:not(:first-child):not(.active) {
@@ -250,7 +246,7 @@
     }
 
     @media only screen and (max-width: 1024px){
-        .filter-bar-wrapper h2 {
+        .filter-bar-wrapper h1 {
             display: none;
         }
     }
@@ -266,6 +262,7 @@
         }
         .filter-bar-wrapper .filter-bar-l{
             border-radius: 0;
+            min-height: unset;
         }
     }
 
@@ -282,7 +279,7 @@
 </style>
 <svelte:window bind:innerWidth/>
 <div class="filter-bar-wrapper" >
-    <h2>Найдите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h2>
+    <h1>Найдите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h1>
     <div class="filter-bar-l">
         {#if !filtersProps}
         <div class="loading-filter-props">
@@ -290,14 +287,14 @@
         </div>
         {/if}
         <div style="opacity: {!filtersProps? "0":"1"};" transition:slide={{delay: 100}} class="line1 location-selector">
-            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) $items = []; $noMore = false}} items={deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
-            <Select on:select={({detail})=>{$filters.type=detail.value; extrasN = $extras; if(!filterBarExpanded) $items = []; $noMore = false}} items={types} isClearable={false} isSearchable={false} selectedValue={types.find(v=>v.value===$filters.type)} />
-            <span>в <Select items={!filtersProps ? countries : countries.filter(el=>filtersProps.countries.indexOf(el.value)>=0)} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) $items = []; $noMore = false}} /></span>
-            <span>городе <Select {groupBy} items={!filtersProps ? obce : filtersProps.cities.map(el=> el.ru)} isClearable={false} isSearchable={false} selectedValue={$filters.city} on:select={({detail})=>{$filters.city=detail.value; if(!filterBarExpanded) $items = []; $noMore = false}} /></span>
+            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
+            <Select on:select={({detail})=>{$filters.type=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={types} isClearable={false} isSearchable={false} selectedValue={types.find(v=>v.value===$filters.type)} />
+            <span>в <Select items={!filtersProps ? countries : countries.filter(el=>filtersProps.countries.indexOf(el.value)>=0)} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
+            <span>городе <Select {groupBy} items={!filtersProps ? obce : filtersProps.cities.map(el=> el.ru)} isClearable={false} isSearchable={false} selectedValue={$filters.city} on:select={({detail})=>{$filters.city=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
         </div>
         {#if filterBarExpanded}
         {#if $filters.city && $filters.city.toLowerCase() === "киев"}
-            <div transition:slide={{delay: 200}} class:filterBarExpanded class="line2 location-selector">
+            <div transition:slide class:filterBarExpanded class="line2 location-selector">
                 <div>
                     <span style="font-size: 18px; font-weight: bold;">В</span>
                     <Select
@@ -312,7 +309,7 @@
                 </div>
             </div>
         {/if}
-        <div transition:slide={{delay: 300}} class="range-selectors line3" class:filterBarExpanded>
+        <div transition:slide class="range-selectors line3" class:filterBarExpanded>
             <div class="range-selector budget">
                 <span>Бюджет</span>
                 <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={currency === "UAH" ? "₴" : currency === "EUR" ? "€" : "$"} max={!filtersProps || !$changeRates ? priceRangeMax : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates)} range bind:values={$filters.price}  />
@@ -331,7 +328,7 @@
                 <RangeSlider pips all='label' min={!filtersProps ? 1 : filtersProps.minRooms} max={!filtersProps ? 10 : filtersProps.maxRooms} range bind:values={$filters.rooms}  />
             </div>
         </div>
-        <div transition:slide={{delay: 400}} class="extras-selector line4" class:filterBarExpanded>
+        <div transition:slide class="extras-selector line4" class:filterBarExpanded>
             <span>Дополнительно</span>
             <div class="checkboxes-group">
                 {#each extrasN as val}
@@ -342,12 +339,15 @@
                 {/each}
             </div>
         </div>
-        <div transition:slide={{delay: 450}} class="controls" class:filterBarNotExpanded={!filterBarExpanded} >
+        <div transition:slide class="controls" class:filterBarNotExpanded={!filterBarExpanded} >
             <button on:click={()=>(filters.reset($districtSelector), $items = [], $noMore = false)}>Сбросить</button>
             <button on:click={()=> {
+                $filters.isInitial = false;
                 $filters.included = extrasN;
                 $items = [];
                 $noMore = false;
+                let grid = document.getElementById("all-estates-section");
+                grid.scrollIntoView({behavior: "smooth"});
             }}>Искать</button>
         </div>
         {/if}

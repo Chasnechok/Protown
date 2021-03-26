@@ -5,7 +5,7 @@ export const estateValidation = dtoIn => {
     const v = Joi.object({
         label: Joi.string().required().max(40),
         agent: Joi.alternatives().try("MAR").try("IR").required(),
-        leased: Joi.alternatives().try(Joi.date().raw()).try(Joi.boolean()),
+        relised: Joi.alternatives().try(Joi.date().raw()).try(Joi.boolean()),
         type: Joi.alternatives().try("house").try("land").try("flat").try("commersion").required(),
         price: Joi.number().required(),
         deal: Joi.alternatives().try("buy").try("lease").required(),

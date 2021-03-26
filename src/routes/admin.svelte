@@ -292,7 +292,7 @@
             <span>Создание объявления ✍️</span>
             <Carousel dots={false} startIndex={0} draggable={false} loop={false} bind:this={carousel} controls={false} perPage={1} > 
             
-                <Step1 {carousel} bind:partly={newEstate.details.partly} bind:label={newEstate.label} bind:type={newEstate.type} bind:price={newEstate.price} bind:deal={newEstate.deal} bind:currency={newEstate.currency} bind:leased={newEstate.leased} />
+                <Step1 {carousel} bind:partly={newEstate.details.partly} bind:label={newEstate.label} bind:type={newEstate.type} bind:price={newEstate.price} bind:deal={newEstate.deal} bind:currency={newEstate.currency} bind:leased={newEstate.realised} />
                 <Step2 {carousel} bind:estateNumber={newEstate.adress.estateNumber} bind:district={newEstate.adress.district} bind:country={newEstate.adress.country} bind:city={newEstate.adress.city} bind:street={newEstate.adress.street}  />
                 <Step3 {carousel} type={newEstate.type} bind:planning={newEstate.details.planning} bind:sillings={newEstate.details.sillings} bind:purpose={newEstate.details.purpose} bind:fond={newEstate.details.fond} bind:communications={newEstate.details.communications} bind:floor={newEstate.details.floor} bind:gfloor={newEstate.details.gfloor} bind:whole={newEstate.details.area.whole} bind:global_area={newEstate.details.area.g} bind:local_area={newEstate.details.area.l} bind:kitchen_area={newEstate.details.area.k} bind:rooms={newEstate.details.rooms} bind:state={newEstate.details.state} bind:zk={newEstate.details.zk}/>
                 <Step4 {carousel} type={newEstate.type} bind:extras={newEstate.extras} />

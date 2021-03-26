@@ -12,7 +12,7 @@ export async function get(req, res) {
     const to = from + parseInt(req.query.count, 10);
     const nextGroupKey = parseInt(req.query.nextGroupKey, 10);
     try {
-        await Estate.find({
+        await Estate.find(!filters.isInitial?{
             type: filters.type,
             deal: filters.deal,
             "adress.country": filters.country,
@@ -22,6 +22,8 @@ export async function get(req, res) {
             "details.area.g": { $gte: filters.area[0], $lte: filters.area[1] },
             "extras.fee": fee === false ? false : {$in: [true, false]},
             "extras.included": filters.included[0] ? { $in: filters.included } : { $exists: true }
+        }:{
+            type: {$exists: true}
         })
         .then(r => {
             //console.log(r);

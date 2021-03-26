@@ -7,7 +7,7 @@ const estateSchema = new Schema({
     agent:{
         type: String
     },
-    leased: {
+    realised: {
         type: {}
     },
     type: {

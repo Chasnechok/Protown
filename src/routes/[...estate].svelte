@@ -25,7 +25,6 @@
 	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
 	const checkForObject = (obj) => {return typeof obj === 'object' && obj !== null && Object.keys(obj).length>0}
 	let mountedToDom = false;
-	let mouseOverImages = false;
 	let swiper, imageCarousel;
 	onMount(()=>mountedToDom=true)
 	//console.log(fetchedEstate.adress);
@@ -58,6 +57,7 @@
 	.image-carousel {
 		margin: 2em 0;
 		--swiper-theme-color: #6262DB;
+		/* --swiper-navigation-color: #333; */
 		position: relative;
 		max-width: 50%;
     	flex: 1 1 50%;
@@ -83,7 +83,7 @@
 		opacity: 0;
 		transition: .3s;
 	}
-	:global(.image-carousel.mouseOverImages .swiper-button-prev, .image-carousel.mouseOverImages .swiper-button-next) {
+	:global(.image-carousel:hover .swiper-button-prev, .image-carousel:hover .swiper-button-next) {
 		opacity: 1;
 	}
 	.estate-image-lazy:not(div) {
@@ -323,7 +323,7 @@
 		<div class="estate-wrapper">
 
 			{#if mountedToDom && images && images.length === fetchedEstate.images.length}
-			<div class="image-carousel" bind:this={imageCarousel} class:mouseOverImages on:mouseenter={()=>mouseOverImages=true} on:mouseleave={()=>mouseOverImages=false} >
+			<div class="image-carousel" bind:this={imageCarousel} >
 				<Swiper
 					spaceBetween={10}
 					slidesPerView={1}

@@ -6,9 +6,7 @@
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
-    import Estate from "../Grid/Estate.svelte";
     import { onMount } from "svelte";
-    import { preventRightClick } from '../../helpers/preventRightClick';
     export let estate;
     let mounted, swiper, imageCarousel;
     onMount(()=>mounted=true)
@@ -21,383 +19,287 @@
 </script>
 
 <style>
-    .hot-offer-wrapper {
-        background-color: transparent;
-        padding: 3px 1em;
-        margin: 0 auto;
-        max-width: 900px;
-        min-height: 580px;
-        position: relative;
-        display: flex;
-    }
-    
-    .hot-offer-l {
-        display: flex;
-        position: relative;
-        flex-wrap: wrap;
-        width: 100%;
-        background-color: white;
-        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.15);
-        border-radius: .5em;
-        padding: 1em;
-        margin: auto 0;
-    }
-    :global(.image-carousel .swiper-button-prev, .image-carousel .swiper-button-next) {
+    :global(.images-wrapper .swiper-button-prev, .images-wrapper .swiper-button-next) {
 		opacity: 0;
 		transition: .3s;
 	}
-	:global(.image-carousel:hover .swiper-button-prev, .image-carousel:hover .swiper-button-next) {
+	:global(.images-wrapper:hover .swiper-button-prev, .images-wrapper:hover .swiper-button-next) {
 		opacity: 1;
 	}
-    .image-carousel {
-		margin: 2em 0;
-		--swiper-theme-color: #6262DB;
-		position: relative;
-		border-radius: 8px;
-    	background-color: white;
-    	overflow: hidden;	
-		transition: .7s;
-        max-width: 70%;
-    	flex: 1 1 70%;
-	}
-    .estate-image-lazy {
-		max-height: 500px;
-    	max-width: 100%;
-    	display: block;
-    	border-radius: 8px;
-		object-fit: cover;
-		margin: auto;
-	}
-	.image-wrapper {
-    	background-color: white;
-    	border-radius: 8px;
-        min-height: 400px;
-        display: flex;
-	}
-    .right {
-        display: flex;
-        flex-direction: column;
+    .hot-offer-wrapper {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 1em .5em;
+    }
+    .hot-offer {
+        background-color: #fff;
         padding: 1em;
-        justify-content: space-between;
-        flex: 0 0 40%;
-        max-width: 30%;
-    }
-    .right .label{
-        font-weight: bold;
-        font-size: var(--headerFontSize, 20px);
-        line-height: 100%;
-    }
-    .right .adress{
-        font-weight: bold;
-        font-size: var(--adressFontSize, 14px);
-        color: rgba(0, 0, 0, 0.5);
-    }
-    .hot-offer-l .price-wrapper{
-        background: #E5E5E5;
-        border-radius: 10px;
-        width: 100%;
-        padding: 0.5em 0;
-        text-align: center;
-        cursor: default;
-    }
-    .hot-offer-l .price{
-        font-weight: bold;
-        font-size: 18px;
-        line-height: 100%;
-        letter-spacing: 2px;
-    }
-    .hot-offer-l .price-currency{
-        color: #333333;
-        font-weight: bold;
-    }
-    .sq{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .sq-header, .question{
-        grid-column: 1/3;
-        justify-self: start;
-        grid-row: 1;
-        font-weight: 600;
-        font-size: 16px;
-    }
-    .prop-label, .value-label, .prop-label-vertical{
-        font-weight: 500;
-        font-size: 16px;
-        color: rgba(0, 0, 0, 0.5);
-    }
-    .value-label {
-        color: black;
-    }
-    .prop {
-        display:flex;
-        flex-direction: column;
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        border-radius: .3em;
+        box-shadow: 0px 0px 6px rgb(0 0 0 / 25%);
         justify-content: center;
         align-items: center;
-        grid-row: 2;
-        justify-self: center;
     }
-    .sq-vertical{
-        display: flex;
-        flex-direction: column;
-    }
-    .prop-vertical{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .value-label-vertical{
-        grid-column: 3;
+    h3.estate-label, h4 {
+        flex: 1 1 100%;
         text-align: center;
+        margin: 0;
     }
-    .question, .sq-vertical, .sq, .price-wrapper {
-        margin-top: 1em;
-    }
-    .answer{
+    .labels {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        flex: 1 1 100%;
+    }   
+    .label {
+        border-radius: 8px;
+        padding: 8px;
+        text-align: center;
         display: flex;
         align-items: center;
     }
-    .contact-href:hover, .details-show-button:hover{
-        cursor: pointer;
+    .label svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        color: #6262db;
     }
-    .details-show-button:hover{
-        letter-spacing: 1px;
+    .images-wrapper {
+        border-radius: .3em;
+        height: 400px;
+        width: 600px;
+        --swiper-theme-color: #6262DB;
+        /* --swiper-navigation-color: #333; */
+        position: relative;
+        margin-right: 1em;
     }
-    .contact-href{
-        font-size: var(--answerFontSize, 14px);
-        font-weight: 600;
-        color: #6262DB;
-        transition: .5s;
+
+    .estate-image-lazy {
+        width: 100%;
+        height: 400px;
+        border-radius: .5em;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
     }
-    .details-show-button{
-        color: white;
-        text-align: center;
-        padding: 0.5em 1em;
-        background: rgba(98, 98, 219, 0.8);
-        border-radius: 10px;
-        transition: .5s;
+    .properties-wrapper {
+        flex: 1;
+        position: relative;
+        height: 400px;
     }
-    .question, .or{
-        font-size: var(--questionFontSize);
-    }
-    .prop-label-vertical{
-        grid-column: 1/3;
-    }
-    
-    .right .content {
+
+    .props {
         display: flex;
         flex-direction: column;
-        position: relative;
+        justify-content: space-between;
+        height: 100%;
     }
-    .zero-fee {
-        position: absolute;
-        background-color: rgb(98, 98, 219, .8);
-        padding: 4px 1em;
+    .price-wrapper {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: .5em;
+        background-color: #efefef;
+        border-radius: .5em;
+    }
+    fieldset {
+        border: none;
+        border-top: 1px solid #333;
+        line-height: 19px;
+        margin-bottom: 1em;
+    }
+    fieldset > div > div:not(:last-child) {
+        margin-bottom: .3em;
+    }
+    legend {
+        margin: 0 auto;
+        padding: .5em;
+    }
+    .prop-wrapper {
+        display: flex;
+        align-items: baseline;
+    }
+    .prop-wrapper > * {
+        flex: 1;
+    }
+    .prop-label {
+        text-align: end;
+        margin-right: 1em;
+        color: #5a5a5a;
+    }
+    a {
+        text-decoration: none;
+        border-radius: .5em;
         text-align: center;
-        color: white;
-        font-size: 14px;
-        right: 0;
-        top: 0;
-        border-radius: 0 0.5em;
-        backdrop-filter: blur(5px);
-        z-index: 2;
-    }
-
-    .hot-offer-ms {
-        display: none;
-        position: relative;
+        padding: 0.3em 1em;
+        transition: .3s;
+        border: 1px solid #a9a9a9;
+        display: block;
+        color: #464646;
+        background: transparent;
         width: 100%;
+        cursor: pointer;
     }
-    
-    @media only screen and (min-width: 1650px) {
-        .hot-offer-wrapper {
-            max-width: 1000px;
-        }
-        .right {
-            flex: 1 0 30%;
-            max-width: 30%;
-        }
-        .right .question, .right .answer .contact-href {
-            font-size: 0;
-        }
-        
-        .right .question::after {
-            font-size: 16px;
-            content: "Есть вопросы?"
-        }
-        .right .answer .contact-href::after {
-            font-size: 14px;
-            content: "Позвонить"
-        }
-        .right .question-box, .right .answer {
-            margin-top: .5em;
-        }
+    a:hover, a:active, a:focus {
+        letter-spacing: 1px;
+        border-color: #6262db;
+        color: #6262db;
     }
-    @media only screen and (max-width: 1060px) {
-        .contact-href, .or {
-            display: block;
+    :global(.swiper-pagination) {
+        bottom: 0 !important;
+    }
+
+    @media only screen and (max-width: 820px) {
+        .estate-image-lazy, .images-wrapper, .properties-wrapper {
+            height: 350px;
         }
-        .right {
-            padding: 0 1em 0 0;
+        .images-wrapper {
+            width: 500px;
         }
     }
 
-    @media only screen and (max-width: 767px) {
-        .hot-offer-wrapper {
-            padding: 3px .5em;
-            min-height: unset;
+    @media only screen and (max-width: 694px) {
+        .hot-offer {
+            flex-direction: column;
+            max-width: 450px;
+            margin: 0 auto;
         }
-        .hot-offer-l {
-            display: none;
+        .properties-wrapper {
+            height: initial;
+            width: 100%;
         }
-        .hot-offer-ms {
-            display: flex;
+        .estate-image-lazy, .images-wrapper {
+            height: 300px;
         }
-        .right {
-            max-width: 100%;
-            padding: 0;
+        .images-wrapper {
+            width: 100%;
+            margin-right: 0;
+            margin-bottom: 1em;
         }
-        .right {
-            padding: 1em 0 0 0;
+        .price-wrapper {
+            margin-bottom: 1em;
         }
-        .contact-href, .or {
-            display: block;
+        legend {
+            padding: 0 1.5em;
         }
-
     }
-    
+    @media only screen and (max-width: 375px) {
+        .estate-image-lazy, .images-wrapper {
+            height: 220px;
+        }
+    }
+
 </style>
-
 <div class="hot-offer-wrapper">
-
-<div class="hot-offer-ms">
-    <Estate {estate} isHot={true} />
-</div>
-
-<div class="hot-offer-l">
-    {#if estate.extras.fee === false}
-        <div class="zero-fee">
-            <span>0% комиссии</span>
+    <div class="hot-offer">
+        <h3 class="estate-label">{estate.label}</h3>
+        <h4 class="adress">{estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</h4>
+        <div class="labels">
+            <div class="label">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span>{estate.type==="flat"?"Квартира":estate.type==="house"?"Дом":estate.type==="commersion"?"Коммерция":estate.type==="land"?"Участок":"Бог знает что"}</span>
+            </div>
+            <div class="label">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span>{estate.deal==="lease"?"Аренда":estate.deal==="buy"?"Продажа":"Бог знает что"}</span>
+            </div>
+            {#if estate.extras.fee == false}
+            <div class="label">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                <span class="no-fee">0% комиссии</span>
+            </div>
+            {/if}
         </div>
-    {/if}
-    {#if images&&images.length===estate.images.length && mounted}
-        <div class="image-carousel" bind:this={imageCarousel}>
+        <div class="images-wrapper">
+            {#if estate.images && mounted}
             <Swiper
-				spaceBetween={10}
-				slidesPerView={1}
-				navigation
-				speed={700}
-				grabCursor
+                spaceBetween={4}
+                slidesPerView={1}
+                speed={700}
                 nested
-				a11y={{
-					containerMessage: "Секция с изображениями объекта",
-					firstSlideMessage: "Первое изображение",
-					lastSlideMessage: "Последнее изображение",
-					nextSlideMessage: "Следующее изображение",
-					prevSlideMessage: "Предыдущее изображение",
-					paginationBulletMessage: "Изменить слайд с изображением"
-
-				}}
-				pagination={{ clickable: true, dynamicBullets: true }}
-				lazy={{	
-					loadPrevNext: true, elementClass: "estate-image-lazy",
-					loadedClass: "estate-image-lazy-loaded", loadingClass: "estate-image-lazy-loading"
-					}}
-				on:swiper={({detail}) => {swiper = detail[0]; if(imageCarousel)imageCarousel.style="display: flex; align-items: center;"}}
-				>
-					{#each images as estateImage}
-					<SwiperSlide>
-						<div class="image-wrapper">
-							<img use:preventRightClick data-src="{estateImage.src}" alt="{estate.type&&estate.type} image #{estateImage.id}" class="estate-image-lazy" />
-						</div>
-						<div class="swiper-lazy-preloader"></div>
-					</SwiperSlide>
-					{/each}
-				</Swiper>
-    </div>
-    {/if}
-
-    <div class="right">
-        <div class="content">
-        <span class="label header">{estate.label}</span>
-            <span class="adress header">{estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</span>
-            <div class="price-wrapper" title={priceInWords}>
-                <span class="price">{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
+                grabCursor
+                navigation
+                a11y={{
+                    containerMessage: "Секция с изображениями объекта",
+                    firstSlideMessage: "Первое изображение",
+                    lastSlideMessage: "Последнее изображение",
+                    nextSlideMessage: "Следующее изображение",
+                    prevSlideMessage: "Предыдущее изображение",
+                    paginationBulletMessage: "Изменить слайд с изображением"
+                }}
+                pagination={{ clickable: true, dynamicBullets: true }}
+                lazy={{	
+                    loadPrevNext: true, elementClass: "estate-image-lazy",
+                    loadedClass: "estate-image-lazy-loaded", loadingClass: "estate-image-lazy-loading"
+                    }}
+            >
+                {#each images as estateImage}
+                <SwiperSlide>
+                    <div data-background={estateImage.src} class="estate-image-lazy">
+                        <div class="swiper-lazy-preloader"></div>
+                    </div>
+                </SwiperSlide>
+                {/each}
+            </Swiper>
+    
+            {:else}
+            <div>
+                <span>Изображений нет</span>
             </div>
-                
-            <div class="sq">
-                <span class="sq-header header">Площадь</span>
-                <div class="prop" >
-                    <span class="prop-label">Общая</span>
-                    <span class="value-label">{estate.details.area.g}<sup><small>2</small></sup></span>
+            {/if}
+        </div>
+        <div class="properties-wrapper">
+            <div class="props">
+                <div class="price-wrapper" title={priceInWords}>
+                    <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
                 </div>
-                {#if estate.details.area.l}
-                    <div class="prop" >
-                        <span class="prop-label">Жилая</span>
-                        <span class="value-label">{estate.details.area.l}<sup><small>2</small></sup></span>
-                    </div>
-                {/if}
-                {#if estate.details.area.k}
-                    <div class="prop">
-                        <span class="prop-label">Кухня</span>
-                        <span class="value-label">{estate.details.area.k}<sup><small>2</small></sup></span>
-                    </div>
-                {/if}
-            </div>
-            <div class="sq">
-                <span class="sq-header header">{estate.type === "flat" ? "Квартира" : estate.type === "house" ? "Дом" : estate.type === "commersion" ? "Объект" : "Участок"}</span>
-                <div class="prop">
-                    <span class="prop-label">Комнаты</span>
-                    <span class="value-label">{estate.details.rooms}</span>
-                </div>
-                <div class="prop">
-                    <span class="prop-label header">{estate.type === "flat" || estate.type === "commersion"? "Этаж" : "Этажность"}</span>
-                    <span class="value-label">{estate.type === "flat" || estate.type === "commersion" ?
-                         `${estate.details.floor + estate.details.gfloor ? estate.details.gfloor : ""}` : `${estate.details.gfloor}`}
-                    </span>
-                    </div>
-                    {#if estate.details.state}
-                        <div class="prop">
-                            <span class="prop-label header">Состояние</span>
-                            <span class="value-label">{estate.details.state === false ? "Вторичка" : "Новое"}</span>
+                <div class="areas">
+                    <fieldset class="area-field">
+                        <legend>Площадь</legend>
+                        <div class="area-poperties">
+                            {#each Object.keys(estate.details.area) as areaProp}
+                                <div class="prop-wrapper">
+                                    <span class="prop-label">{areaProp === "g"?"Общая":areaProp === "l"?"Жилая":areaProp === "whole"? "Участок":"Кухня"}</span>
+                                    <span class="prop-value">{estate.details.area[areaProp]}{#if areaProp!=="whole"}м<sup>2</sup> {:else}&nbspсоток{/if}</span>
+                                </div>
+                            {/each}
                         </div>
-                    {/if}
-                </div>
-                {#if estate.extras.metro || estate.details.zk || estate.type === "commersion"}
-                <div class="sq-vertical">
-                    <span class="sq-header header">Расположение</span>
-                    {#if estate.extras.metro}
-                    <div class="prop-vertical">
-                        <span class="prop-label-vertical header">Метро</span>
-                        <span class="value-label-vertical">{estate.extras.metro.distance ? estate.extras.metro.ru + `, в ${estate.extras.metro.distance}м` : estate.extras.metro.ru}</span>
-                    </div>
-                    {/if}
-                    {#if estate.details.zk}
-                    <div class="prop-vertical">
-                        <span class="prop-label-vertical header">Жилой комплекс</span>
-                        <span class="value-label-vertical">{estate.details.zk.ru}</span>
-                    </div>
-                    {/if}
-                    {#if estate.type === "commersion"}
-                    <div class="prop-vertical">
-                        <span class="prop-label-vertical header">Фонд</span>
-                        <span class="value-label-vertical">{estate.details.fond === false ? "Нежилой" : "Жилой"}</span>
-                    </div>
-                    {/if}
-                </div>
-                {/if}
-            </div>
-            <div class="question-box">
-                <div class="question header">Понравилась квартира или есть вопросы?</div>
-                <div class="answer">
-                    <span class="contact-href header">Свяжитесь с нами</span><span class="or header">&nbspили&nbsp</span>
-                    <a style="text-decoration: none;" rel=prefetch href={`/${estate.type}/${estate._id}`}>
-                        <div class="details-show-button">
-                            детали
+                    </fieldset>
+                    {#if estate.details.rooms||estate.details.gfloor||estate.details.floor}
+                    <fieldset class="estate-field">
+                        <legend>{estate.type==="flat"?"Квартира":estate.type==="house"?"Дом":estate.type==="commersion"?"Коммерция":estate.type==="land"?"Участок":"Бог знает что"}</legend>
+                        <div class="estate-properties">
+                            {#if estate.details.rooms}
+                            <div class="prop-wrapper">
+                                <span class="prop-label">Комнаты</span>
+                                <span class="prop-value">{estate.details.rooms}</span>
+                            </div>
+                            {/if}
+                            {#if estate.details.gfloor || estate.details.floor}
+                            <div class="prop-wrapper">
+                                <span class="prop-label">{!estate.details.floor && estate.details.gfloor? "Этажность" : "Этаж"}</span>
+                                <span class="prop-value">
+                                    {estate.details.floor && estate.details.gfloor ? estate.details.floor + " / " + estate.details.gfloor :
+                                    estate.details.floor ? estate.details.floor : estate.details.gfloor ? estate.details.gfloor : "не указано"
+                                    }
+                                </span>
+                            </div>
+                            {/if}
                         </div>
-                    </a>
-                   
+                    </fieldset>
+                    {/if}
                 </div>
-            </div>   
+                <a rel=prefetch href="/{estate.type}/{estate._id}">детали</a>
+            </div>
+        </div>
     </div>
-</div>
 </div>

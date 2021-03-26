@@ -8,7 +8,8 @@ const initialFilters = {
     districts: [],
     rooms: [1, 999999999999],
     area: [0, 999999999999],
-    included: []
+    included: [],
+    isInitial: true
 }
 
 function createFilters() {

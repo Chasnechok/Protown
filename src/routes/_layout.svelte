@@ -27,8 +27,7 @@
 	}
 	footer {
         width: 100%;
-        background-color: #fff;
-        box-shadow: 0 -2px 2px #7d7d7d63;
+        background-color: #efefef;
         padding: .5em 0;
     }
 
@@ -43,7 +42,7 @@
 <main style={!segment&&2==1 ? "--main-bg: #efefef;" : "--main-bg: #fff;"}>
 	<slot></slot>
 </main>
-<footer style={!segment ? "" : "background-color: #efefef;"}>
+<footer>
 	<Footer />
 </footer>
 

@@ -5,18 +5,11 @@
     import 'swiper/swiper-bundle.min.css';
     import HotOffer from "./HotOffer.svelte";
     import { onMount } from "svelte";
-    import { fade } from "svelte/transition"
-    import axios from "axios";
-    
-    let hotEstates = [];
+    import { fade } from "svelte/transition";
+    let mounted = false;
+    export let hotEstates = [];
     onMount(()=> {
-        axios.get('estates/getTop')
-        .then(({data}) => {
-           hotEstates = data;
-        })
-        .catch(err => {
-            console.log(err);
-        })
+       mounted = true;
     });
 </script>
 
@@ -25,20 +18,38 @@
     section {
         padding: 0;
         max-width: 100%;
-        margin-top: 1em;
+        margin-top: 2em;
         --swiper-theme-color: #6262DB;
     }
 
     .hot-section > h2 {
         font-weight: 600;
-        /* font-size: 26px; */
-        padding-left: 1em;
         text-align: center;
-        padding-left: 0 !important;
-        margin: .5em 0 1em 0;
+        margin: .5em 0 2em 0;
+        position: relative;
+        padding: 0 2em;
+    }
+    .hot-section > h2::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 1px;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
+        background-color: #333;
+        z-index: 0;
+    }
+    .hot-section > h2 span {
+        padding: 0 2em;
+        background-color: #ffffff;
+        z-index: 1;
+        position: relative;
     }
     .swiper-container-wrapper {
         position: relative;
+        min-height: 545px;
     }
     .swiper-container-wrapper::before{
         content: "";
@@ -53,21 +64,38 @@
         background-color: #efefef;
         padding: 1em 0;
     }
-
-    @media only screen and (max-width: 400px) {
-        .hot-section > .hot-header-text {
-            font-size: 22px;
+    @media only screen and (max-width: 820px) {
+        .swiper-container-wrapper {
+            min-height: 500px;
+        }
+    }
+    @media only screen and (max-width: 694px) {
+        .swiper-container-wrapper {
+            min-height: 620px;
+        }
+    }
+    @media only screen and (max-width: 500px) {
+        .hot-section > .hot-header-text span {
+            font-size: 20px;
+            padding: 0 1em;
+        }
+    }
+    @media only screen and (max-width: 374px) {
+        .hot-section > .hot-header-text span {
+            font-size: 16px;
+            padding: 0 1em;
         }
     }
     
 </style>
 
 {#if hotEstates[0]}
-<section in:fade class="hot-section-wrapper" >
+<section in:fade class="hot-section-wrapper" id="hot-section" >
 
     <div class="hot-section">
-        <h2 class="hot-header-text">Лучшие предложения 🔥</h2>
+        <h2 class="hot-header-text"><span>Лучшие предложения 🔥</span></h2>
         <div class="swiper-container-wrapper">
+            {#if mounted}
             <Swiper
 			spaceBetween={10}
 			slidesPerView={1}
@@ -87,6 +115,7 @@
 				</SwiperSlide>
 			{/each}
 		    </Swiper>
+            {/if}
         </div>
         
     </div>
