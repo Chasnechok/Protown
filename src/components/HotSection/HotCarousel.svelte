@@ -22,30 +22,13 @@
         --swiper-theme-color: #6262DB;
     }
 
-    .hot-section > h2 {
-        font-weight: 600;
+    .hot-section h1 {
+        font-weight: 500;
         text-align: center;
-        margin: .5em 0 2em 0;
+        margin:  0;
         position: relative;
-        padding: 0 2em;
-    }
-    .hot-section > h2::before {
-        content: "";
-        display: block;
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%);
-        background-color: #333;
-        z-index: 0;
-    }
-    .hot-section > h2 span {
-        padding: 0 2em;
-        background-color: #ffffff;
-        z-index: 1;
-        position: relative;
+        padding: 1em 0;
+        line-height: 10px;
     }
     .swiper-container-wrapper {
         position: relative;
@@ -74,16 +57,9 @@
             min-height: 620px;
         }
     }
-    @media only screen and (max-width: 500px) {
-        .hot-section > .hot-header-text span {
-            font-size: 20px;
-            padding: 0 1em;
-        }
-    }
     @media only screen and (max-width: 374px) {
-        .hot-section > .hot-header-text span {
-            font-size: 16px;
-            padding: 0 1em;
+        .hot-section h1 {
+            font-size: 1.5em;
         }
     }
     
@@ -93,8 +69,8 @@
 <section in:fade class="hot-section-wrapper" id="hot-section" >
 
     <div class="hot-section">
-        <h2 class="hot-header-text"><span>Лучшие предложения 🔥</span></h2>
         <div class="swiper-container-wrapper">
+            <h1 class="hot-header-text">Лучшие предложения 🔥</h1>
             {#if mounted}
             <Swiper
 			spaceBetween={10}

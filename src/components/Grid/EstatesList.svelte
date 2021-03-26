@@ -58,30 +58,13 @@
     width: 100%;
     margin: 2em 0;
   }
-  .hot-header h2 {
-    font-weight: 600;
+  h1 {
+    font-weight: 500;
     text-align: center;
-    margin: .5em 0 2em 0;
+    margin: 0;
     position: relative;
-    padding: 0 2em;
-  }
-  h2 span {
-    padding: 0 2em;
-    background-color: #ffffff;
-    z-index: 1;
-    position: relative;
-  }
-  .hot-header > h2::before {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    background-color: #333;
-    z-index: 0;
+    line-height: 10px;
+    padding: 1em 0 1.5em 0;
   }
   .loading {
     left: 50%;
@@ -110,30 +93,15 @@
     transform: scaleX(1.1);
   }
   
-  @media only screen and (max-width: 768px) {
-    section > .hot-header > .hot-header-text {
-      padding: 0;
-    }
-    section > .hot-header > .hot-header-text span {
-      padding: 0 1em;
-    }
-  }
-  @media only screen and (max-width: 500px) {
-        .hot-header-text span {
-            font-size: 20px;
-        }
-    }
   @media only screen and (max-width: 374px) {
-      .hot-header-text span {
-          font-size: 16px;
+      h1 {
+          font-size: 1.5em;
       }
   }
 
 </style>
 <section class="all-estates-section" id="all-estates-section">
-  <div class="hot-header">
-    <h2 class="hot-header-text"><span>{$filters.isInitial?"Все предложения 👇":"Применили фильтры 👇"}</span></h2>
-  </div>
+  <h1>{$filters.isInitial?"Все предложения 👇":"Применили фильтры 👇"}</h1>
   {#if mountedToDom}
     <GridLayout
     class="container gridlayout"
