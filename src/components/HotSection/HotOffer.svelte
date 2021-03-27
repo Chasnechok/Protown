@@ -316,7 +316,7 @@
                     </fieldset>
                     {/if}
                 </div>
-                <a rel=prefetch href="/{estate.type}/{estate._id}">детали</a>
+                <a sapper:prefetch href="/{estate.type}/{estate._id}">детали</a>
             </div>
         </div>
     </div>

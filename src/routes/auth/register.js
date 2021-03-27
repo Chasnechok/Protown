@@ -1,6 +1,6 @@
 import User from "../../models/user";
 import { registerValidation } from "../../validation_types/auth";
-const bCrypt = require("bcrypt");
+const bCrypt = require("bcryptjs");
 const send = require('@polka/send-type');
 
 export async function post(req, res) {

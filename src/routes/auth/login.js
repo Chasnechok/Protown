@@ -1,6 +1,6 @@
 import User from "../../models/user";
 import { loginValidation } from "../../validation_types/auth";
-import bCrypt from"bcrypt";
+import bCrypt from "bcryptjs";
 import send from '@polka/send-type';
 import jwt from "jsonwebtoken";
 
