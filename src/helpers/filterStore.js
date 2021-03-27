@@ -5,6 +5,7 @@ const initialFilters = {
     country: "UA",
     city: "Киев",
     price: [0, 999999999999],
+    currency: "USD",
     districts: [],
     rooms: [1, 999999999999],
     area: [0, 999999999999],

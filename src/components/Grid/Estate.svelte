@@ -131,7 +131,11 @@ import A from '../../routes/[...estate].svelte';
         border-color: #6262db;
         color: #6262db;
     }
-
+    @media only screen and (max-width: 1649px) {
+        .props {
+            width: 250px;
+        }
+    }
     @media only screen and (max-width: 1024px) {
         .estate-card {
             flex-direction: column;

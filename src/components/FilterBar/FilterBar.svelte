@@ -1,6 +1,5 @@
 <script>
     import Select from 'svelte-select';
-    import { scrollto } from "svelte-scrollto";
     import RangeSlider from "svelte-range-slider-pips";
     import { countries, obce, kyivDistricts } from "../../helpers/locations";
     import { BarLoader } from 'svelte-loading-spinners';
@@ -12,12 +11,24 @@
     import { currencyCalculator } from "../../helpers/converter";
     const groupBy = (item) => item.group;
     const getSelectionLabel = (option) => option.label.replace("ий", "ом");
-    let currency = "UAH";
     let deals = [{value: "buy", label: "Купить"}, {value: "lease", label: "Арендовать"}];
     let types = [{value: "house", label: "Дом"}, {value: "flat", label: "Квартиру"}, {value: "commersion", label: "Коммерцию"}, {value: "land", label: "Участок"}];
     let selectedDistricts = [];
-    $: priceRangeMax = !filtersProps || !$changeRates ? 99999999 : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates);
     $: filterBarExpanded = innerWidth&&innerWidth>=650?true:false;
+    $: priceRangeMax = getPriceRangeMax(filtersProps, $filters.currency);
+    const getPriceRangeMax = (filtersProps, ccy) => {
+        if(!filtersProps||!$changeRates) return 99999999;
+        const prices = [];
+        for(let key in filtersProps){
+            if(key==="maxUSD"||key==="maxEUR"||key==="maxUAH") prices.push({ccy: key.replace("max", ""), value: filtersProps[key]})
+        }
+        if(!prices[0]) return 99999999;
+        const b = [];
+        prices.forEach(price => {
+            b.push(currencyCalculator(price.value, ccy, price.ccy, $changeRates))
+        });
+        return Math.max.apply(Math, b.map((el) => el));
+    }
     let innerWidth;
     let extrasN = $extras;
     let filtersProps;
@@ -279,7 +290,7 @@
 </style>
 <svelte:window bind:innerWidth/>
 <div class="filter-bar-wrapper" >
-    <h1>Найдите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h1>
+    <h1>Подберите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h1>
     <div class="filter-bar-l">
         {#if !filtersProps}
         <div class="loading-filter-props">
@@ -312,11 +323,11 @@
         <div transition:slide class="range-selectors line3" class:filterBarExpanded>
             <div class="range-selector budget">
                 <span>Бюджет</span>
-                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={currency === "UAH" ? "₴" : currency === "EUR" ? "€" : "$"} max={!filtersProps || !$changeRates ? priceRangeMax : currencyCalculator(filtersProps.maxPrice, currency, filtersProps.currency, $changeRates)} range bind:values={$filters.price}  />
+                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={$filters.currency === "UAH" ? "₴" : $filters.currency === "EUR" ? "€" : "$"} max={priceRangeMax} range bind:values={$filters.price}  />
                 <span style="cursor: default;">{$filters.price[0]} - {$filters.price[1]}&nbsp</span>
-                <span on:click={()=>currency="UAH"} class:active={currency==="UAH"}>гривен&nbsp</span>
-                <span on:click={()=>currency="USD"} class:active={currency==="USD"}>долларов&nbsp</span>
-                <span on:click={()=>currency="EUR"} class:active={currency==="EUR"}>евро</span>
+                <span on:click={()=>$filters.currency="USD"} class:active={$filters.currency==="USD"}>долларов&nbsp</span>
+                <span on:click={()=>{$filters.currency="UAH"; $filters.price = [0, priceRangeMax]}} class:active={$filters.currency==="UAH"}>гривен&nbsp</span>
+                <span on:click={()=>$filters.currency="EUR"} class:active={$filters.currency==="EUR"}>евро</span>
             </div>
             <div class="range-selector area">
                 <span>Площадь</span>

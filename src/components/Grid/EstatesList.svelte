@@ -10,12 +10,11 @@
   $: nothingFound = $noMore && !$items[0] ? true : false;
   onMount(()=>mountedToDom=true)
  
-  const loadItems = async (nextGroupKey, nextKey, itemCount, detail) => {
+  const loadItems = async (nextKey, itemCount, detail) => {
     let nextItems = [];
     await axios.get("/estates/getEstates",
     { 
       params: {
-        nextGroupKey,
         nextKey,
         count: itemCount,
         filters: $filters
@@ -43,8 +42,7 @@
     // await sleep(3000)
     //const nextGroupKey = (parseFloat(groupKey) || 0) + 1
     const nextKey = $items.length;
-    const nextGroupKey = (typeof detail.groupKey === "undefined" ? 0 : +detail.groupKey || 0) + 1;
-    $items = [...$items, ...await loadItems(nextGroupKey, nextKey, 8, detail)];
+    $items = [...$items, ...await loadItems(nextKey, 8, detail)];
     //console.log($items);
   }
   
@@ -113,7 +111,6 @@
     on:append={onAppend}
     status={null}
     on:layoutComplete={({detail: e}) => onLayoutComplete(e)}
-    groupBy={item => item.groupKey}
     options={{ isConstantSize: false, isEqualSize: false, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}

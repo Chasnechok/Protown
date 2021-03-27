@@ -152,6 +152,24 @@
         bottom: 0 !important;
     }
 
+    @media only screen and (max-width: 1649px) {
+        .images-wrapper {
+            width: 450px;
+        }
+        .estate-image-lazy, .images-wrapper, .properties-wrapper {
+            height: 338px;
+        }
+    }
+
+    @media only screen and (max-width: 1365px) {
+        .images-wrapper {
+            width: 600px;
+        }
+        .estate-image-lazy, .images-wrapper, .properties-wrapper {
+            height: 400px;
+        }
+    }
+
     @media only screen and (max-width: 820px) {
         .estate-image-lazy, .images-wrapper, .properties-wrapper {
             height: 350px;

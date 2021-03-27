@@ -79,7 +79,7 @@
             autoplay={{delay: 8000}}
             direction="horizontal"
             breakpoints={{
-                1650: {
+                1366: {
                   slidesPerView: 2
                 }
             }}
