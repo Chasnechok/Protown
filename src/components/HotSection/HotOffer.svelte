@@ -8,7 +8,7 @@
     import { numberToPhrase } from "../../helpers/numToString";
     import { onMount } from "svelte";
     export let estate;
-    let mounted, swiper, imageCarousel;
+    let mounted;
     onMount(()=>mounted=true)
 
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
@@ -19,13 +19,6 @@
 </script>
 
 <style>
-    :global(.images-wrapper .swiper-button-prev, .images-wrapper .swiper-button-next) {
-		opacity: 0;
-		transition: .3s;
-	}
-	:global(.images-wrapper:hover .swiper-button-prev, .images-wrapper:hover .swiper-button-next) {
-		opacity: 1;
-	}
     .hot-offer-wrapper {
         max-width: 920px;
         margin: 0 auto;

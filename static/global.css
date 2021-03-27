@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
+:root {
+	scroll-behavior: smooth;
+}
 *{
 	margin: 0;
 	padding: 0;
@@ -12,9 +14,6 @@ body {
 	font-size: 14px;
 	line-height: 1.5;
 	color: #333;
-	--primary-color: #6262DB;
-	--onprimary-rgb: #6262DB;
-	--test: #f9f9f9 !important;
 }
 
 h1, h2, h3, h4, h5, h6 {

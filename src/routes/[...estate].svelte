@@ -18,7 +18,6 @@
 	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
-	import { preventRightClick } from '../helpers/preventRightClick';
 
 	export let fetchedEstate;
 	$: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates));
@@ -353,7 +352,7 @@
 					{#each images as estateImage}
 					<SwiperSlide>
 						<div class="image-wrapper">
-							<img use:preventRightClick data-src="{estateImage.src}" alt="{fetchedEstate.type&&fetchedEstate.type} image #{estateImage.id}" class="estate-image-lazy" />
+							<img on:contextmenu|preventDefault data-src="{estateImage.src}" alt="{fetchedEstate.type&&fetchedEstate.type} image #{estateImage.id}" class="estate-image-lazy" />
 						</div>
 						<div class="estate-image-lazy-preloader"></div>
 					</SwiperSlide>
