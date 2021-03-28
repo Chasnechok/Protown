@@ -15,7 +15,7 @@
     
     let carousel;
 	const { session } = stores();
-    $: console.log($session.agentIdentifier);
+    //$: console.log($session.agentIdentifier);
     let mounted = false, showSuccess = false;
     let page = "create";
     let newEstate;

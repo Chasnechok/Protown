@@ -1,7 +1,8 @@
 <script>
 	import axios from "axios";
-    import { AlertCircleIcon } from 'svelte-feather-icons'
-	export let token, newEstate, createBlankEstate, agentIdentifier;
+    import { AlertCircleIcon } from 'svelte-feather-icons';
+    import { goto, stores } from "@sapper/app";
+    const { session } = stores();
     let username, password, input1, input2;
     let invalidCredentials = false;
     let loading = false;
@@ -14,11 +15,12 @@
 		username: username,
 		password: password
 	})
-	.then(res => {
-        newEstate = createBlankEstate();
-		token = res.data.token;
-        agentIdentifier = res.data.agentIdentifier;
+	.then((res) => {
+		$session.token = res.data.token;
+        $session.visikom = res.data.visikom;
+        $session.agentIdentifier = res.data.agentIdentifier;
         loading = false;
+        goto("/adminka");
   })
   	.catch(err => {
         error = err.response.statusText;
@@ -40,6 +42,8 @@
     .login-section{
         display: flex;
         justify-content: center;
+        max-width: 1650px;
+        margin: 6.5em auto 5em auto;
     }
     .login-section.invalidCredentials input{
         color: #ff6d6d;
@@ -64,8 +68,9 @@
         display: flex;
         flex-direction: column;
         padding: 1em;
-        border-radius: 10px;
-        box-shadow: 0px 0px 2px rgb(0 0 0 / 45%);
+        border-radius: .5em;
+        box-shadow: inset 0 0 6px rgb(0 0 0 / 15%);
+        border: 1px solid #e2e2e2;
     }
     input{
         color: #828282;

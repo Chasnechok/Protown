@@ -14,9 +14,6 @@ export async function get(req, res) {
             }
         ]).then(r => maxPricesPerCurrency = r);
         await Estate.aggregate([
-            { 
-                $sort: { price: -1 } 
-            },
             {
                 $group: {
                     _id: null,
@@ -34,12 +31,9 @@ export async function get(req, res) {
                 $project: {
                     _id: 0
                 }
-            }
-            
-            
+            }  
         ])
         .then(r => {
-            //console.log(r);
             return send(res, 200, {
                 maxUSD: maxPricesPerCurrency.find(el=>el._id==="USD")?.maxPrice,
                 maxEUR: maxPricesPerCurrency.find(el=>el._id==="EUR")?.maxPrice,

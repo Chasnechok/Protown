@@ -14,7 +14,7 @@ import AWS from "aws-sdk";
 
 /* CONFIG */
 dotenv.config();
-const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET } = process.env;
+const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY } = process.env;
 const dev = NODE_ENV === 'development';
 
 /*  DIGITAL OCEAN SPACES INIT */
@@ -35,33 +35,41 @@ mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, us
 
 
 /* WEB SERVER START AND CONFIG */
+const sessionHandler = session({
+	name: 'Auth',
+	secret: JWT_SECRET,
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+	  maxAge: 3 * 60 * 60 * 1000,
+	  secure: false
+	},
+	store: new MongoStore({ mongooseConnection: db })
+  });
 polka()
 	.use('/estates/create', auth)
 	.use('/auth/register', authRegister)
+	.use((req, res, next) => {
+		if (req.url.includes("/adminka")||req.url.includes("/logadmin")||req.url.includes("/auth")) {
+			return sessionHandler(req, res, next);
+		} else {
+			next();
+		}
+	})
 	.use(
 		compression({ threshold: 0 }),
 		json(),
 		fileUpload({
 			
 		}),
-		session({
-			name: 'Auth',
-			secret: JWT_SECRET,
-			resave: false,
-			saveUninitialized: true,
-			cookie: {
-			  maxAge: 3 * 60 * 60 * 1000,
-			  secure: false
-			},
-			store: new MongoStore({ mongooseConnection: db, ttl: 3 * 60 * 60 * 1000 })
-		  }),
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: (req, res) => {
 			res.setHeader('cache-control', 'no-cache, no-store')
 			  return ({
 				token: req.session && req.session.token,
-				agentIdentifier: req.session && req.session.agentIdentifier
+				agentIdentifier: req.session && req.session.agentIdentifier,
+				visikom: req.session && req.session.token && VISIKOM_API_KEY
 			  })}
 			})
 		
