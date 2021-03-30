@@ -3,6 +3,7 @@
 		const esatateId = params.estate && params.estate[1] ? params.estate[1] : params.estate && params.estate[0] ? params.estate[0] : 0;
 		const res = await this.fetch(`estates/${esatateId}`);
 		const fetchedEstate = await res.json();
+		if(!fetchedEstate||fetchedEstate.reason) return this.error(404, "Not found")
 		return { fetchedEstate };
 	}
 </script>
@@ -425,7 +426,7 @@
 							{/if}
 							{#if fetchedEstate.details.planning}
 								<div class="estate-detailed-prop">
-									<span class="label">Планировка</span><span class="value">{flatPlanning.find(el=>el.value===fetchedEstate.details.planning)?.label}</span>
+									<span class="label">Планировка</span><span class="value">{[{value: "open", label: "Открытого типа"}, {value: "close", label: "Закрытого типа"}, ...flatPlanning].find(el=>el.value===fetchedEstate.details.planning)?.label}</span>
 								</div>
 							{/if}
 						</div>

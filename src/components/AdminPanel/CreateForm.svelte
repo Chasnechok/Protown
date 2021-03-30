@@ -547,14 +547,14 @@
             <div class="options-horizontal">
                 {#if estateTemplate.type==="land"||estateTemplate.type==="commersion"}
                 <div style="position: relative;" class="area-input-wrapper" class:postfix-sotki={estateTemplate.type === "land"} class:postfix-m2={estateTemplate.type === "commersion"}>
-                    <input type="number" bind:value={estateTemplate.details.area[estateTemplate.type==="land"?"whole":"g"]}>
+                    <input step="0.01" type="number" bind:value={estateTemplate.details.area[estateTemplate.type==="land"?"whole":"g"]}>
                 </div>
                 {:else}
                     {#each Object.keys(estateTemplate.details.area) as areaProp}
                     <div style="display:{estateTemplate.type==="flat"&&areaProp==="whole"?"none":""}" class="prop-vertical area-prop">
                         <label for={areaProp}>{areaProp==="g"?"Общая":areaProp==="l"?"Жилая":areaProp==="k"?"Кухни":"Участка"}</label>
                         <div style="position: relative;" class="area-input-wrapper" class:postfix-sotki={areaProp === "whole"} class:postfix-m2={areaProp !== "whole"}>
-                            <input type="number" id={areaProp} bind:value={estateTemplate.details.area[areaProp]}>
+                            <input step="0.01" type="number" id={areaProp} bind:value={estateTemplate.details.area[areaProp]}>
                         </div>
                     </div>
                     {/each}
@@ -566,7 +566,7 @@
             <label for="sillings">Высота потолков</label>
             <div class="options-horizontal">
             <div style="position: relative;margin: 0 0.5em;max-width: 100px;" class="postfix-m">
-                <input style="max-width: 100px;" type="number" id="sillings" bind:value={estateTemplate.details.sillings}>
+                <input step="0.01" style="max-width: 100px;" type="number" id="sillings" bind:value={estateTemplate.details.sillings}>
             </div>
             </div>
         </div>

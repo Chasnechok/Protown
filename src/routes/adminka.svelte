@@ -83,7 +83,7 @@
 <section>
     <div class="notifications">
         {#each notifications as notification}
-            <Notification {notifications} {notification} />
+            <Notification bind:notifications {notification} />
         {/each}
     </div>
     <ControlPanel bind:mode />
