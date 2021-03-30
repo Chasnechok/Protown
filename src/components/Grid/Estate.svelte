@@ -7,8 +7,6 @@
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
-import A from '../../routes/[...estate].svelte';
-
     export let estate;
     //console.log(estate);
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;

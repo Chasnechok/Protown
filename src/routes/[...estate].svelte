@@ -453,14 +453,14 @@
 							<span class="label">Улица</span><span class="value">{fetchedEstate.adress.street.ru?fetchedEstate.adress.street.ru:fetchedEstate.adress.street[Object.keys(fetchedEstate.adress.street)[0]]}{fetchedEstate.adress.estateNumber?`, ${fetchedEstate.adress.estateNumber}`:""}</span>
 						</div>
 						{/if}
-						{#if fetchedEstate.details.zk && checkForObject(fetchedEstate.details.zk)}
+						{#if fetchedEstate.adress.zk && checkForObject(fetchedEstate.adress.zk)}
 						<div class="estate-location-prop">
-							<span class="label">Ж/К</span><span class="value">{fetchedEstate.details.zk.ru?fetchedEstate.details.zk.ru:fetchedEstate.details.zk[Object.keys(fetchedEstate.details.zk)[0]]}</span>
+							<span class="label">Ж/К</span><span class="value">{fetchedEstate.adress.zk.ru?fetchedEstate.adress.zk.ru:fetchedEstate.adress.zk[Object.keys(fetchedEstate.adress.zk)[0]]}</span>
 						</div>
 						{/if}
-						{#if fetchedEstate.extras.metro && checkForObject(fetchedEstate.extras.metro)}
+						{#if fetchedEstate.adress.metro && checkForObject(fetchedEstate.adress.metro)}
 						<div class="estate-location-prop">
-							<span class="label">Метро</span><span class="value">{fetchedEstate.extras.metro.ru?fetchedEstate.extras.metro.ru:fetchedEstate.extras.metro[Object.keys(fetchedEstate.extras.metro)[0]]}{fetchedEstate.extras.metro.distance?` в ${fetchedEstate.extras.metro.distance} метрах`:""}</span>
+							<span class="label">Метро</span><span class="value">{fetchedEstate.adress.metro.ru?fetchedEstate.adress.metro.ru:fetchedEstate.adress.metro[Object.keys(fetchedEstate.adress.metro)[0]]}{fetchedEstate.adress.metro.distance?` в ${fetchedEstate.adress.metro.distance} метрах`:""}</span>
 						</div>
 						{/if}
 					</fieldset>

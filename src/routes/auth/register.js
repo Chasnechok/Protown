@@ -4,7 +4,7 @@ const bCrypt = require("bcryptjs");
 const send = require('@polka/send-type');
 
 export async function post(req, res) {
-
+    return;
     // checking dtoIn
     const {error} = registerValidation(req.body);
     if(error){
@@ -12,10 +12,6 @@ export async function post(req, res) {
      send(res, 400, error);
      return;
     }
-
-    const userPhoto = req.files;
-    console.log(userPhoto);
-    return;
    
     // check if user exists
     if(await User.findOne({username: req.body.username})) {
@@ -31,7 +27,9 @@ export async function post(req, res) {
     const user = new User({
         agentIdentifier: req.body.agentIdentifier,
         username: req.body.username,
-        password: hashedPassword
+        password: hashedPassword,
+        fullName: req.body.fullName,
+        mobile: req.body.mobile
     });
 
     

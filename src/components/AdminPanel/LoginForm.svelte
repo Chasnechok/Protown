@@ -2,6 +2,7 @@
 	import axios from "axios";
     import { AlertCircleIcon } from 'svelte-feather-icons';
     import { goto, stores } from "@sapper/app";
+    import { BarLoader } from 'svelte-loading-spinners';
     const { session } = stores();
     let username, password, input1, input2;
     let invalidCredentials = false;
@@ -19,7 +20,6 @@
 		$session.token = res.data.token;
         $session.visikom = res.data.visikom;
         $session.agentIdentifier = res.data.agentIdentifier;
-        loading = false;
         goto("/adminka");
   })
   	.catch(err => {
@@ -125,11 +125,15 @@
 <section class="login-section" class:invalidCredentials>
     <form on:submit|preventDefault={() => handleLogin(username, password)} class="login-form">
         <label for="login">Логин</label>
-        <input required type="text" bind:this={input1} bind:value={username} id="login" class="login">
+        <input disabled={loading} required type="text" bind:this={input1} bind:value={username} id="login" class="login">
         <label for="login">Пароль</label>
-        <input required type="password"  bind:this={input2} bind:value={password} id="password" class="password">
+        <input disabled={loading} required type="password"  bind:this={input2} bind:value={password} id="password" class="password">
         <button disabled={invalidCredentials || loading} class="login-button button" type="submit">
+            {#if !loading}
             Войти
+            {:else}
+                <BarLoader size="100" color="#d7dada" unit="px"/>
+            {/if}
         </button>
         {#if error}
         <div class="error">

@@ -10,9 +10,7 @@ export async function post(req, res) {
     for(let key in req.body){
         if(key === "adress" || key === "details" || key === "extras") req.body[key] = JSON.parse(req.body[key]);
     }
-    if(req.body.leased) req.body.leased = req.body.leased.replace('"', "").replace('"', "");
     
-
     /* Input validation */
     const {error} = estateValidation(req.body);
     if(error){
@@ -60,17 +58,17 @@ export async function post(req, res) {
             await processToDO().then((uploadedImages)=>console.log(uploadedImages))
         } catch (error) {
             console.log(error);
-            return send(res, 500, { error: "Image upload failed", code: "IMG_UPLOAD_FAIL" })
+            return send(res, 500, { error:true, message: "Image upload failed", code: "IMG_UPLOAD_FAIL" })
         }
     }
 
     /* Upload to MongoDB */
     try {
         await estate.save();
-        return send(res, 200, `${estate.label} was succesfully created!`)
+        return send(res, 200, {message: `Добавили ${estate.label} в список объявлений!`, link: `/${estate.type}/${estate._id}`})
     } catch (error) {
         if(req.files) await purgeUploadedImages().catch(console.log);
-        return send(res, 500, { error: `MongoDB upload failed${req.files&&", but images were uploaded with status code 200, will purge them"}.`, code: "MONGO_UPLOAD_FAIL" })
+        return send(res, 500, {error: true, message: `MongoDB upload failed${req.files&&", but images were uploaded with status code 200, will purge them"}.`, code: "MONGO_UPLOAD_FAIL" })
     }
 
 }

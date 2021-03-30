@@ -13,6 +13,8 @@ export const flatPlanning = [{value: "studio", label: "Студия"}, {value: "
 export const flatExtras = [{value: "fur", label: "С мебелью"}, {value: "aircon", label: "Кондиционер"}, {value: "boi", label: "Бойлер"}, {value: "kam", label: "Камин"}, {value: "saun", label: "Сауна"},
 {value: "ter", label: "Терраса"}, {value: "par", label: "Парковка"}, {value: "sig", label: "Сигнализация"}, {value: "bal", label:"Балкон"}, {value: "gar", label:"Гараж"}]
 
+export const houseExtras = [{value: "bas", label: "Бассейн"}, {value: "hoz", label: "Хоз. постройки"}, ...flatExtras]
+
 export const communicationsList = [{value: "vod", label: "Вода"}, {value: "gas", label: "Газ"}, {value: "can", label: "Канализация"}, {value: "skv", label: "Скважина"}, {value: "el", label: "Электричество"}]
 
 export const landTypes = [{value: "sel", label: "Сель-хоз"}, {value: "zs", label: "Жилая застройка"}, {value: "sad", label: "Садоводство"}, {value: "health", label: "Оздоровительное"},

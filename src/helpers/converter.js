@@ -42,14 +42,28 @@ export const createBlankEstate = () => {
                 ua: undefined,
                 en: undefined
             },
-            estateNumber: undefined
+            estateNumber: undefined,
+            metro: {
+                ru: undefined,
+                ua: undefined,
+                en: undefined,
+                distance: undefined
+            },
+            // жилой комплекс
+            zk: {
+                ru: undefined,
+                ua: undefined,
+                en: undefined
+            }
         },
         details: {
             floor: undefined,
             gfloor: undefined,
             sillings: undefined,
-            fond: false,
+            // true - жилой
+            fond: true,
             planning: undefined,
+            // включенные коммуникации (только для land и house)
             communications: undefined,
             area: {
                 g: undefined,
@@ -58,14 +72,11 @@ export const createBlankEstate = () => {
                 whole: undefined
             },
             rooms: undefined,
+            // false - вторичка
             state: false,
             partly: undefined,
-            purpose: undefined,
-            zk: {
-                ru: undefined,
-                ua: undefined,
-                en: undefined
-            }
+            // Назначение земли
+            purpose: undefined
         },
         extras: {
             comment: {
@@ -73,16 +84,11 @@ export const createBlankEstate = () => {
                 ua: undefined,
                 en: undefined
             },
-            metro: {
-                ru: undefined,
-                ua: undefined,
-                en: undefined,
-                distance: undefined
-            },
             included: undefined,
             top: false,
             fee: true
-        }
+        },
+        images: []
     }
 }
 

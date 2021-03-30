@@ -33,6 +33,9 @@ const estateSchema = new Schema({
     },
     images: {
         type: Array
+    },
+    note: {
+        type: String
     }
 });
 
