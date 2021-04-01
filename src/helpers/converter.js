@@ -9,6 +9,14 @@ export const blobToFile = (theBlob, fileName) => {
 export const kFormatter = (num) => {
     return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) : Math.sign(num)*Math.abs(num)
 }
+export const formatPhoneNumber = (phoneNumberString) => {
+    let cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    let match = cleaned.match(/^(\d{3})(\d{3})(\d{2})(\d{2})$/);
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3]+ '-' + match[4];
+    }
+    return null;
+  }
 
 export const currencyCalculator = (price, ccy, base_ccy, currencyRates) => {
     //console.log(base_ccy, "TO", ccy);

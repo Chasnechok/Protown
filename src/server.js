@@ -11,6 +11,7 @@ import session from 'express-session';
 import fileUpload from "express-fileupload";
 const MongoStore = require('connect-mongo')(session);
 import AWS from "aws-sdk";
+import cookieParser from "cookie-parser";
 
 /* CONFIG */
 dotenv.config();
@@ -47,32 +48,31 @@ const sessionHandler = session({
 	store: new MongoStore({ mongooseConnection: db })
   });
 polka()
-	.use('/estates/create', auth)
-	.use('/auth/register', authRegister)
+	.use(cookieParser(JWT_SECRET))
+	// Session middleware will be used only for following url or for any if there is a valid signed cookie named Auth
 	.use((req, res, next) => {
-		if (req.url.includes("/adminka")||req.url.includes("/logadmin")||req.url.includes("/auth")) {
+		if (req.url.includes("/adminka")||req.url.includes("/logadmin")||req.url.includes("/auth")||(req.signedCookies&&req.signedCookies.Auth)) {
 			return sessionHandler(req, res, next);
 		} else {
 			next();
 		}
 	})
+	.use('/estates/create', auth)
+	.use('/auth/register', authRegister)
 	.use(
 		compression({ threshold: 0 }),
 		json(),
-		fileUpload({
-			
-		}),
+		fileUpload(),
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: (req, res) => {
 			res.setHeader('cache-control', 'no-cache, no-store')
-			  return ({
+			  return (req.session&&req.session.token?{
 				token: req.session && req.session.token,
 				agentIdentifier: req.session && req.session.agentIdentifier,
 				visikom: req.session && req.session.token && VISIKOM_API_KEY
-			  })}
+			  }:{})}
 			})
-		
 	)
 	.listen(PORT, err => {
 		if (err) console.log('error', err);
@@ -80,8 +80,8 @@ polka()
 	
  /* middleware */
  function auth(req, res, next) {
-	const token = req.headers.authorization;
-	if(!token || token == 'undefined'){
+	const { token } = req.session;
+	if(!req.session||!token){
 		res
 		.writeHead(401, {
 			'Content-Type': 'application/json'
@@ -92,8 +92,7 @@ polka()
 		return;
 	}
 	try {
-		const ver = jwt.verify(token.replace('Bearer ',''), process.env.JWT_SECRET);
-		req.user = ver;
+		jwt.verify(token, process.env.JWT_SECRET);
 		req.s3 = s3;
 		next();
 	} catch (error) {

@@ -23,7 +23,6 @@
     let userHasChosenDate = false;
     $: if(!estateTemplate.realised) userHasChosenDate = false;
     export let visikom;
-    export let token;
     export let agentIdentifier;
     export let addNotification;
     const getOptionLabel = (option) => {
@@ -180,8 +179,7 @@
             url: "/estates/create",
             data: estate,
             headers: {
-				'content-type': 'multipart/form-data',
-				authorization: token
+				'content-type': 'multipart/form-data'
 			}
         })
         .then(res => {

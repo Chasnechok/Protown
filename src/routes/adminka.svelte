@@ -1,6 +1,6 @@
 <script context="module">
 	export async function preload(page, session) {
-		const { agentIdentifier, token, visikom } = session;
+		const { agentIdentifier, visikom } = session;
         if(!agentIdentifier) {
             return this.redirect(302, 'logadmin');
         }
@@ -8,7 +8,7 @@
 		const user = await fetchUser.json();
         const fetchCourses = await this.fetch("/getCourses");
         const changeRates = await fetchCourses.json();
-        return { agentIdentifier, token, user, visikom, changeRates }
+        return { agentIdentifier, user, visikom, changeRates }
 	}
 </script>
 
@@ -18,7 +18,6 @@
     import Settings from "../components/AdminPanel/Settings.svelte";
     import Notification from "../components/AdminPanel/Notification.svelte";
     export let agentIdentifier;
-    export let token;
     export let user;
     export let visikom;
     export let changeRates;
@@ -90,7 +89,7 @@
     <fieldset>
         <legend>{mode==="add"?"Создание объявления ✍️":mode==="list"?"Список объявлений 📑":"Настройки ⚙️"}</legend>
         {#if mode === "add"}
-        <CreateForm {addNotification} {visikom} {token} {agentIdentifier} />
+        <CreateForm {addNotification} {visikom} {agentIdentifier} />
         {:else if mode==="list"}
         В разработке
         {:else if mode==="settings"}

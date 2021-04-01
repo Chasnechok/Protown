@@ -1,10 +1,13 @@
 <script context="module">
 	export async function preload({ params }) {
 		const esatateId = params.estate && params.estate[1] ? params.estate[1] : params.estate && params.estate[0] ? params.estate[0] : 0;
-		const res = await this.fetch(`estates/${esatateId}`);
-		const fetchedEstate = await res.json();
-		if(!fetchedEstate||fetchedEstate.reason) return this.error(404, "Not found")
-		return { fetchedEstate };
+		const resEstate = await this.fetch(`estates/${esatateId}`);
+		const fetchedEstate = await resEstate.json();
+		if(!fetchedEstate||fetchedEstate.reason) return this.error(404, "Not found");
+		const resRieltor = await this.fetch(`user/${fetchedEstate.agent}`);
+		let fetchedRieltor = await resRieltor.json();
+		if(!fetchedRieltor) fetchedRieltor = {fullName: "Администратор", mobile: ""};
+		return { fetchedEstate, fetchedRieltor };
 	}
 </script>
 
@@ -15,12 +18,13 @@
 	import { countries1, kyivDistricts, landTypes, flatExtras, flatPlanning, communicationsList } from "../helpers/locations";
 	import viewport from "../helpers/useViewPortAction";
 	import { changeRates, currencyOnPage } from "../helpers/parametres";
-    import { currencyCalculator } from "../helpers/converter";
+    import { currencyCalculator, formatPhoneNumber } from "../helpers/converter";
 	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
 
 	export let fetchedEstate;
+	export let fetchedRieltor;
 	$: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates));
 	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
 	const checkForObject = (obj) => {return typeof obj === 'object' && obj !== null && Object.keys(obj).length>0}
@@ -224,7 +228,7 @@
     	box-shadow: inset rgb(0 0 0 / 10%) 0px 1px 8px;
     	background-color: #fbfbfb;
     	max-width: 700px;
-    	margin: 2em auto;
+    	margin: 2em 1em;
     	border-radius: 8px;
 		border: 1px solid rgb(221, 221, 221);
 	}
@@ -261,6 +265,11 @@
 	span.comment {
 		line-height: 34px;
 		letter-spacing: 1px;
+	}
+	.estate-comment-section {
+		display: flex;
+		flex-wrap: wrap-reverse;
+		justify-content: center;
 	}
 	@media only screen and (max-width: 1650px) {
 		.estate-wrapper {
@@ -416,7 +425,7 @@
 							{/if}
 							{#if fetchedEstate.details.sillings}
 								<div class="estate-detailed-prop">
-									<span class="label">Высота потолков</span><span class="value">{fetchedEstate.details.sillings}</span>
+									<span class="label">Высота потолков</span><span class="value">{fetchedEstate.details.sillings}м</span>
 								</div>
 							{/if}
 							{#if fetchedEstate.details.purpose}
@@ -476,7 +485,7 @@
 							<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
 							<div class="rieltor">
 								<span>Комментарий риелтора</span>
-								<span>Марина, 093 480 41 41</span>
+								<span>{fetchedRieltor.fullName}, {formatPhoneNumber(fetchedRieltor.mobile)}</span>
 							</div>
 						</div>
 					</legend>
@@ -484,6 +493,25 @@
 						<span class="comment">{fetchedEstate.extras.comment.ru?fetchedEstate.extras.comment.ru:fetchedEstate.extras.comment[Object.keys(fetchedEstate.extras.comment)[0]]}</span>
 					</div>
 				</fieldset>
+				{#if fetchedEstate.note}
+				<fieldset class="estate-comment-field">
+					<legend style="padding: 0 1em 0 0 !important;">
+						<div class="legend-content-wrapper">
+							<div class="avatar" style="display: flex;">
+								<svg style="width: 50px;height: 50px;margin: auto;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+								</svg>
+							</div>
+							<div class="rieltor">
+								<span>Ваша личная заметка</span>
+							</div>
+						</div>
+					</legend>
+					<div class="comment-wrapper">
+						<span class="comment">{fetchedEstate.note}</span>
+					</div>
+				</fieldset>
+				{/if}
 			</section>
 		{/if}
 	</div>

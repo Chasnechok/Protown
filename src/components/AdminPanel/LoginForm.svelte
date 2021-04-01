@@ -17,7 +17,6 @@
 		password: password
 	})
 	.then((res) => {
-		$session.token = res.data.token;
         $session.visikom = res.data.visikom;
         $session.agentIdentifier = res.data.agentIdentifier;
         goto("/adminka");
