@@ -65,13 +65,13 @@
 <div class="control-panel-wrapper">
     <div class="control-panel">
         <div class="user-info"></div>
-        <button class:active={mode==="add"} on:click={()=>mode="add"}>
+        <button class:active={mode==="add"} on:click={()=>{ mode="add"; history.pushState({mode: "add"}, "", "adminka")}}>
             Добавить объявление
         </button>
-        <button class:active={mode==="list"} on:click={()=>mode="list"}>
+        <button class:active={mode==="list"} on:click={()=>{mode="list"; history.pushState({mode: "list"}, "", "adminka")}}>
             Список объявлений
         </button>
-        <button class:active={mode==="settings"} on:click={()=>mode="settings"}>
+        <button class:active={mode==="settings"} on:click={()=>{mode="settings"; history.pushState({mode: "settings"}, "", "adminka")}}>
             Настройки
         </button>
         <button on:click={handleLogout} class="logout">

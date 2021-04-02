@@ -4,12 +4,13 @@ import send from '@polka/send-type';
 import { currencyCalculator } from "../../helpers/converter"; 
 
 export async function get(req, res) {
-
+    
+    const token = req.session?.token;
     const filters = JSON.parse(req.query.filters);
     const { courses: changeRates } = filters.isInitial?{changeRates: null}:await Course.findOne();
-    const fee = filters.included.some(el=> el.value === "fee" && el.c) ? false : true;
+    const fee = filters.included&&filters.included.some(el=> el.value === "fee" && el.c) ? false : true;
     //const soonFree = filters.included.some(el => el.value === "soonFree" && el.c) ? true : false;
-    filters.included = filters.included.filter(el => el.value !== "soonFree" && el.value !== "fee" && el.c);
+    if(filters.included)filters.included = filters.included.filter(el => el.value !== "soonFree" && el.value !== "fee" && el.c);
     const from = parseInt(req.query.nextKey, 10);
     const to = from + parseInt(req.query.count, 10);
     try {
@@ -24,13 +25,15 @@ export async function get(req, res) {
             "extras.included": filters.included[0] ? { $in: filters.included } : { $exists: true }
         }:{
             type: {$exists: true}
-        })
+        }, !token&&{note: 0})
+        .sort({createdAt: -1})
         .then(r => {
             const foundEstates = filters.isInitial?r:r.filter(el=> {const a = currencyCalculator(el.price, filters.currency, el.currency, changeRates);return a>=filters.price[0]&&a<=filters.price[1];});
             const foundEstatesSliced = foundEstates.slice(from, to);
             send(res, 200, {
                 noMore: foundEstates.length <= to,
-                estates: foundEstatesSliced
+                estates: foundEstatesSliced,
+                length: foundEstates.length
             })})
     } catch (error) {
         send(res, 500, error)

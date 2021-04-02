@@ -36,6 +36,9 @@ const estateSchema = new Schema({
     },
     note: {
         type: String
+    },
+    createdAt: {
+        type: Date
     }
 });
 

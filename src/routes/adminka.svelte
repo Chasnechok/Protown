@@ -1,29 +1,49 @@
 <script context="module">
-	export async function preload(page, session) {
+	export async function preload({ query }, session) {
+        const { mode, id, page } = query;
+        // check if user is logged in
 		const { agentIdentifier, visikom } = session;
         if(!agentIdentifier) {
             return this.redirect(302, 'logadmin');
         }
+        // define things to fech
+        let user, estateToEdit, changeRates;
         const fetchUser = await this.fetch(`user/${agentIdentifier}`);
-		const user = await fetchUser.json();
+		user = await fetchUser.json();
         const fetchCourses = await this.fetch("/getCourses");
-        const changeRates = await fetchCourses.json();
-        return { agentIdentifier, user, visikom, changeRates }
+        changeRates = await fetchCourses.json();
+        if(mode==="edit"&&id) {
+            const fetchEstateToEdit = await this.fetch(`estates/${id}`);
+		    estateToEdit = await fetchEstateToEdit.json();
+            if(!estateToEdit) return this.redirect(302, 'adminka');
+            if(estateToEdit&&estateToEdit.images&&estateToEdit.images[0]){
+                estateToEdit.images = estateToEdit.images.map(el=>{
+                let url = new URL(`https://assets.rich-house.online/estates/${estateToEdit.type}/${estateToEdit._id}/${el}`);
+                return {id: el, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src="${url}" alt="${el}" />`}
+                })
+            }
+        }
+        return { agentIdentifier, user, visikom, changeRates, mode, estateToEdit, page }
 	}
 </script>
 
 <script>
     import ControlPanel from "../components/AdminPanel/ControlPanel.svelte";
     import CreateForm from "../components/AdminPanel/CreateForm.svelte";
+    import List from "../components/AdminPanel/List.svelte";
     import Settings from "../components/AdminPanel/Settings.svelte";
     import Notification from "../components/AdminPanel/Notification.svelte";
     export let agentIdentifier;
     export let user;
     export let visikom;
     export let changeRates;
+    export let page;
+    let bufferedEstates;
+    let pagesCount = 1;
     let notifications = [];
     // add, list, settings
-    let mode = "add";
+    export let mode = "list";
+    export let estateToEdit;
     const addNotification = (notification, duration) => {
         if(!notification||(!notification.message&&!notification.code)) return;
         notifications = [notification, ...notifications];
@@ -67,11 +87,17 @@
     .notifications {
         position: fixed;
         display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
+        flex-wrap: wrap;
+        justify-content: center;
         left: 50%;
         transform: translateX(-50%);
         z-index: 999;
+        min-width: 900px;
+    }
+    @media only screen and (max-width: 900px) {
+        .notifications {
+            min-width: 100%;
+        }
     }
 </style>
 
@@ -87,13 +113,15 @@
     </div>
     <ControlPanel bind:mode />
     <fieldset>
-        <legend>{mode==="add"?"Создание объявления ✍️":mode==="list"?"Список объявлений 📑":"Настройки ⚙️"}</legend>
+        <legend>{mode==="add"?"Создание объявления ✍️":mode==="list"?"Список объявлений 📑":mode==="edit"?"Редактировать":"Настройки ⚙️"}</legend>
         {#if mode === "add"}
         <CreateForm {addNotification} {visikom} {agentIdentifier} />
         {:else if mode==="list"}
-        В разработке
+        <List bind:page bind:bufferedEstates bind:pagesCount />
         {:else if mode==="settings"}
         <Settings {user} {changeRates} {agentIdentifier} />
+        {:else if mode==="edit"&&estateToEdit}
+        <CreateForm bind:mode {addNotification} {visikom} {agentIdentifier} {estateToEdit} />
         {/if}
     </fieldset>
     

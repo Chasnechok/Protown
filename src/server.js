@@ -10,13 +10,14 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import fileUpload from "express-fileupload";
 const MongoStore = require('connect-mongo')(session);
-import AWS from "aws-sdk";
 import cookieParser from "cookie-parser";
+import AWS from "aws-sdk";
 
 /* CONFIG */
 dotenv.config();
 const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY } = process.env;
 const dev = NODE_ENV === 'development';
+
 
 /*  DIGITAL OCEAN SPACES INIT */
 const spacesEndpoint = new AWS.Endpoint('fra1.digitaloceanspaces.com');
@@ -58,7 +59,8 @@ polka()
 		}
 	})
 	.use('/estates/create', auth)
-	.use('/auth/register', authRegister)
+	.use('/estates/manage', auth)
+	.use('/estates/update', auth)
 	.use(
 		compression({ threshold: 0 }),
 		json(),
@@ -103,9 +105,4 @@ polka()
 		.end(JSON.stringify(error));
 		return;
 	}
-}
-
-function authRegister(req, res, next) {
-	req.s3 = s3;
-	next();
 }

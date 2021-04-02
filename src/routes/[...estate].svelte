@@ -1,5 +1,5 @@
 <script context="module">
-	export async function preload({ params }) {
+	export async function preload({ params }, session) {
 		const esatateId = params.estate && params.estate[1] ? params.estate[1] : params.estate && params.estate[0] ? params.estate[0] : 0;
 		const resEstate = await this.fetch(`estates/${esatateId}`);
 		const fetchedEstate = await resEstate.json();
@@ -7,7 +7,8 @@
 		const resRieltor = await this.fetch(`user/${fetchedEstate.agent}`);
 		let fetchedRieltor = await resRieltor.json();
 		if(!fetchedRieltor) fetchedRieltor = {fullName: "Администратор", mobile: ""};
-		return { fetchedEstate, fetchedRieltor };
+		const spravce = session&&session.token;
+		return { fetchedEstate, fetchedRieltor, spravce };
 	}
 </script>
 
@@ -22,7 +23,7 @@
 	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
-
+	export let spravce = false;
 	export let fetchedEstate;
 	export let fetchedRieltor;
 	$: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates));
@@ -327,6 +328,11 @@
 					<span>{fetchedEstate.details.fond?"Жилой фонд":"Нежилой фонд"}</span>
 					{/if}
 				</div>
+				{#if spravce}
+				<div style="position: absolute;">
+					<a target="_blank" rel="noopener" href="/adminka?mode=edit&id={fetchedEstate._id}">Редактировать объявление</a>
+				</div>
+				{/if}
 			</div>
 		</div>
 		<div class="estate-wrapper">

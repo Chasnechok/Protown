@@ -8,14 +8,20 @@
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     export let estate;
+    export let isAdmin;
     //console.log(estate);
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     $: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates));
     let mounted = false;
+    let isLoading = false;
+    let deleted = false;
     onMount(()=>mounted=true);
 </script>
 
 <style>
+    .estate-card.deleted {
+        display: none !important;
+    }
     .estate-card {
         display: flex;
         flex-wrap: wrap;
@@ -26,6 +32,15 @@
         box-shadow: inset 0px 0px 6px rgb(0 0 0 / 15%);
         max-width: 100%;
         justify-content: center;
+    }
+    h3 {
+        margin: 0;
+        padding: 0;
+        margin-bottom: 1em;
+        font-size: 18px;
+        letter-spacing: .5px;
+        text-align: center;
+        flex: 1 1 100%;
     }
     .images-wrapper-ms {
         border-radius: .3em;
@@ -123,12 +138,21 @@
         cursor: pointer;
         transition: .3s;
     }
+    .no-image {
+        background-image: url(/no-image.svg);
+        height: 100%;
+        width: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+    }
 
     a:hover, a:active, a:focus {
         letter-spacing: 1px;
         border-color: #6262db;
         color: #6262db;
     }
+    
     @media only screen and (max-width: 1649px) {
         .props {
             width: 250px;
@@ -179,10 +203,13 @@
    
 </style>
 
-<div class="estate-card">
+<div class="estate-card" class:deleted>
+    {#if isAdmin}
+    <h3>{estate.label}</h3>
+    {/if}
    
     <div class="images-wrapper-ms">
-        {#if estate.images && mounted}
+        {#if estate.images && estate.images[0] && mounted && !isAdmin}
         <Swiper
 			spaceBetween={4}
 			slidesPerView={1}
@@ -204,17 +231,17 @@
 		>
 			{#each images as estateImage}
 			<SwiperSlide>
-				<div data-background={`https://naver.github.io/egjs-infinitegrid/assets/image/${Math.floor(Math.random() * 60) + 1}.jpg`} class="estate-image-lazy">
+				<div data-background={`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${estateImage.src}`} class="estate-image-lazy">
                     <div class="swiper-lazy-preloader"></div>
                 </div>
 			</SwiperSlide>
 			{/each}
 		</Swiper>
-
+        {:else if estate.images && estate.images[0] && isAdmin}
+        <div class="estate-image-lazy" style="background-image: url(https://assets.rich-house.online/estates/{estate.type}/{estate._id}/{estate.images[0]})" />
         {:else}
-        <div>
-            <span>Изображений нет</span>
-        </div>
+        <div class="no-image" />
+       
         {/if}
     </div>
 
@@ -244,13 +271,17 @@
         
         <div class="price-wrapper" title={priceInWords}>
             <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
-            <span class="adress">{estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</span>
+            {#if estate.adress.city}
+            <span class="adress">{(estate.adress.city.ru??"")+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</span>
+            {/if}
         </div>
         <div class="details">
+            {#if estate.details.area}
             <div class="detail">
                 <span class="detail-label">Общая</span>
                 <span class="value-label">{estate.details.area.g}м<sup><small>2</small></sup></span>
             </div>
+            {/if}
             {#if estate.details.rooms}
             <div class="detail">
                 <span class="detail-label">Комнаты</span>
@@ -262,13 +293,19 @@
                 <span class="detail-label">{!estate.details.floor && estate.details.gfloor? "Этажность" : "Этаж"}</span>
 				<span class="value-label">
 					{estate.details.floor && estate.details.gfloor ? estate.details.floor + " / " + estate.details.gfloor :
-					estate.details.floor ? estate.details.floor : estate.details.gfloor ? estate.details.gfloor : "не указано"
-					}
+					estate.details.floor ? estate.details.floor : estate.details.gfloor ? estate.details.gfloor : "не указано"}
 				</span>
             </div>
             {/if}
         </div>
-        <a href="/">детали</a>
+        {#if !isAdmin}
+        <a href="/{estate.type}/{estate._id}">детали</a>
+        {:else}
+        <div style="display: flex;justify-content: flex-end; flex-wrap: wrap;">
+            <a style="width: unset;" target="_blank" href="/{estate.type}/{estate._id}">детали</a>
+            <a style="width: unset; margin-left: .5em;" target="_blank" href="/adminka?mode=edit&id={estate._id}">редактировать</a>
+        </div>
+        {/if}
     </div>
 
 

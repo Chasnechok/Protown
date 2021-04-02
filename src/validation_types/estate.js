@@ -3,6 +3,8 @@ const Joi = require("@hapi/joi");
 
 export const estateValidation = dtoIn => {
     const v = Joi.object({
+        _id: Joi.string(),
+        createdAt: Joi.date().raw(),
         label: Joi.string().required(),
         agent: Joi.alternatives().try("MAR").try("IR").required(),
         realised: Joi.alternatives().try(Joi.date().raw()).try(Joi.boolean()),
@@ -17,13 +19,12 @@ export const estateValidation = dtoIn => {
                 ua: Joi.string().max(30),
                 en: Joi.string().max(30)
             }).required(),
-            district: Joi.string(),
+            district: Joi.any(),
             street: Joi.object({
                 ru: Joi.string().max(60),
                 ua: Joi.string().max(60),
                 en: Joi.string().max(60)
             }),
-            number: Joi.number(),
             estateNumber: Joi.number(),
             metro: Joi.object({
                 ru: Joi.string(),
@@ -56,7 +57,9 @@ export const estateValidation = dtoIn => {
             purpose: Joi.string()
         }),
         extras: Joi.object(),
-        note: Joi.string()
+        note: Joi.string(),
+        images: Joi.array(),
+        __v: Joi.string()
     })
     return v.validate(dtoIn);
 

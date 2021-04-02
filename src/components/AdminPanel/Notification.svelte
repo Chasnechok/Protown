@@ -7,21 +7,24 @@
 <style>
     .notification {
         border-radius: .5em;
-        width: 400px;
-        max-width: 100%;
         border: 1px solid #6262db;
         position: relative;
         display: flex;
-        justify-content: space-between;
         padding: .5em;
         background-color: white;
         box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+    }
+    .notification>*:not(:last-child) {
+        margin-right: .5em;
     }
     .notification:not(:first-child) {
         margin-top: .5em;
     }
     .notification svg {
         width: 1.5em;
+        height: 1.5em;
+    }
+    a {
         height: 1.5em;
     }
     .notification.error {

@@ -40,7 +40,7 @@ export const createBlankEstate = () => {
         adress: {
             country: "UA",
             city: {
-                ru: undefined,
+                ru: "Киев",
                 ua: undefined,
                 en: undefined
             },
