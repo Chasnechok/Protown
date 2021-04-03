@@ -26,8 +26,7 @@
     "express-session": "^1.17.1",
     "form-data": "^2.3.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.2",
-    "nanoid": "^3.1.22",
+    "mongoose": "^5.12.3",
     "polka": "next",
     "sirv": "^1.0.0"
   },
