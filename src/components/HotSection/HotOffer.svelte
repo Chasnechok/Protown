@@ -227,7 +227,9 @@
         </div>
         {/if}
         <h3 class="estate-label">{estate.label}</h3>
-        <h4 class="adress">{estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</h4>
+        {#if estate.adress.city}
+            <h4 class="adress">{(estate.adress.city.ru??"")+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</h4>
+        {/if}
         <div class="labels">
             <div class="label">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -251,7 +253,7 @@
             {/if}
         </div>
         <div class="images-wrapper">
-            {#if estate.images && mounted}
+            {#if estate.images && estate.images[0] && mounted}
             <Swiper
                 spaceBetween={4}
                 slidesPerView={1}

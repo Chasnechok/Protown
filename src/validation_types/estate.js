@@ -26,7 +26,7 @@ export const estateValidation = dtoIn => {
                 ua: Joi.string().max(60),
                 en: Joi.string().max(60)
             }),
-            estateNumber: Joi.number(),
+            estateNumber: Joi.alternatives().try(Joi.number()).try(Joi.string()),
             metro: Joi.object({
                 ru: Joi.string(),
                 ua: Joi.string(),

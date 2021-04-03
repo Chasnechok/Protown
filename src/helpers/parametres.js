@@ -5,7 +5,7 @@ const dev = NODE_ENV === 'development';
 
 
 const getRates = async () => {
-    await axios.get(dev?'http://localhost:3000/getCourses':'https://rich-house.online/getCourses').then(res => changeRates.set(res.data.courses));
+    await axios.get(dev?'http://localhost:3000/getCourses':'https://rich-house.online/getCourses').then(res => changeRates.set(res.data.courses)).catch(console.log);
 }
 getRates();
 
