@@ -7,7 +7,7 @@
     import {onMount} from "svelte";
     import { slide } from 'svelte/transition';
     import { filters, items, noMore, extras, districtSelector } from "../../helpers/filterStore";
-    import { changeRates } from "../../helpers/parametres";
+    import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
     const groupBy = (item) => item.group;
     const getSelectionLabel = (option) => option.label.replace("ий", "ом");
@@ -15,19 +15,16 @@
     let types = [{value: "house", label: "Дом"}, {value: "flat", label: "Квартиру"}, {value: "commersion", label: "Коммерцию"}, {value: "land", label: "Участок"}];
     let selectedDistricts = [];
     $: filterBarExpanded = innerWidth&&innerWidth>=650?true:false;
-    $: priceRangeMax = getPriceRangeMax(filtersProps, $filters.currency);
-    const getPriceRangeMax = (filtersProps, ccy) => {
+    $: priceRangeMax = getPriceRangeMax(filtersProps, $currencyOnPage, $filters.deal);
+    $: if($currencyOnPage!==$filters.currency) $filters.currency = $currencyOnPage;
+    const getPriceRangeMax = (filtersProps, ccy, deal) => {
         if(!filtersProps||!$changeRates) return 99999999;
-        const prices = [];
-        for(let key in filtersProps){
-            if(key==="maxUSD"||key==="maxEUR"||key==="maxUAH") prices.push({ccy: key.replace("max", ""), value: filtersProps[key]})
+        const fetchedMaxPrices = filtersProps.maxPricesPerCurrencyAndDeal[deal];
+        const maxPricesConverted = [];
+        for(let key in fetchedMaxPrices) {
+            maxPricesConverted.push(currencyCalculator(fetchedMaxPrices[key], ccy, key, $changeRates));
         }
-        if(!prices[0]) return 99999999;
-        const b = [];
-        prices.forEach(price => {
-            b.push(currencyCalculator(price.value, ccy, price.ccy, $changeRates))
-        });
-        return Math.max.apply(Math, b.map((el) => el));
+        return Math.max.apply(Math, maxPricesConverted.map((el) => el));
     }
     let innerWidth;
     let extrasN = $extras;
@@ -298,7 +295,7 @@
         </div>
         {/if}
         <div style="opacity: {!filtersProps? "0":"1"};" transition:slide={{delay: 100}} class="line1 location-selector">
-            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
+            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={filtersProps?deals.filter(el=>filtersProps.deals.includes(el.value))[0]?deals.filter(el=>filtersProps.deals.includes(el.value)):deals:deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
             <Select on:select={({detail})=>{$filters.type=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={types} isClearable={false} isSearchable={false} selectedValue={types.find(v=>v.value===$filters.type)} />
             <span>в <Select items={!filtersProps ? countries : countries.filter(el=>filtersProps.countries.indexOf(el.value)>=0)} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
             <span>городе <Select {groupBy} items={!filtersProps ? obce : filtersProps.cities.map(el=> el.ru)} isClearable={false} isSearchable={false} selectedValue={$filters.city} on:select={({detail})=>{$filters.city=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
@@ -323,11 +320,11 @@
         <div transition:slide class="range-selectors line3" class:filterBarExpanded>
             <div class="range-selector budget">
                 <span>Бюджет</span>
-                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={$filters.currency === "UAH" ? "₴" : $filters.currency === "EUR" ? "€" : "$"} max={priceRangeMax} range bind:values={$filters.price}  />
-                <span style="cursor: default;">{$filters.price[0]} - {$filters.price[1]}&nbsp</span>
-                <span on:click={()=>$filters.currency="USD"} class:active={$filters.currency==="USD"}>долларов&nbsp</span>
-                <span on:click={()=>{$filters.currency="UAH"; $filters.price = [0, priceRangeMax]}} class:active={$filters.currency==="UAH"}>гривен&nbsp</span>
-                <span on:click={()=>$filters.currency="EUR"} class:active={$filters.currency==="EUR"}>евро</span>
+                <RangeSlider step={10} formatter={ v => new Intl.NumberFormat("en-US").format(v) } float prefix={$currencyOnPage === "UAH" ? "₴" : $currencyOnPage === "EUR" ? "€" : "$"} max={priceRangeMax} range="min" bind:values={$filters.maxPrice}  />
+                <span style="cursor: default;">до {$filters.maxPrice[0]}&nbsp</span>
+                <span on:click={()=>$currencyOnPage="USD"} class:active={$currencyOnPage==="USD"}>долларов&nbsp</span>
+                <span on:click={()=>$currencyOnPage="UAH"} class:active={$currencyOnPage==="UAH"}>гривен&nbsp</span>
+                <span on:click={()=>$currencyOnPage="EUR"} class:active={$currencyOnPage==="EUR"}>евро</span>
             </div>
             <div class="range-selector area">
                 <span>Площадь</span>

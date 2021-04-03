@@ -10,12 +10,14 @@ import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import fileUpload from "express-fileupload";
 const MongoStore = require('connect-mongo')(session);
+import cookieParser from "cookie-parser";
 import AWS from "aws-sdk";
 
 /* CONFIG */
 dotenv.config();
-const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET } = process.env;
+const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY } = process.env;
 const dev = NODE_ENV === 'development';
+
 
 /*  DIGITAL OCEAN SPACES INIT */
 const spacesEndpoint = new AWS.Endpoint('fra1.digitaloceanspaces.com');
@@ -35,36 +37,44 @@ mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, us
 
 
 /* WEB SERVER START AND CONFIG */
+const sessionHandler = session({
+	name: 'Auth',
+	secret: JWT_SECRET,
+	resave: false,
+	saveUninitialized: true,
+	cookie: {
+	  maxAge: 3 * 60 * 60 * 1000,
+	  secure: false
+	},
+	store: new MongoStore({ mongooseConnection: db })
+  });
 polka()
+	.use(cookieParser(JWT_SECRET))
+	// Session middleware will be used only for following url or for any if there is a valid signed cookie named Auth
+	.use((req, res, next) => {
+		if (req.url.includes("/adminka")||req.url.includes("/logadmin")||req.url.includes("/auth")||(req.signedCookies&&req.signedCookies.Auth)) {
+			return sessionHandler(req, res, next);
+		} else {
+			next();
+		}
+	})
 	.use('/estates/create', auth)
-	.use('/auth/register', authRegister)
+	.use('/estates/manage', auth)
+	.use('/estates/update', auth)
 	.use(
 		compression({ threshold: 0 }),
 		json(),
-		fileUpload({
-			
-		}),
-		session({
-			name: 'Auth',
-			secret: JWT_SECRET,
-			resave: false,
-			saveUninitialized: true,
-			cookie: {
-			  maxAge: 3 * 60 * 60 * 1000,
-			  secure: false
-			},
-			store: new MongoStore({ mongooseConnection: db, ttl: 3 * 60 * 60 * 1000 })
-		  }),
+		fileUpload(),
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: (req, res) => {
 			res.setHeader('cache-control', 'no-cache, no-store')
-			  return ({
+			  return (req.session&&req.session.token?{
 				token: req.session && req.session.token,
-				agentIdentifier: req.session && req.session.agentIdentifier
-			  })}
+				agentIdentifier: req.session && req.session.agentIdentifier,
+				visikom: req.session && req.session.token && VISIKOM_API_KEY
+			  }:{})}
 			})
-		
 	)
 	.listen(PORT, err => {
 		if (err) console.log('error', err);
@@ -72,20 +82,21 @@ polka()
 	
  /* middleware */
  function auth(req, res, next) {
-	const token = req.headers.authorization;
-	if(!token || token == 'undefined'){
+	if(!req.session||!req.session.token){
 		res
 		.writeHead(401, {
 			'Content-Type': 'application/json'
 		})
 		.end(JSON.stringify({
-			error: "Access denied!"
+			error: true,
+			message: "Access denied",
+			code: "NO_ACCESS_E"
 		}));
 		return;
 	}
+	const { token } = req.session;
 	try {
-		const ver = jwt.verify(token.replace('Bearer ',''), process.env.JWT_SECRET);
-		req.user = ver;
+		jwt.verify(token, process.env.JWT_SECRET);
 		req.s3 = s3;
 		next();
 	} catch (error) {
@@ -96,9 +107,4 @@ polka()
 		.end(JSON.stringify(error));
 		return;
 	}
-}
-
-function authRegister(req, res, next) {
-	req.s3 = s3;
-	next();
 }

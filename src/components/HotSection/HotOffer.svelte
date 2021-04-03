@@ -7,6 +7,7 @@
     import { currencyCalculator } from "../../helpers/converter";
     import { numberToPhrase } from "../../helpers/numToString";
     import { onMount } from "svelte";
+    import dayjs from "dayjs";
     export let estate;
     let mounted;
     onMount(()=>mounted=true)
@@ -34,6 +35,10 @@
         box-shadow: 0px 0px 6px rgb(0 0 0 / 25%);
         justify-content: center;
         align-items: center;
+        overflow: hidden;
+    }
+    .hot-offer:hover .hide-screen {
+        transform: translateY(-100%);
     }
     h3.estate-label, h4 {
         flex: 1 1 100%;
@@ -206,6 +211,21 @@
 </style>
 <div class="hot-offer-wrapper">
     <div class="hot-offer">
+        {#if !estate.isHidden&&estate.realised&&(isNaN(Date.parse(estate.realised))||dayjs(estate.realised).isAfter(dayjs()))}
+        <div class="hide-screen realised">
+            <div class="hide-screen-content">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span>{
+                !isNaN(Date.parse(estate.realised))?
+                dayjs(estate.realised).format('DD/MM/YYYY'):
+                "Не указано"
+                }
+                </span>
+            </div>
+        </div>
+        {/if}
         <h3 class="estate-label">{estate.label}</h3>
         <h4 class="adress">{estate.adress.city.ru[0].toUpperCase()+estate.adress.city.ru.slice(1)+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</h4>
         <div class="labels">
@@ -274,6 +294,7 @@
                     <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
                 </div>
                 <div class="areas">
+                    {#if estate.details.area}
                     <fieldset class="area-field">
                         <legend>Площадь</legend>
                         <div class="area-poperties">
@@ -285,7 +306,8 @@
                             {/each}
                         </div>
                     </fieldset>
-                    {#if estate.details.rooms||estate.details.gfloor||estate.details.floor}
+                    {/if}
+                    {#if estate.details.rooms||estate.details.gfloor||estate.details.floor||(estate.type==="land")}
                     <fieldset class="estate-field">
                         <legend>{estate.type==="flat"?"Квартира":estate.type==="house"?"Дом":estate.type==="commersion"?"Коммерция":estate.type==="land"?"Участок":"Бог знает что"}</legend>
                         <div class="estate-properties">
@@ -303,6 +325,12 @@
                                     estate.details.floor ? estate.details.floor : estate.details.gfloor ? estate.details.gfloor : "не указано"
                                     }
                                 </span>
+                            </div>
+                            {/if}
+                            {#if estate.type==="land"}
+                            <div class="detail">
+                                <span class="detail-label">{estate.deal==="lease"?"Аренда":"Покупка"}&nbsp;частями</span>
+                                <span class="value-label">{estate.details.partly?"Да":"Нет"}</span>
                             </div>
                             {/if}
                         </div>

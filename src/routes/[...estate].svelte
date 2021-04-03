@@ -1,9 +1,14 @@
 <script context="module">
-	export async function preload({ params }) {
+	export async function preload({ params }, session) {
 		const esatateId = params.estate && params.estate[1] ? params.estate[1] : params.estate && params.estate[0] ? params.estate[0] : 0;
-		const res = await this.fetch(`estates/${esatateId}`);
-		const fetchedEstate = await res.json();
-		return { fetchedEstate };
+		const resEstate = await this.fetch(`estates/${esatateId}`);
+		const fetchedEstate = await resEstate.json();
+		if(!fetchedEstate||fetchedEstate.reason) return this.error(404, "Not found");
+		const resRieltor = await this.fetch(`user/${fetchedEstate.agent}`);
+		let fetchedRieltor = await resRieltor.json();
+		if(!fetchedRieltor) fetchedRieltor = {fullName: "Администратор", mobile: ""};
+		const spravce = session&&session.token;
+		return { fetchedEstate, fetchedRieltor, spravce };
 	}
 </script>
 
@@ -14,12 +19,14 @@
 	import { countries1, kyivDistricts, landTypes, flatExtras, flatPlanning, communicationsList } from "../helpers/locations";
 	import viewport from "../helpers/useViewPortAction";
 	import { changeRates, currencyOnPage } from "../helpers/parametres";
-    import { currencyCalculator } from "../helpers/converter";
+    import { currencyCalculator, formatPhoneNumber } from "../helpers/converter";
 	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
-
+	import dayjs from "dayjs";
+	export let spravce = false;
 	export let fetchedEstate;
+	export let fetchedRieltor;
 	$: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates));
 	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
 	const checkForObject = (obj) => {return typeof obj === 'object' && obj !== null && Object.keys(obj).length>0}
@@ -156,8 +163,16 @@
 		border-radius: 8px;
     	box-shadow: rgb(0 0 0 / 10%) 0px 1px 8px;
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+	}
+	.estate-price.crossed > span.crossed {
+		text-decoration: line-through;
+	}
+	.estate-price .price-realised {
+		flex: 1 1 100%;
+    	text-align: center;
 	}
 	.estate-price .price {
 		color: black;
@@ -223,7 +238,7 @@
     	box-shadow: inset rgb(0 0 0 / 10%) 0px 1px 8px;
     	background-color: #fbfbfb;
     	max-width: 700px;
-    	margin: 2em auto;
+    	margin: 2em 1em;
     	border-radius: 8px;
 		border: 1px solid rgb(221, 221, 221);
 	}
@@ -260,6 +275,11 @@
 	span.comment {
 		line-height: 34px;
 		letter-spacing: 1px;
+	}
+	.estate-comment-section {
+		display: flex;
+		flex-wrap: wrap-reverse;
+		justify-content: center;
 	}
 	@media only screen and (max-width: 1650px) {
 		.estate-wrapper {
@@ -317,6 +337,11 @@
 					<span>{fetchedEstate.details.fond?"Жилой фонд":"Нежилой фонд"}</span>
 					{/if}
 				</div>
+				{#if spravce}
+				<div style="position: absolute;">
+					<a target="_blank" rel="noopener" href="/adminka?mode=edit&id={fetchedEstate._id}">Редактировать объявление</a>
+				</div>
+				{/if}
 			</div>
 		</div>
 		<div class="estate-wrapper">
@@ -362,21 +387,28 @@
 			{/if}
 						
 			<div style={images?!swiper?"opacity: 0;":"":""} class="estate-info-wrapper">
-				<div class="estate-price" title={priceInWords}>
-					<span class="price">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
-					{#if !fetchedEstate.extras.fee}&nbspбез комиссии{/if}
+				<div class="estate-price" class:crossed={fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))} title={priceInWords}>
+					<span class="price crossed">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates)}</span><span class="price-currency crossed">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
+					{#if !fetchedEstate.extras.fee}<span class="crossed">&nbspбез комиссии</span>{/if}
+					{#if fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))}
+					<span class="price-realised">{fetchedEstate.type==="flat"?"Квартира":fetchedEstate.type==="house"?"Дом":fetchedEstate.type==="commersion"?"Недвижимость":"Участок"}
+					&nbsp;{fetchedEstate.type==="flat"||fetchedEstate.type==="commersion"?"сдана":"сдан"}{!isNaN(Date.parse(fetchedEstate.realised))?
+						` до ${dayjs(fetchedEstate.realised).format('DD/MM/YYYY')}`:
+						"."} 
+					</span>
+					{/if}
 				</div>
 				{#if fetchedEstate.extras.included&&fetchedEstate.extras.included[0]&&fetchedEstate.type!=="land"}
 				<div class="extras-scroll-wrapper">
 					{#each fetchedEstate.extras.included as extra}
-						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.png)" />
+						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
 				{#if fetchedEstate.details.communications&&fetchedEstate.details.communications[0]&&(fetchedEstate.type==="land"||fetchedEstate.type==="house")}
 				<div class="extras-scroll-wrapper communications">
 					{#each fetchedEstate.details.communications as extra}
-						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.png)" />
+						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
@@ -415,7 +447,7 @@
 							{/if}
 							{#if fetchedEstate.details.sillings}
 								<div class="estate-detailed-prop">
-									<span class="label">Высота потолков</span><span class="value">{fetchedEstate.details.sillings}</span>
+									<span class="label">Высота потолков</span><span class="value">{fetchedEstate.details.sillings}м</span>
 								</div>
 							{/if}
 							{#if fetchedEstate.details.purpose}
@@ -425,9 +457,15 @@
 							{/if}
 							{#if fetchedEstate.details.planning}
 								<div class="estate-detailed-prop">
-									<span class="label">Планировка</span><span class="value">{flatPlanning.find(el=>el.value===fetchedEstate.details.planning)?.label}</span>
+									<span class="label">Планировка</span><span class="value">{[{value: "open", label: "Открытого типа"}, {value: "close", label: "Закрытого типа"}, ...flatPlanning].find(el=>el.value===fetchedEstate.details.planning)?.label}</span>
 								</div>
 							{/if}
+							{#if fetchedEstate.type==="land"}
+            				<div class="estate-detailed-prop">
+                				<span class="label">{fetchedEstate.deal==="lease"?"Аренда":"Покупка"}&nbsp;частями</span>
+                				<span class="value">{fetchedEstate.details.partly?"Да":"Нет"}</span>
+            				</div>
+            				{/if}
 						</div>
 					</fieldset>
 					{/if}
@@ -453,14 +491,14 @@
 							<span class="label">Улица</span><span class="value">{fetchedEstate.adress.street.ru?fetchedEstate.adress.street.ru:fetchedEstate.adress.street[Object.keys(fetchedEstate.adress.street)[0]]}{fetchedEstate.adress.estateNumber?`, ${fetchedEstate.adress.estateNumber}`:""}</span>
 						</div>
 						{/if}
-						{#if fetchedEstate.details.zk && checkForObject(fetchedEstate.details.zk)}
+						{#if fetchedEstate.adress.zk && checkForObject(fetchedEstate.adress.zk)}
 						<div class="estate-location-prop">
-							<span class="label">Ж/К</span><span class="value">{fetchedEstate.details.zk.ru?fetchedEstate.details.zk.ru:fetchedEstate.details.zk[Object.keys(fetchedEstate.details.zk)[0]]}</span>
+							<span class="label">Ж/К</span><span class="value">{fetchedEstate.adress.zk.ru?fetchedEstate.adress.zk.ru:fetchedEstate.adress.zk[Object.keys(fetchedEstate.adress.zk)[0]]}</span>
 						</div>
 						{/if}
-						{#if fetchedEstate.extras.metro && checkForObject(fetchedEstate.extras.metro)}
+						{#if fetchedEstate.adress.metro && checkForObject(fetchedEstate.adress.metro)}
 						<div class="estate-location-prop">
-							<span class="label">Метро</span><span class="value">{fetchedEstate.extras.metro.ru?fetchedEstate.extras.metro.ru:fetchedEstate.extras.metro[Object.keys(fetchedEstate.extras.metro)[0]]}{fetchedEstate.extras.metro.distance?` в ${fetchedEstate.extras.metro.distance} метрах`:""}</span>
+							<span class="label">Метро</span><span class="value">{fetchedEstate.adress.metro.ru?fetchedEstate.adress.metro.ru:fetchedEstate.adress.metro[Object.keys(fetchedEstate.adress.metro)[0]]}{fetchedEstate.adress.metro.distance?` в ${fetchedEstate.adress.metro.distance} метрах`:""}</span>
 						</div>
 						{/if}
 					</fieldset>
@@ -475,7 +513,7 @@
 							<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
 							<div class="rieltor">
 								<span>Комментарий риелтора</span>
-								<span>Марина, 093 480 41 41</span>
+								<span>{fetchedRieltor.fullName}, {formatPhoneNumber(fetchedRieltor.mobile)}</span>
 							</div>
 						</div>
 					</legend>
@@ -483,6 +521,25 @@
 						<span class="comment">{fetchedEstate.extras.comment.ru?fetchedEstate.extras.comment.ru:fetchedEstate.extras.comment[Object.keys(fetchedEstate.extras.comment)[0]]}</span>
 					</div>
 				</fieldset>
+				{#if fetchedEstate.note}
+				<fieldset class="estate-comment-field">
+					<legend style="padding: 0 1em 0 0 !important;">
+						<div class="legend-content-wrapper">
+							<div class="avatar" style="display: flex;">
+								<svg style="width: 50px;height: 50px;margin: auto;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+								</svg>
+							</div>
+							<div class="rieltor">
+								<span>Ваша личная заметка</span>
+							</div>
+						</div>
+					</legend>
+					<div class="comment-wrapper">
+						<span class="comment">{fetchedEstate.note}</span>
+					</div>
+				</fieldset>
+				{/if}
 			</section>
 		{/if}
 	</div>

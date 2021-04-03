@@ -7,11 +7,9 @@
 <style>
 	main {
 		position: relative;
-		min-height: calc(100vh - 7.5em);
-		background-color: var(--main-bg);
-		box-shadow: 0 -100px var(--main-bg);
+		min-height: calc(100vh - 3em);
+		background-color: #fff;
 		overflow: hidden;
-		min-height: 95vh;
 	}
 	:global(main > section) {
 		max-width: 1650px;
@@ -23,7 +21,8 @@
 		background-color: #fff;
 		z-index: 999;
 		top: 0;
-		box-shadow: rgb(0 0 0 / 8%) 0px 1px 12px;
+		box-shadow: rgb(0 0 0 / 18%) 0px 1px 12px;
+    	border-bottom: rgb(0 0 0 / 18%);
 	}
 	footer {
         width: 100%;
@@ -39,7 +38,7 @@
 </header>
 
 
-<main style={!segment&&2==1 ? "--main-bg: #efefef;" : "--main-bg: #fff;"}>
+<main>
 	<slot></slot>
 </main>
 <footer>

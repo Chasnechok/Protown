@@ -114,7 +114,7 @@
     options={{ isConstantSize: false, isEqualSize: false, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}
-          <Estate {estate} />
+          <Estate isAdmin={false} {estate} />
       {/each}
       <div bind:this={loading} slot="loading" class="loading">
         <SyncLoader color="#6262DB"/>

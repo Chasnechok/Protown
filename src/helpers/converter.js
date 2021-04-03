@@ -9,6 +9,14 @@ export const blobToFile = (theBlob, fileName) => {
 export const kFormatter = (num) => {
     return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) : Math.sign(num)*Math.abs(num)
 }
+export const formatPhoneNumber = (phoneNumberString) => {
+    let cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    let match = cleaned.match(/^(\d{3})(\d{3})(\d{2})(\d{2})$/);
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3]+ '-' + match[4];
+    }
+    return null;
+  }
 
 export const currencyCalculator = (price, ccy, base_ccy, currencyRates) => {
     //console.log(base_ccy, "TO", ccy);
@@ -24,6 +32,7 @@ export const currencyCalculator = (price, ccy, base_ccy, currencyRates) => {
 export const createBlankEstate = () => {
     return {
         label: undefined,
+        isHidden: false,
         type: 'flat',
         deal: 'buy',
         price: undefined,
@@ -32,7 +41,7 @@ export const createBlankEstate = () => {
         adress: {
             country: "UA",
             city: {
-                ru: undefined,
+                ru: "Киев",
                 ua: undefined,
                 en: undefined
             },
@@ -42,14 +51,28 @@ export const createBlankEstate = () => {
                 ua: undefined,
                 en: undefined
             },
-            estateNumber: undefined
+            estateNumber: undefined,
+            metro: {
+                ru: undefined,
+                ua: undefined,
+                en: undefined,
+                distance: undefined
+            },
+            // жилой комплекс
+            zk: {
+                ru: undefined,
+                ua: undefined,
+                en: undefined
+            }
         },
         details: {
             floor: undefined,
             gfloor: undefined,
             sillings: undefined,
-            fond: false,
+            // true - жилой
+            fond: true,
             planning: undefined,
+            // включенные коммуникации (только для land и house)
             communications: undefined,
             area: {
                 g: undefined,
@@ -58,14 +81,11 @@ export const createBlankEstate = () => {
                 whole: undefined
             },
             rooms: undefined,
+            // false - вторичка
             state: false,
             partly: undefined,
-            purpose: undefined,
-            zk: {
-                ru: undefined,
-                ua: undefined,
-                en: undefined
-            }
+            // Назначение земли
+            purpose: undefined
         },
         extras: {
             comment: {
@@ -73,16 +93,11 @@ export const createBlankEstate = () => {
                 ua: undefined,
                 en: undefined
             },
-            metro: {
-                ru: undefined,
-                ua: undefined,
-                en: undefined,
-                distance: undefined
-            },
             included: undefined,
             top: false,
             fee: true
-        }
+        },
+        images: []
     }
 }
 

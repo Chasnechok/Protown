@@ -5,7 +5,7 @@ import send from '@polka/send-type';
 import jwt from "jsonwebtoken";
 
 export async function post(req, res) {
-
+    const { VISIKOM_API_KEY } = process.env;
     // checking dtoIn
     const {error} = loginValidation(req.body);
     if(error){
@@ -27,12 +27,12 @@ export async function post(req, res) {
         return;
     }
 
-    const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: "3h"})
+    const token = jwt.sign({_id: user._id, agentIdentifier: user.agentIdentifier}, process.env.JWT_SECRET, {expiresIn: "3h"})
 
     try {
         req.session.token = token;
         req.session.agentIdentifier = user.agentIdentifier;
-        send(res, 200, {token: token, agentIdentifier: user.agentIdentifier })
+        send(res, 200, { agentIdentifier: user.agentIdentifier, visikom: VISIKOM_API_KEY })
     } catch (error) {
         send(res, 400, error)
     }
