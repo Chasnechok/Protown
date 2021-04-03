@@ -18,7 +18,7 @@
             { params: {
                 nextKey,
                 count: 8,
-                filters: {isInitial:true}
+                filters: {isInitial:true, displayHidden: true}
             }}).then(r=>{
             isLoading=false;
             bufferedEstates = r.data.estates;
@@ -62,6 +62,7 @@
         font-weight: bold;
         border-color: #6262db;
         color: #6262db;
+        pointer-events: none;
     }
     .page:hover:enabled:not(.active), .page:focus:enabled:not(.active) {
         cursor: pointer;
@@ -73,6 +74,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        align-items: center;
     }
     .estate-card-wrapper {
         max-width: 750px;

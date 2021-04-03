@@ -1,11 +1,21 @@
-const {Schema, model} = require("mongoose");
+const {Schema, model, ObjectId } = require("mongoose");
+const { customAlphabet } = require('nanoid');
+const alphabet = '0123456789abcdefghijklmnopqrstuvwxyz';
+const nanoid = customAlphabet(alphabet, 10);
 
 const estateSchema = new Schema({
+    _id: {
+        'type': String,
+        default: () => nanoid()
+    },
     label: {
         type: String
     },
     agent:{
         type: String
+    },
+    isHidden: {
+        type: Boolean
     },
     realised: {
         type: {}

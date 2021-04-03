@@ -8,20 +8,29 @@
     import { countries1, kyivDistricts, flatPlanning, communicationsList, landTypes, flatExtras, houseExtras  } from "../../helpers/locations";
     import { slide } from 'svelte/transition';
     import Datepicker from 'svelte-calendar';
+    import { onMount } from "svelte";
     import Select from 'svelte-select';
     import { tooltip } from '../../helpers/tooltip';
-    import { onMount } from "svelte";
     import { scrollToTop } from "svelte-scrollto";
+    import dayjs from "dayjs";
     export let visikom;
     export let agentIdentifier;
     export let addNotification;
     export let estateToEdit;
     export let mode;
-    // page and bufferedEstates is needed to update the list after creation of an estate if page == 1;
     let mounted = false;
+    onMount(()=>{
+        mounted=true;
+        if(estateToEdit&&estateToEdit.images&&estateToEdit.images[0]){
+                    estateToEdit.images = estateToEdit.images.map(el=>{
+                    let url = new URL(`https://assets.rich-house.online/estates/${estateToEdit.type}/${estateToEdit._id}/${el}`);
+                    return {id: el, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src="${url}" alt="${el}" />`}
+                    })
+                }
+    })
+    // page and bufferedEstates is needed to update the list after creation of an estate if page == 1;
     let isLoading = false;
     let deleteMode = false;
-    onMount(()=>mounted=true);
     let estateTemplate = estateToEdit??createBlankEstate();
     // restore null to objects if needed
     ["city", "street", "metro", "zk"].forEach(key => {if(!estateTemplate.adress[key])estateTemplate.adress[key]={}});
@@ -32,6 +41,8 @@
     $: selectorsToClear = [districtSelector, streetSelector, metroSelector, citySelector, purposeSelector, extrasSelector, planningSelector, communicationsSelector];
     let selectedDate, cityLabel, expanded = false; 
     let userHasChosenDate = false;
+    if(!isNaN(Date.parse(estateTemplate.realised))&&dayjs(estateTemplate.realised).isAfter(dayjs())) {userHasChosenDate = true; selectedDate = new Date(estateTemplate.realised);};
+    if(!isNaN(Date.parse(estateTemplate.realised))&&dayjs(estateTemplate.realised).isBefore(dayjs())) estateTemplate.realised = false;
     $: if(!estateTemplate.realised) userHasChosenDate = false;
     const getOptionLabel = (option) => {
         if(option.properties){
@@ -181,8 +192,16 @@
                 scrollToTop();
                 addNotification(res.data, 8000);
                 
-            }).catch(err => {isLoading = false; console.log(err.response); addNotification(err.response?.data)})
+            }).catch(err => {
+                isLoading = false;
+                console.log(err.response);
+                addNotification(err.response?.data);
+                if(err.response?.data.code==="NO_ACCESS_E") {
+                    setTimeout(()=>location.reload(), 3000)
+                }
+            })
         }
+        
         const estate = new FormData();
         !estateTemplate.agent&&estate.append("agent", agentIdentifier);
         if(estateTemplate.images[0]){
@@ -207,7 +226,7 @@
 				'content-type': 'multipart/form-data'
 			}
         })
-        .then(async res => {
+        .then(res => {
             isLoading = false;
             if(estateToEdit) {mode="list"; history.replaceState({mode: "list"}, "", "adminka")};
             estateTemplate = createBlankEstate();
@@ -215,7 +234,12 @@
             handleClear("created");
             addNotification(res.data, 8000);
         })
-        .catch(err => {isLoading = false; console.log(err.response); addNotification(err.response?.data)})
+        .catch(err => {
+            isLoading = false;
+            console.log(err.response);
+            addNotification(err.response?.data);
+            if(err.response?.data.code==="NO_ACCESS_E") setTimeout(()=>location.reload(), 3000);
+        })
     }
 </script>
 
@@ -248,14 +272,17 @@
         display: flex;
         flex-direction: column;
     }
-    input {
-        color: #828282;
+    input, textarea {
+        border: 1px solid #c0c1c1;
+        outline: none;
+        padding: 5px 12px;
+        color: inherit;
         font-size: 16px;
-        padding: 0.5em;
-        border: 0 solid #a9a9a9;
-        border-radius: 5px 5px 2px 2px;
-        background-color: #e5e5e56b;
-        border-bottom: 2px solid #a9a9a9;
+        border-radius: 6px;
+        background-color: #eaeaea;
+        box-shadow: inset 0 1px 0 rgb(255 228 232 / 20%);
+        letter-spacing: 1px;
+        padding: 5px 12px;
         max-width: 100%;
     }
     label, h3 {
@@ -265,11 +292,10 @@
         font-size: 18px;
         letter-spacing: .5px;
     }
-    input:focus {
-        border: 0;
-        outline: none;
-        border-bottom: 2px solid #6262db;
-        color: #676784;
+    input:focus, textarea:focus {
+        border-color: #6262db;
+        box-shadow: 0 0 0 3px rgb(98 98 219 / 90%);
+        background-color: #fff;
     }
     .options-horizontal {
         display: flex;
@@ -376,16 +402,6 @@
     }
     .area-prop input{
         max-width: 100px;
-    }
-    textarea {
-        border-radius: .5em;
-        padding: .5em;
-        border-color: #d8dbdf;
-        outline: none !important;
-        transition: .3s;
-    }
-    textarea:focus {
-        border-color: #6262db;
     }
     :global(.dropzone > p){
         display: none;
@@ -499,7 +515,7 @@
                 <input type="checkbox" bind:checked={estateTemplate.realised} id="realised">
                 <label class:active={estateTemplate.realised} for="realised">Уже сдано</label>
                 <span class:active={estateTemplate.realised&&userHasChosenDate}>&nbsp;и освобождается&nbsp;</span>
-                <div class="date-picker-wrapper">
+                <div class="date-picker-wrapper" style="{!estateTemplate.realised&&"pointer-events: none;"}">
                     <Datepicker buttonTextColor={estateTemplate.realised&&userHasChosenDate?"#333":"#a9a9a9"} highlightColor='#6262db' start={new Date()} {daysOfWeek} {monthsOfYear} bind:selected={selectedDate} bind:dateChosen={userHasChosenDate}/>
                 </div>
             </div>
@@ -521,9 +537,9 @@
             </div>
             {#if estateTemplate.type==="land"}
             <div  class="options-horizontal">
-                <input type="checkbox" bind:checked={estateTemplate.details.partly} id="realised">
+                <input type="checkbox" bind:checked={estateTemplate.details.partly} id="partly">
                 <div class="option-horizontal">
-                    <label class:active={estateTemplate.details.partly} for="realised">Покупка по частям</label>
+                    <label class:active={estateTemplate.details.partly} for="partly">Покупка по частям</label>
                 </div>
             </div>
             {/if}
@@ -643,7 +659,7 @@
         {#if estateTemplate.type==="land"}
         <div  class="prop prop-vertical">
             <h3>Назначение земли</h3>
-            <Select selectedValue={estateTemplate.details.purpose&&landTypes.filter(el=>estateTemplate.details.purpose.includes(el.value))} bind:this={purposeSelector} placeholder="Не указанo" items={landTypes} on:clear={()=> estateTemplate.details.purpose = undefined} on:select={({detail}) => estateTemplate.details.purpose = detail.value} ></Select>
+            <Select selectedValue={estateTemplate.details.purpose&&landTypes.find(el=>estateTemplate.details.purpose.includes(el.value))} bind:this={purposeSelector} placeholder="Не указанo" items={landTypes} on:clear={()=> estateTemplate.details.purpose = undefined} on:select={({detail}) => estateTemplate.details.purpose = detail.value} ></Select>
         </div>
         {/if}
         {#if estateTemplate.type==="house"||estateTemplate.type==="flat"}
@@ -703,6 +719,15 @@
                 <input id="top" type="checkbox" bind:checked={estateTemplate.extras.top}>
                 <label class:active={estateTemplate.extras.top} for="top">В топ</label>
             </div>
+            <div class="option-horizontal">
+                <input id="hide" type="checkbox" bind:checked={estateTemplate.isHidden}>
+                <label use:tooltip title="Скройте объявление от пользователей" style="display:flex;" class:active={estateTemplate.isHidden} for="hide">
+                    Скрыть объявление
+                    <svg style="pointer-events: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </label>
+            </div>
         </div>
 
         <!-- 
@@ -755,7 +780,7 @@
                 {/if}
             </button>
             {/if}
-            <button on:click={()=>deleteMode=false} disabled={isLoading} type="submit" >
+            <button style="{!estateToEdit&&"margin-left: auto;"}" on:click={()=>deleteMode=false} disabled={isLoading} type="submit" >
                 {#if !isLoading||(deleteMode&&isLoading)}
                 {estateToEdit?"Редактировать":"Создать объявление"}
                 {:else}

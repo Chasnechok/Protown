@@ -1,22 +1,51 @@
 import Estate from "../../models/estate";
 import send from '@polka/send-type';
+import dayjs from "dayjs";
+
 
 export async function get(req, res) {
+    let date = dayjs().add(1, 'M');
+    date = date.toISOString();
     try {
-        // костыль start ==> получить максимальное значение цены для каждой валюты
-        let maxPricesPerCurrency;
+        // костыль start ==> получить максимальное значение цены для каждой валюты в рамках одного типа предложения (lease, buy)
+        const maxPricesPerCurrencyAndDeal = {buy: {},lease: {}}
         await Estate.aggregate([
             {
+                $match: {
+                    isHidden: false,
+                    $or: [
+                        {"realised": false},
+                        {"realised": {$lt: new Date(date)}}
+                    ]
+                }
+            },
+            {
                 $group: {
-                    _id: "$currency",
+                    _id: {deal: "$deal", currency: "$currency"},
                     maxPrice: {$max: "$price"}
                 }
+            },
+            {
+                $project: {
+                    maxPrice: 1, deal: "$_id.deal", currency: "$_id.currency", _id: 0
+                }
             }
-        ]).then(r => maxPricesPerCurrency = r);
+        ]).then(r=>r.forEach(el => maxPricesPerCurrencyAndDeal[el.deal][el.currency] = el.maxPrice)).catch(console.log);
+        
         await Estate.aggregate([
+            {
+                $match: {
+                    isHidden: false,
+                    $or: [
+                        {"realised": false},
+                        {"realised": {$lt: new Date(date)}}
+                    ]
+                }
+            },
             {
                 $group: {
                     _id: null,
+                    deals: {$addToSet: "$deal"},
                     currency: {$addToSet: "$currency"},
                     minPrice: {$min: "$price"},
                     maxArea: {$max: "$details.area.g"},
@@ -33,13 +62,9 @@ export async function get(req, res) {
                 }
             }  
         ])
-        .then(r => {
-            return send(res, 200, {
-                maxUSD: maxPricesPerCurrency.find(el=>el._id==="USD")?.maxPrice,
-                maxEUR: maxPricesPerCurrency.find(el=>el._id==="EUR")?.maxPrice,
-                maxUAH: maxPricesPerCurrency.find(el=>el._id==="UAH")?.maxPrice,
-                ...r[0]})});
-    } catch (error) {
+        .then(r => { return send(res, 200, {maxPricesPerCurrencyAndDeal, ...r[0]} )})
+    } 
+    catch (error) {
         send(res, 500, error)
     }
 }

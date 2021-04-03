@@ -82,17 +82,19 @@ polka()
 	
  /* middleware */
  function auth(req, res, next) {
-	const { token } = req.session;
-	if(!req.session||!token){
+	if(!req.session||!req.session.token){
 		res
 		.writeHead(401, {
 			'Content-Type': 'application/json'
 		})
 		.end(JSON.stringify({
-			error: "Access denied!"
+			error: true,
+			message: "Access denied",
+			code: "NO_ACCESS_E"
 		}));
 		return;
 	}
+	const { token } = req.session;
 	try {
 		jwt.verify(token, process.env.JWT_SECRET);
 		req.s3 = s3;

@@ -23,6 +23,7 @@
 	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
+	import dayjs from "dayjs";
 	export let spravce = false;
 	export let fetchedEstate;
 	export let fetchedRieltor;
@@ -162,8 +163,16 @@
 		border-radius: 8px;
     	box-shadow: rgb(0 0 0 / 10%) 0px 1px 8px;
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
+	}
+	.estate-price.crossed > span.crossed {
+		text-decoration: line-through;
+	}
+	.estate-price .price-realised {
+		flex: 1 1 100%;
+    	text-align: center;
 	}
 	.estate-price .price {
 		color: black;
@@ -378,21 +387,28 @@
 			{/if}
 						
 			<div style={images?!swiper?"opacity: 0;":"":""} class="estate-info-wrapper">
-				<div class="estate-price" title={priceInWords}>
-					<span class="price">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
-					{#if !fetchedEstate.extras.fee}&nbspбез комиссии{/if}
+				<div class="estate-price" class:crossed={fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))} title={priceInWords}>
+					<span class="price crossed">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates)}</span><span class="price-currency crossed">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
+					{#if !fetchedEstate.extras.fee}<span class="crossed">&nbspбез комиссии</span>{/if}
+					{#if fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))}
+					<span class="price-realised">{fetchedEstate.type==="flat"?"Квартира":fetchedEstate.type==="house"?"Дом":fetchedEstate.type==="commersion"?"Недвижимость":"Участок"}
+					&nbsp;{fetchedEstate.type==="flat"||fetchedEstate.type==="commersion"?"сдана":"сдан"}{!isNaN(Date.parse(fetchedEstate.realised))?
+						` до ${dayjs(fetchedEstate.realised).format('DD/MM/YYYY')}`:
+						"."} 
+					</span>
+					{/if}
 				</div>
 				{#if fetchedEstate.extras.included&&fetchedEstate.extras.included[0]&&fetchedEstate.type!=="land"}
 				<div class="extras-scroll-wrapper">
 					{#each fetchedEstate.extras.included as extra}
-						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.png)" />
+						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
 				{#if fetchedEstate.details.communications&&fetchedEstate.details.communications[0]&&(fetchedEstate.type==="land"||fetchedEstate.type==="house")}
 				<div class="extras-scroll-wrapper communications">
 					{#each fetchedEstate.details.communications as extra}
-						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.png)" />
+						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
@@ -444,6 +460,12 @@
 									<span class="label">Планировка</span><span class="value">{[{value: "open", label: "Открытого типа"}, {value: "close", label: "Закрытого типа"}, ...flatPlanning].find(el=>el.value===fetchedEstate.details.planning)?.label}</span>
 								</div>
 							{/if}
+							{#if fetchedEstate.type==="land"}
+            				<div class="estate-detailed-prop">
+                				<span class="label">{fetchedEstate.deal==="lease"?"Аренда":"Покупка"}&nbsp;частями</span>
+                				<span class="value">{fetchedEstate.details.partly?"Да":"Нет"}</span>
+            				</div>
+            				{/if}
 						</div>
 					</fieldset>
 					{/if}

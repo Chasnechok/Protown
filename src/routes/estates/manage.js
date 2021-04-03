@@ -5,9 +5,22 @@ import send from '@polka/send-type';
 
 const handleValidate = (body) => {
     delete body._id; delete body.__v;
+    
     for(let key in body){
         if(key === "adress" || key === "details" || key === "extras" || key === "images") body[key] = JSON.parse(body[key]);
+        if(key === "realised" && !isNaN(Date.parse(body[key]))) body[key] = new Date(body[key]);
+        if(key === "realised" && (body[key]===null)) body[key] = false;
+        if(key === "realised"  && isNaN(Date.parse(body[key]))) body[key] = JSON.parse(body[key]);
     }
+    // clean estate object
+    if(body.type==="land") {
+        ["g","k","l"].forEach(prop => delete body.details&&body.details.area[prop]);
+        ["gfloor", "floor", "sillings", "rooms", "fond"].forEach(prop=>body.details&&delete body.details[prop]);
+    }
+    if(body.type!=="land") ["partly", "purpose"].forEach(prop=>body.details&&delete body.details[prop]);
+    if(body.type==="house") ["fond", "planning"].forEach(prop=>body.details&&delete body.details[prop]);
+    if(body.type==="flat") ["whole"].forEach(prop=>body.details&&body.details.area&&delete body.details.area[prop]);
+    // validate 
     const { error } = estateValidation(body);
     if(error){
         error.code = "VALIDATION_ERROR"

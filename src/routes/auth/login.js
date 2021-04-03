@@ -27,7 +27,7 @@ export async function post(req, res) {
         return;
     }
 
-    const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET, {expiresIn: "3h"})
+    const token = jwt.sign({_id: user._id, agentIdentifier: user.agentIdentifier}, process.env.JWT_SECRET, {expiresIn: "3h"})
 
     try {
         req.session.token = token;

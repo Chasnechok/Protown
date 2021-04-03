@@ -32,6 +32,7 @@ export const currencyCalculator = (price, ccy, base_ccy, currencyRates) => {
 export const createBlankEstate = () => {
     return {
         label: undefined,
+        isHidden: false,
         type: 'flat',
         deal: 'buy',
         price: undefined,

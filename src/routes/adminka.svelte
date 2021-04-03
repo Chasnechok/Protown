@@ -16,12 +16,6 @@
             const fetchEstateToEdit = await this.fetch(`estates/${id}`);
 		    estateToEdit = await fetchEstateToEdit.json();
             if(!estateToEdit) return this.redirect(302, 'adminka');
-            if(estateToEdit&&estateToEdit.images&&estateToEdit.images[0]){
-                estateToEdit.images = estateToEdit.images.map(el=>{
-                let url = new URL(`https://assets.rich-house.online/estates/${estateToEdit.type}/${estateToEdit._id}/${el}`);
-                return {id: el, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src="${url}" alt="${el}" />`}
-                })
-            }
         }
         return { agentIdentifier, user, visikom, changeRates, mode, estateToEdit, page }
 	}
@@ -99,6 +93,11 @@
             min-width: 100%;
         }
     }
+    @media only screen and (max-width: 374px) {
+        legend {
+            font-size: 20px;
+        }
+    }
 </style>
 
 <svelte:head>
@@ -113,15 +112,15 @@
     </div>
     <ControlPanel bind:mode />
     <fieldset>
-        <legend>{mode==="add"?"Создание объявления ✍️":mode==="list"?"Список объявлений 📑":mode==="edit"?"Редактировать":"Настройки ⚙️"}</legend>
+        <legend>{mode==="add"?"Создание объявления ✍️":mode==="settings"?"Настройки ⚙️":mode==="edit"?"Редактировать":"Список объявлений 📑"}</legend>
         {#if mode === "add"}
         <CreateForm {addNotification} {visikom} {agentIdentifier} />
-        {:else if mode==="list"}
-        <List bind:page bind:bufferedEstates bind:pagesCount />
         {:else if mode==="settings"}
-        <Settings {user} {changeRates} {agentIdentifier} />
+        <Settings bind:user {changeRates} {agentIdentifier} {addNotification} />
         {:else if mode==="edit"&&estateToEdit}
         <CreateForm bind:mode {addNotification} {visikom} {agentIdentifier} {estateToEdit} />
+        {:else}
+        <List bind:page bind:bufferedEstates bind:pagesCount />
         {/if}
     </fieldset>
     

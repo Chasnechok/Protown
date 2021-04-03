@@ -3,6 +3,7 @@
 	import SwiperCore, { Navigation, Lazy, A11y } from 'swiper';
     SwiperCore.use([Navigation, Lazy, A11y]);
     import 'swiper/swiper-bundle.min.css';
+    import dayjs from "dayjs";
     import { onMount } from "svelte";
     import { changeRates, currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
@@ -13,7 +14,6 @@
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     $: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates));
     let mounted = false;
-    let isLoading = false;
     let deleted = false;
     onMount(()=>mounted=true);
 </script>
@@ -32,6 +32,11 @@
         box-shadow: inset 0px 0px 6px rgb(0 0 0 / 15%);
         max-width: 100%;
         justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .estate-card:hover .hide-screen {
+        transform: translateY(-100%);
     }
     h3 {
         margin: 0;
@@ -204,6 +209,30 @@
 </style>
 
 <div class="estate-card" class:deleted>
+    {#if estate.isHidden}
+    <div class="hide-screen">
+        <div class="hide-screen-content">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+            </svg>
+        </div>
+    </div>
+    {/if}
+    {#if !estate.isHidden&&estate.realised&&(isNaN(Date.parse(estate.realised))||dayjs(estate.realised).isAfter(dayjs()))}
+    <div class="hide-screen realised">
+        <div class="hide-screen-content">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>{
+            !isNaN(Date.parse(estate.realised))?
+            dayjs(estate.realised).format('DD/MM/YYYY'):
+            "Не указано"
+            }
+            </span>
+        </div>
+    </div>
+    {/if}
     {#if isAdmin}
     <h3>{estate.label}</h3>
     {/if}
@@ -276,10 +305,16 @@
             {/if}
         </div>
         <div class="details">
-            {#if estate.details.area}
+            {#if estate.details.area&&estate.details.area.g}
             <div class="detail">
                 <span class="detail-label">Общая</span>
                 <span class="value-label">{estate.details.area.g}м<sup><small>2</small></sup></span>
+            </div>
+            {/if}
+            {#if estate.details.area&&estate.details.area.whole}
+            <div class="detail">
+                <span class="detail-label">Участок</span>
+                <span class="value-label">{estate.details.area.whole} соток</span>
             </div>
             {/if}
             {#if estate.details.rooms}
@@ -297,13 +332,19 @@
 				</span>
             </div>
             {/if}
+            {#if estate.type==="land"}
+            <div class="detail">
+                <span class="detail-label">{estate.deal==="lease"?"Аренда":"Покупка"}&nbsp;частями</span>
+                <span class="value-label">{estate.details.partly?"Да":"Нет"}</span>
+            </div>
+            {/if}
         </div>
         {#if !isAdmin}
         <a href="/{estate.type}/{estate._id}">детали</a>
         {:else}
         <div style="display: flex;justify-content: flex-end; flex-wrap: wrap;">
-            <a style="width: unset;" target="_blank" href="/{estate.type}/{estate._id}">детали</a>
-            <a style="width: unset; margin-left: .5em;" target="_blank" href="/adminka?mode=edit&id={estate._id}">редактировать</a>
+            <a style="width: unset;flex:1;" target="_blank" href="/{estate.type}/{estate._id}">детали</a>
+            <a style="width: unset;flex:1; margin-left: .5em;" href="/adminka?mode=edit&id={estate._id}">редактировать</a>
         </div>
         {/if}
     </div>

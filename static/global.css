@@ -42,6 +42,60 @@ code {
 	padding: 0.2em 0.4em;
 	border-radius: 2px;
 }
+@supports (not (backdrop-filter: blur(1.5px))) and (not (-webkit-backdrop-filter: blur(1.5px))) {
+	.hide-screen {
+		background-color: #4848488c;
+	}
+}
+
+.hide-screen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 5;
+	display: flex;
+	backdrop-filter: blur(1.5px);
+	-webkit-backdrop-filter: blur(1.5px);
+	border-radius: inherit;
+	transition: .3s;
+	
+}
+.hide-screen .hide-screen-content {
+	margin: auto;
+	position: relative;
+}
+.hide-screen.realised {
+	backdrop-filter: brightness(0.7);
+	-webkit-backdrop-filter: brightness(0.7);
+}
+.hide-screen.realised .hide-screen-content::before, .hide-screen.realised .hide-screen-content span {
+	content: "Сдано до";
+	line-height: 5.5em;
+	font-size: 14px; 
+	position: absolute;
+	display: flex; 
+	width: 120px;  
+	height: 105px; 
+	left: 50%;     
+	top: 50%;    
+	justify-content: center; 
+	transform: translate(-50%, -50%);
+	align-items: flex-end;
+	background-color: #fff;
+}
+.hide-screen.realised .hide-screen-content span {
+	z-index: 1;
+	background-color: transparent;
+	line-height: 2em;
+	font-size: 16px !important;
+}
+.hide-screen-content svg {
+	height: 166px;
+	z-index: 2;
+	position: relative;
+}
 
 
 @media (min-width: 400px) {

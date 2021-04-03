@@ -5,6 +5,7 @@ export const estateValidation = dtoIn => {
     const v = Joi.object({
         _id: Joi.string(),
         createdAt: Joi.date().raw(),
+        isHidden: Joi.boolean(),
         label: Joi.string().required(),
         agent: Joi.alternatives().try("MAR").try("IR").required(),
         realised: Joi.alternatives().try(Joi.date().raw()).try(Joi.boolean()),
