@@ -1,7 +1,7 @@
 <script>
 	import Nav from '../components/Nav.svelte';
 	import Footer from '../components/Footer.svelte';
-	export let segment;
+	//export let segment;
 </script>
 
 <style>
@@ -34,7 +34,7 @@
 
 
 <header>
-	<Nav {segment}/>
+	<Nav />
 </header>
 
 

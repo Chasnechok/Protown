@@ -1,14 +1,14 @@
 <script>
     import Select from 'svelte-select';
     import RangeSlider from "svelte-range-slider-pips";
-    import { countries, obce, kyivDistricts } from "../../helpers/locations";
-    import { BarLoader } from 'svelte-loading-spinners';
-    import axios from "axios";
-    import {onMount} from "svelte";
+    import { countries, kyivDistricts } from "../../helpers/locations";
+    import { getContext } from "svelte";
     import { slide } from 'svelte/transition';
     import { filters, items, noMore, extras, districtSelector } from "../../helpers/filterStore";
-    import { changeRates, currencyOnPage } from "../../helpers/parametres";
+    import { currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
+    export let filtersProps;
+    const { courses: changeRates } = getContext("changeRates");
     const groupBy = (item) => item.group;
     const getSelectionLabel = (option) => option.label.replace("ий", "ом");
     let deals = [{value: "buy", label: "Купить"}, {value: "lease", label: "Арендовать"}];
@@ -18,21 +18,15 @@
     $: priceRangeMax = getPriceRangeMax(filtersProps, $currencyOnPage, $filters.deal);
     $: if($currencyOnPage!==$filters.currency) $filters.currency = $currencyOnPage;
     const getPriceRangeMax = (filtersProps, ccy, deal) => {
-        if(!filtersProps||!$changeRates) return 99999999;
         const fetchedMaxPrices = filtersProps.maxPricesPerCurrencyAndDeal[deal];
         const maxPricesConverted = [];
         for(let key in fetchedMaxPrices) {
-            maxPricesConverted.push(currencyCalculator(fetchedMaxPrices[key], ccy, key, $changeRates));
+            maxPricesConverted.push(currencyCalculator(fetchedMaxPrices[key], ccy, key, changeRates));
         }
         return Math.max.apply(Math, maxPricesConverted.map((el) => el));
     }
     let innerWidth;
     let extrasN = $extras;
-    let filtersProps;
-    onMount(()=>axios.get("/estates/getParametres").then(({data})=> {if(!filtersProps)filtersProps = data}));
-    //$: if($filters) console.log($filters)
-    
-
 </script>
 
 <style>
@@ -56,19 +50,6 @@
         display: inline-block;
         text-transform: lowercase;
         box-shadow: 0 4px rgb(98 98 219 / 90%);
-    }
-    .loading-filter-props {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: default;
-        z-index: 100;
-        background-color: transparent;
     }
     .filter-bar-l {
         background-color: white;
@@ -289,16 +270,11 @@
 <div class="filter-bar-wrapper" >
     <h1>Подберите себе <span>{types.find(v=>v.value===$filters.type)?.label}</span></h1>
     <div class="filter-bar-l">
-        {#if !filtersProps}
-        <div class="loading-filter-props">
-            <BarLoader color="#d7dada"/>
-        </div>
-        {/if}
-        <div style="opacity: {!filtersProps? "0":"1"};" transition:slide={{delay: 100}} class="line1 location-selector">
-            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={filtersProps?deals.filter(el=>filtersProps.deals.includes(el.value))[0]?deals.filter(el=>filtersProps.deals.includes(el.value)):deals:deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
+        <div class="line1 location-selector">
+            <Select on:select={({detail})=>{$filters.deal=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={deals.filter(el=>filtersProps.deals.includes(el.value))[0]?deals.filter(el=>filtersProps.deals.includes(el.value)):deals} isClearable={false} isSearchable={false} selectedValue={deals.find(v=>v.value===$filters.deal)} />
             <Select on:select={({detail})=>{$filters.type=detail.value; extrasN = $extras; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} items={types} isClearable={false} isSearchable={false} selectedValue={types.find(v=>v.value===$filters.type)} />
-            <span>в <Select items={!filtersProps ? countries : countries.filter(el=>filtersProps.countries.indexOf(el.value)>=0)} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
-            <span>городе <Select {groupBy} items={!filtersProps ? obce : filtersProps.cities.map(el=> el.ru)} isClearable={false} isSearchable={false} selectedValue={$filters.city} on:select={({detail})=>{$filters.city=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
+            <span>в <Select items={countries.filter(el=>filtersProps.countries.includes(el.value))} isClearable={false} isSearchable={false} selectedValue={countries.find(el=> el.value === $filters.country)} on:select={({detail})=>{$filters.country=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
+            <span>городе <Select {groupBy} items={filtersProps.cities.map(el=> el.ru)} isClearable={false} isSearchable={false} selectedValue={$filters.city} on:select={({detail})=>{$filters.city=detail.value; if(!filterBarExpanded) {$filters.isInitial=false; $items = []; $noMore = false}}} /></span>
         </div>
         {#if filterBarExpanded}
         {#if $filters.city && $filters.city.toLowerCase() === "киев"}
@@ -328,12 +304,12 @@
             </div>
             <div class="range-selector area">
                 <span>Площадь</span>
-                <RangeSlider step={2} float suffix="м²" min={!filtersProps ? 0 : filtersProps.minArea} max={!filtersProps ? 200 : filtersProps.maxArea} range bind:values={$filters.area}  />
-                <span style="cursor: default;">{$filters.area[0]} - {$filters.area[1]}&nbspм<sup>2</sup></span>
+                <RangeSlider formatter={v=>Math.round(v)} step={2} float suffix={$filters.type!=="land"?"м²":"соток"} min={$filters.type!=="land"?filtersProps.minArea:filtersProps.minAreaSotki??filtersProps.minArea} max={$filters.type!=="land"?filtersProps.maxArea:filtersProps.maxAreaSotki??filtersProps.maxArea} range bind:values={$filters.area}  />
+                <span style="cursor: default;">{Math.round($filters.area[0])} - {Math.round($filters.area[1])}&nbsp;{#if $filters.type!=="land"}м<sup>2</sup>{:else}соток{/if}</span>
             </div>
             <div class="range-selector rooms">
                 <span>Количество комнат</span>
-                <RangeSlider pips all='label' min={!filtersProps ? 1 : filtersProps.minRooms} max={!filtersProps ? 10 : filtersProps.maxRooms} range bind:values={$filters.rooms}  />
+                <RangeSlider pips all='label' min={filtersProps.minRooms} max={filtersProps.maxRooms} range bind:values={$filters.rooms}  />
             </div>
         </div>
         <div transition:slide class="extras-selector line4" class:filterBarExpanded>

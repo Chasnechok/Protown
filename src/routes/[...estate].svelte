@@ -8,7 +8,9 @@
 		let fetchedRieltor = await resRieltor.json();
 		if(!fetchedRieltor) fetchedRieltor = {fullName: "Администратор", mobile: ""};
 		const spravce = session&&session.token;
-		return { fetchedEstate, fetchedRieltor, spravce };
+		const resChangeRates = await this.fetch(`/getCourses`);
+        const { courses: changeRates } = await resChangeRates.json();
+		return { fetchedEstate, fetchedRieltor, spravce, changeRates };
 	}
 </script>
 
@@ -18,16 +20,17 @@
 	import { onMount } from "svelte";
 	import { countries1, kyivDistricts, landTypes, flatExtras, flatPlanning, communicationsList } from "../helpers/locations";
 	import viewport from "../helpers/useViewPortAction";
-	import { changeRates, currencyOnPage } from "../helpers/parametres";
+	import { currencyOnPage } from "../helpers/parametres";
     import { currencyCalculator, formatPhoneNumber } from "../helpers/converter";
-	import { numberToPhrase } from "../helpers/numToString";
 	import 'swiper/swiper-bundle.min.css';
 	import { tooltip } from '../helpers/tooltip';
 	import dayjs from "dayjs";
 	export let spravce = false;
 	export let fetchedEstate;
 	export let fetchedRieltor;
-	$: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates));
+	export let changeRates;
+	const num = new Intl.NumberFormat("en-US");
+	$: priceInWords = num.format(currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, changeRates));
 	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
 	const checkForObject = (obj) => {return typeof obj === 'object' && obj !== null && Object.keys(obj).length>0}
 	let mountedToDom = false;
@@ -388,7 +391,7 @@
 						
 			<div style={images?!swiper?"opacity: 0;":"":""} class="estate-info-wrapper">
 				<div class="estate-price" class:crossed={fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))} title={priceInWords}>
-					<span class="price crossed">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, $changeRates)}</span><span class="price-currency crossed">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
+					<span class="price crossed">{currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, changeRates)}</span><span class="price-currency crossed">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{fetchedEstate.deal === "lease" ? " / месяц" : ""}</span>
 					{#if !fetchedEstate.extras.fee}<span class="crossed">&nbspбез комиссии</span>{/if}
 					{#if fetchedEstate.realised&&(isNaN(Date.parse(fetchedEstate.realised))||dayjs(fetchedEstate.realised).isAfter(dayjs()))}
 					<span class="price-realised">{fetchedEstate.type==="flat"?"Квартира":fetchedEstate.type==="house"?"Дом":fetchedEstate.type==="commersion"?"Недвижимость":"Участок"}

@@ -1,8 +1,12 @@
 <script context="module">
 	export async function preload() {
-		const res = await this.fetch(`estates/getTop`);
-		const hotEstates = await res.json();
-		return { hotEstates };
+		const resHotEstates = await this.fetch(`estates/getTop`);
+		const hotEstates = await resHotEstates.json();
+        const resChangeRates = await this.fetch(`/getCourses`);
+        const changeRates = await resChangeRates.json();
+        const resFiltersProps = await this.fetch(`/estates/getParametres`);
+        const filtersProps = await resFiltersProps.json();
+		return { hotEstates, changeRates, filtersProps };
 	}
 </script>
 
@@ -10,7 +14,11 @@
     import FilterBar from "../components/FilterBar/FilterBar.svelte";
     import HotCarousel from "../components/HotSection/HotCarousel.svelte";
     import EstateList from "../components/Grid/EstatesList.svelte";
+    import { setContext } from "svelte";
     export let hotEstates = [];
+    export let changeRates;
+    export let filtersProps;
+    setContext("changeRates", changeRates);
 </script>
 
 <style>
@@ -26,7 +34,7 @@
 </svelte:head>
 
 <section>
-    <FilterBar />
+    <FilterBar {filtersProps} />
     <HotCarousel {hotEstates}/>
     <EstateList />
 </section>

@@ -3,17 +3,18 @@
 	import SwiperCore, { Navigation, Pagination, Lazy, A11y } from 'swiper';
     SwiperCore.use([Navigation, Pagination, Lazy, A11y]);
     import 'swiper/swiper-bundle.min.css';
-    import { changeRates, currencyOnPage } from "../../helpers/parametres";
+    import { currencyOnPage } from "../../helpers/parametres";
     import { currencyCalculator } from "../../helpers/converter";
-    import { numberToPhrase } from "../../helpers/numToString";
-    import { onMount } from "svelte";
+    import { onMount, getContext } from "svelte";
     import dayjs from "dayjs";
     export let estate;
     let mounted;
+    const { courses: changeRates } = getContext("changeRates");
     onMount(()=>mounted=true)
 
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
-    $: priceInWords = numberToPhrase($currencyOnPage, estate.price);
+    const num = new Intl.NumberFormat("en-US");
+    $: priceInWords = num.format(currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates));
     //console.log(estate);
 
    
@@ -293,7 +294,7 @@
         <div class="properties-wrapper">
             <div class="props">
                 <div class="price-wrapper" title={priceInWords}>
-                    <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
+                    <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
                 </div>
                 <div class="areas">
                     {#if estate.details.area}

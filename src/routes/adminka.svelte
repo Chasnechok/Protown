@@ -27,11 +27,13 @@
     import List from "../components/AdminPanel/List.svelte";
     import Settings from "../components/AdminPanel/Settings.svelte";
     import Notification from "../components/AdminPanel/Notification.svelte";
+    import { setContext } from "svelte";
     export let agentIdentifier;
     export let user;
     export let visikom;
     export let changeRates;
     export let page;
+    setContext("changeRates", changeRates);
     let bufferedEstates;
     let pagesCount = 1;
     let notifications = [];

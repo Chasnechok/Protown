@@ -82,8 +82,8 @@
         --inputFontSize: 16px;
         --multiSelectPadding: 0 0 0 16px;
 	}
-	.selector > span:first-child {
-		margin-right: 16px;
+	.selector {
+		min-width: 120px;
 	}
 
 	@media only screen and (max-width: 1024px) {
@@ -132,8 +132,7 @@
 		<a rel=prefetch  href="/">О нас</a>
 		<a rel=prefetch  href="/">Напишите нам</a>
 		<div class="selector">
-			<span>Русский</span>
-			<span>|</span>
+			<span>{$currencyOnPage==="USD"?"$":$currencyOnPage==="EUR"?"€":"₴"}</span>
 			<Select on:select={({detail})=>{$currencyOnPage = detail.value}} items={currencies} isClearable={false} isSearchable={false} selectedValue={currencies.find(v=>v.value===$currencyOnPage)} />
 		</div>
 	</div>

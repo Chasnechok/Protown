@@ -12,11 +12,7 @@ export async function get(req, res) {
         await Estate.aggregate([
             {
                 $match: {
-                    isHidden: false,
-                    $or: [
-                        {"realised": false},
-                        {"realised": {$lt: new Date(date)}}
-                    ]
+                    isHidden: false
                 }
             },
             {
@@ -50,6 +46,8 @@ export async function get(req, res) {
                     minPrice: {$min: "$price"},
                     maxArea: {$max: "$details.area.g"},
                     minArea: {$min: "$details.area.g"},
+                    maxAreaSotki: {$max: "$details.area.whole"},
+                    minAreaSotki: {$min: "$details.area.whole"},
                     maxRooms: {$max: "$details.rooms"},
                     minRooms: {$min: "$details.rooms"},
                     countries: {$addToSet: "$adress.country"},

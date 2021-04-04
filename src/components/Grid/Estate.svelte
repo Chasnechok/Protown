@@ -4,15 +4,15 @@
     SwiperCore.use([Navigation, Lazy, A11y]);
     import 'swiper/swiper-bundle.min.css';
     import dayjs from "dayjs";
-    import { onMount } from "svelte";
-    import { changeRates, currencyOnPage } from "../../helpers/parametres";
-    import { currencyCalculator } from "../../helpers/converter";
-    import { numberToPhrase } from "../../helpers/numToString";
+    import { onMount, getContext } from "svelte";
+    import { currencyOnPage } from "../../helpers/parametres";
+    import { currencyCalculator } from "../../helpers/converter"; 
     export let estate;
     export let isAdmin;
-    //console.log(estate);
+    const { courses: changeRates } = getContext("changeRates");
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
-    $: priceInWords = numberToPhrase($currencyOnPage, currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates));
+    const num = new Intl.NumberFormat("en-US");
+    $: priceInWords = num.format(currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates));
     let mounted = false;
     let deleted = false;
     onMount(()=>mounted=true);
@@ -299,7 +299,7 @@
         </div>
         
         <div class="price-wrapper" title={priceInWords}>
-            <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, $changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
+            <span class="price" >{currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates)}</span><span class="price-currency">&nbsp{$currencyOnPage === "USD" ? "$" : $currencyOnPage === "EUR" ? "€" : "₴"}{estate.deal === "lease" ? " / месяц" : ""}</span>
             {#if estate.adress.city}
             <span class="adress">{(estate.adress.city.ru??"")+ (estate.adress.street ? `, ${estate.adress.street.ru}` : "") + (estate.adress.estateNumber ?  `, дом ${estate.adress.estateNumber}` : "")}</span>
             {/if}
