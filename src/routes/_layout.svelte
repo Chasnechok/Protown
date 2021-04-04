@@ -14,6 +14,7 @@
 	:global(main > section) {
 		max-width: 1650px;
         margin: 6.5em auto 5em auto;
+		position: relative;
 	}
 	header {
 		position: fixed;

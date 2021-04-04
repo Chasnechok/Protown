@@ -236,7 +236,6 @@
 		color: black;
 	}
 	.estate-comment-field {
-    	padding: 2em;
     	flex: 1;
     	box-shadow: inset rgb(0 0 0 / 10%) 0px 1px 8px;
     	background-color: #fbfbfb;
@@ -257,6 +256,8 @@
 	.legend-content-wrapper {
 		display: flex;
     	align-items: center;
+		text-decoration: none;
+		display: flex;
 	}
 	.estate-comment-field .avatar {
 		width: 100px;
@@ -267,13 +268,13 @@
 	}
 	.estate-comment-field .rieltor > span {
 		display: block;
-		cursor: default;
 	}
 	.estate-comment-field .rieltor > span:first-child {
 		color: black;
 	}
 	.comment-wrapper {
 		text-align: center;
+		padding: 2em;
 	}
 	span.comment {
 		line-height: 34px;
@@ -283,6 +284,9 @@
 		display: flex;
 		flex-wrap: wrap-reverse;
 		justify-content: center;
+	}
+	.email {
+		font-size: 14px;
 	}
 	@media only screen and (max-width: 1650px) {
 		.estate-wrapper {
@@ -306,11 +310,22 @@
 		.estate-wrapper {
 			padding: 0;
 		}
+		.comment-wrapper {
+			padding: 1em;
+		}
 		.estate-wrapper > *, .estate-info-wrapper > *{
 			border-radius: 0;
 		}
 		.image-wrapper {
 			padding: 1em .5em;
+		}
+		legend {
+			padding: 0 0.5em;
+		}
+	}
+	@media only screen and (max-width: 364px) {
+		legend, .email {
+			font-size: 12px;
 		}
 	}
 
@@ -512,13 +527,14 @@
 			<section class="estate-comment-section" use:viewport on:enterViewport={({target}) => !target.className.includes("inView") ? target.className += " inView" : null}>
 				<fieldset class="estate-comment-field">
 					<legend>
-						<div class="legend-content-wrapper">
+						<a href="/contact" target="_blank" class="legend-content-wrapper">
 							<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
 							<div class="rieltor">
 								<span>Комментарий риелтора</span>
 								<span>{fetchedRieltor.fullName}, {formatPhoneNumber(fetchedRieltor.mobile)}</span>
+								<span class="email">{fetchedEstate.agent==="MAR"?"marina@rich-house.online":"irina@rich-house.online"}</span>
 							</div>
-						</div>
+						</a>
 					</legend>
 					<div class="comment-wrapper">
 						<span class="comment">{fetchedEstate.extras.comment.ru?fetchedEstate.extras.comment.ru:fetchedEstate.extras.comment[Object.keys(fetchedEstate.extras.comment)[0]]}</span>

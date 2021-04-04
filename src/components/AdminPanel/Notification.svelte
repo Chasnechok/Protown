@@ -13,6 +13,10 @@
         padding: .5em;
         background-color: white;
         box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+        max-width: 900px;
+        min-width: 320px;
+        width: fit-content;
+        margin: 0 auto;
     }
     .notification>*:not(:last-child) {
         margin-right: .5em;
@@ -23,9 +27,17 @@
     .notification svg {
         width: 1.5em;
         height: 1.5em;
+        margin: auto;
+    }
+    .notification > span {
+        text-align: center;
+    }
+    svg.close {
+        cursor: pointer;
     }
     a {
         height: 1.5em;
+        margin: auto;
     }
     .notification.error {
         border-color: #f16767;
@@ -52,7 +64,7 @@
         </svg>
     </a>
     {/if}
-    <svg style="cursor: pointer;" on:click={()=>notifications=notifications.filter(el=>notification.code==="VALIDATION_ERROR"?el.code!==notification.code:el.message!==notification.message)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg class="close" on:click={()=>notifications=notifications.filter(el=>notification.code==="VALIDATION_ERROR"?el.code!==notification.code:el.message!==notification.message)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
 </div>

@@ -9,6 +9,7 @@
     import { currencyCalculator } from "../../helpers/converter"; 
     export let estate;
     export let isAdmin;
+    export let onlyControls = false;
     const { courses: changeRates } = getContext("changeRates");
     const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     const num = new Intl.NumberFormat("en-US");
@@ -233,12 +234,12 @@
         </div>
     </div>
     {/if}
-    {#if isAdmin}
+    {#if isAdmin&&!onlyControls}
     <h3>{estate.label}</h3>
     {/if}
    
     <div class="images-wrapper-ms">
-        {#if estate.images && estate.images[0] && mounted && !isAdmin}
+        {#if estate.images && estate.images[0] && mounted && (!isAdmin||onlyControls)}
         <Swiper
 			spaceBetween={4}
 			slidesPerView={1}
@@ -344,7 +345,7 @@
         {:else}
         <div style="display: flex;justify-content: flex-end; flex-wrap: wrap;">
             <a style="width: unset;flex:1;" target="_blank" href="/{estate.type}/{estate._id}">детали</a>
-            <a style="width: unset;flex:1; margin-left: .5em;" href="/adminka?mode=edit&id={estate._id}">редактировать</a>
+            <a target="{onlyControls?"_blank":"_self"}" style="width: unset;flex:1; margin-left: .5em;" href="/adminka?mode=edit&id={estate._id}">редактировать</a>
         </div>
         {/if}
     </div>

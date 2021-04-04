@@ -1,12 +1,14 @@
 <script context="module">
-	export async function preload() {
+	export async function preload(page, session) {
+        const { agentIdentifier } = session;
+        const isAdmin = agentIdentifier?true:false;
 		const resHotEstates = await this.fetch(`estates/getTop`);
 		const hotEstates = await resHotEstates.json();
         const resChangeRates = await this.fetch(`/getCourses`);
         const changeRates = await resChangeRates.json();
         const resFiltersProps = await this.fetch(`/estates/getParametres`);
         const filtersProps = await resFiltersProps.json();
-		return { hotEstates, changeRates, filtersProps };
+		return { hotEstates, changeRates, filtersProps, isAdmin };
 	}
 </script>
 
@@ -18,6 +20,7 @@
     export let hotEstates = [];
     export let changeRates;
     export let filtersProps;
+    export let isAdmin;
     setContext("changeRates", changeRates);
 </script>
 
@@ -36,5 +39,5 @@
 <section>
     <FilterBar {filtersProps} />
     <HotCarousel {hotEstates}/>
-    <EstateList />
+    <EstateList {isAdmin} />
 </section>

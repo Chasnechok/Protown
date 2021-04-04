@@ -478,13 +478,17 @@
             justify-content: center;
         }
     }
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 426px) {
         .create-form-wrapper {
-            padding: 2em 0;
+            padding: 1em 0em;
         }
         .create-form {
             border-radius: 0;
-            padding: 1em 0;
+            padding: 1em 0em;
+        }
+        .prop-vertical {
+            max-width: 100%;
+            max-width: 100vw;
         }
     }
 </style>

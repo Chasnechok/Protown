@@ -142,7 +142,7 @@
     ul {
         margin-top: 1em;
     }
-    @media only screen and (max-width: 400px) {
+    @media only screen and (max-width: 560px) {
         .label {
             flex: 1 1 100%;
             text-align: start;

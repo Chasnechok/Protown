@@ -12,10 +12,11 @@ import fileUpload from "express-fileupload";
 const MongoStore = require('connect-mongo')(session);
 import cookieParser from "cookie-parser";
 import AWS from "aws-sdk";
+import nodemailer from "nodemailer";
 
 /* CONFIG */
 dotenv.config();
-const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY } = process.env;
+const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY, EMAIL_LOGIN, EMAIL_PASS } = process.env;
 const dev = NODE_ENV === 'development';
 
 
@@ -33,7 +34,23 @@ mongoose.connect(MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true, us
 	db.on('error', console.error.bind(console, 'connection error:'));
 	db.once('open', function() {
 	  console.log("MongoDB connected!");
-	});  
+	});
+	
+/* CONFIGURE EMAIL */
+const transporter = nodemailer.createTransport({
+	pool: true,
+	host: "smtp.yandex.com",
+	port: 465,
+	secure: true,
+	auth: {
+	user: EMAIL_LOGIN, 
+	pass: EMAIL_PASS
+	}
+});
+transporter.verify((error, success) => {
+	if(error) console.log(error);
+	else console.log("Mail server ready!")
+})
 
 
 /* WEB SERVER START AND CONFIG */
@@ -61,6 +78,7 @@ polka()
 	.use('/estates/create', auth)
 	.use('/estates/manage', auth)
 	.use('/estates/update', auth)
+	.use('/email', (req,res,next)=>{req.transporter = transporter; next()})
 	.use(
 		compression({ threshold: 0 }),
 		json(),
@@ -68,7 +86,6 @@ polka()
 		sirv('static', { dev }),
 		sapper.middleware({
 			session: (req, res) => {
-			res.setHeader('cache-control', 'no-cache, no-store')
 			  return (req.session&&req.session.token?{
 				token: req.session && req.session.token,
 				agentIdentifier: req.session && req.session.agentIdentifier,

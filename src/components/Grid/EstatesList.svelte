@@ -5,6 +5,7 @@
   import { SyncLoader } from 'svelte-loading-spinners';
   import { filters, items, noMore, districtSelector } from "../../helpers/filterStore";
   import Estate from "./Estate.svelte";
+  export let isAdmin = false;
   let mountedToDom = false;
   let loading;
   $: nothingFound = $noMore && !$items[0] ? true : false;
@@ -114,7 +115,7 @@
     options={{ isConstantSize: false, isEqualSize: false, useFit: true, useRecycle: false }}
     >
       {#each visibleItems as estate (estate._id)}
-          <Estate isAdmin={false} {estate} />
+          <Estate {isAdmin} {estate} onlyControls={true} />
       {/each}
       <div bind:this={loading} slot="loading" class="loading">
         <SyncLoader color="#6262DB"/>

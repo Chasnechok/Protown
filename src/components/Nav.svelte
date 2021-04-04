@@ -125,12 +125,12 @@
 <svelte:window bind:scrollY={y}/>
 <nav class:fixed>
 	<div class="logo">
-		<a class="logo-link" style="z-index: 2;" href=".">Rich-House</a>
+		<a class="logo-link" on:click={()=>opened = false} style="z-index: 2;" href=".">Rich-House</a>
 	</div>
 	<div class="navigation">
-		<a rel=prefetch  href="/">Этапы покупки</a>
-		<a rel=prefetch  href="/">О нас</a>
-		<a rel=prefetch  href="/">Напишите нам</a>
+		<a rel=prefetch href="/">Этапы покупки</a>
+		<a rel=prefetch href="/">О нас</a>
+		<a rel=prefetch target="_blank" href="/contact">Напишите нам</a>
 		<div class="selector">
 			<span>{$currencyOnPage==="USD"?"$":$currencyOnPage==="EUR"?"€":"₴"}</span>
 			<Select on:select={({detail})=>{$currencyOnPage = detail.value}} items={currencies} isClearable={false} isSearchable={false} selectedValue={currencies.find(v=>v.value===$currencyOnPage)} />
@@ -147,15 +147,14 @@
 	<div class="navigation-mini" class:opened>
 		{#each [0,1,2,3] as a}
 			{#if a === 0}
-			<a rel=prefetch transition:slide href="/">Этапы покупки</a>
+			<a rel=prefetch transition:slide on:click={()=>opened = false} href="/">Этапы покупки</a>
 			{:else if a === 1}
-			<a rel=prefetch transition:slide href="/">О нас</a>
+			<a rel=prefetch transition:slide on:click={()=>opened = false} href="/">О нас</a>
 			{:else if a === 2}
-			<a rel=prefetch transition:slide href="/">Напишите нам</a>
+			<a rel=prefetch transition:slide on:click={()=>opened = false} href="/contact">Напишите нам</a>
 			{:else}
 			<div class="selector" transition:slide>
-				<!-- <span>Русский</span>
-				<span>|</span> -->
+				<span style="padding-left: 1em;">{$currencyOnPage==="USD"?"$":$currencyOnPage==="EUR"?"€":"₴"}</span>
 				<Select on:select={({detail})=>{$currencyOnPage = detail.value}} items={currencies} isClearable={false} isSearchable={false} selectedValue={currencies.find(v=>v.value===$currencyOnPage)} />
 			</div>
 			{/if}

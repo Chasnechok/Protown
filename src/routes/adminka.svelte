@@ -80,21 +80,14 @@
         --borderHoverColor: rgb(98, 98, 219, 0.5);
         --multiSelectItemTextColor: #000000ab;
     }
-    .notifications {
-        position: fixed;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 999;
-        min-width: 900px;
+    .notifications-wrapper {
+	    position: fixed !important;
+	    left: 50%;
+	    top: 6.5em;
+	    transform: translateX(-50%);
+	    z-index: 999;
     }
-    @media only screen and (max-width: 900px) {
-        .notifications {
-            min-width: 100%;
-        }
-    }
+    
     @media only screen and (max-width: 374px) {
         legend {
             font-size: 20px;
@@ -107,7 +100,7 @@
 </svelte:head>
 
 <section>
-    <div class="notifications">
+    <div class="notifications-wrapper">
         {#each notifications as notification}
             <Notification bind:notifications {notification} />
         {/each}
