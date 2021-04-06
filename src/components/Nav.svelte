@@ -125,7 +125,7 @@
 <svelte:window bind:scrollY={y}/>
 <nav class:fixed>
 	<div class="logo">
-		<a class="logo-link" on:click={()=>opened = false} style="z-index: 2;" href=".">Rich-House</a>
+		<a class="logo-link" on:click={()=>opened = false} style="z-index: 2;" href=".">Protown</a>
 	</div>
 	<div class="navigation">
 		<a rel=prefetch href="/">Этапы покупки</a>

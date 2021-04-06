@@ -309,7 +309,7 @@
             </div>
             <div class="range-selector rooms">
                 <span>Количество комнат</span>
-                <RangeSlider pips all='label' min={filtersProps.minRooms} max={filtersProps.maxRooms} range bind:values={$filters.rooms}  />
+                <RangeSlider pips all='label' min={filtersProps.minRooms??1} max={filtersProps.maxRooms??4} range bind:values={$filters.rooms}  />
             </div>
         </div>
         <div transition:slide class="extras-selector line4" class:filterBarExpanded>

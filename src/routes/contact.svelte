@@ -255,7 +255,7 @@
 
 </style>
 <svelte:head>
-    <title>Rich House | Контакты</title>
+    <title>ProTown | Контакты</title>
 </svelte:head>
 <section>
     <div class="notifications-wrapper">
@@ -268,28 +268,28 @@
         <div class="messengers-section">
             <div class="rielor-card">
                 <div class="photo-wrapper">
-                    <img on:contextmenu|preventDefault src="https://assets.rich-house.online/avatars/ira.jpg" alt="Irina">
+                    <img on:contextmenu|preventDefault src="https://assets.protown.in.ua/avatars/ira.jpg" alt="Irina">
                 </div>
                 <fieldset>
                     <legend>{irina.fullName}</legend>
                     {#each ["telegram", "viber", "whatsapp", "mail"] as contact, i}
                     <div class="contact-wrapper">
                         <div class="icon" style="background-image: url(/{contact}.svg)" />
-                        <span>{i!==3?formatPhoneNumber(irina.mobile):"irina@rich-house.online"}</span>
+                        <span>{i!==3?formatPhoneNumber(irina.mobile):"irina@protown.in.ua"}</span>
                     </div>
                     {/each}
                 </fieldset>
             </div>
             <div class="rielor-card">
                 <div class="photo-wrapper">
-                    <img on:contextmenu|preventDefault src="https://assets.rich-house.online/avatars/mar.jpg" alt="Marina">
+                    <img on:contextmenu|preventDefault src="https://assets.protown.in.ua/avatars/mar.jpg" alt="Marina">
                 </div>
                 <fieldset>
                     <legend>{marina.fullName}</legend>
                     {#each ["telegram", "viber", "whatsapp", "mail"] as contact, i}
                     <div class="contact-wrapper">
                         <div class="icon" style="background-image: url(/{contact}.svg)" />
-                        <span>{i!==3?formatPhoneNumber(marina.mobile):"marina@rich-house.online"}</span>
+                        <span>{i!==3?formatPhoneNumber(marina.mobile):"marina@protown.in.ua"}</span>
                     </div>
                     {/each}
                 </fieldset>

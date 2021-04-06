@@ -24,9 +24,9 @@ export async function post(req, res) {
     
     try {
         await transporter.sendMail({
-            from: '"Notifications Bot" <notifications@rich-house.online>',
+            from: '"Notifications Bot" <notifications@protown.in.ua>',
             replyTo: validated.sender,
-            to: "marina@rich-house.online",
+            to: "marina@protown.in.ua, irina@protown.in.ua",
             subject: "Rich House связь",
             text: validated.senderName+validated.senderMobile?` ( +38 ${formatPhoneNumber(validated.senderMobile)} ) `:""+"написал(а) "+validated.message,
             html: `<h4>${validated.senderName} ${validated.senderMobile?`, +38 ${formatPhoneNumber(validated.senderMobile)} `:""} написал(а):</h4><br>

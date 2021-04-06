@@ -31,7 +31,7 @@
 	export let changeRates;
 	const num = new Intl.NumberFormat("en-US");
 	$: priceInWords = num.format(currencyCalculator(fetchedEstate.price, $currencyOnPage, fetchedEstate.currency, changeRates));
-	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
+	const images = fetchedEstate.images && fetchedEstate.images[0] ? fetchedEstate.images.map((el,i) => ({id:i, src:`https://assets.protown.in.ua/estates/${fetchedEstate.type}/${fetchedEstate._id}/${el}`})) : undefined;
 	const checkForObject = (obj) => {return typeof obj === 'object' && obj !== null && Object.keys(obj).length>0}
 	let mountedToDom = false;
 	let swiper, imageCarousel;
@@ -419,14 +419,14 @@
 				{#if fetchedEstate.extras.included&&fetchedEstate.extras.included[0]&&fetchedEstate.type!=="land"}
 				<div class="extras-scroll-wrapper">
 					{#each fetchedEstate.extras.included as extra}
-						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/extras-icos/{extra}.svg)" />
+						<div title={flatExtras.find(el=>el.value===extra)?flatExtras.find(el=>el.value===extra).label : extra==="hoz"?"Хоз. постройки" : extra==="bas"? "Бассейн":"Бог знает что"} use:tooltip class="extra-icon" style="background-image: url(https://assets.protown.in.ua/extras-icos/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
 				{#if fetchedEstate.details.communications&&fetchedEstate.details.communications[0]&&(fetchedEstate.type==="land"||fetchedEstate.type==="house")}
 				<div class="extras-scroll-wrapper communications">
 					{#each fetchedEstate.details.communications as extra}
-						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.rich-house.online/communications-icons/{extra}.svg)" />
+						<div title={communicationsList.find(el=>el.value===extra)?.label} use:tooltip class="extra-icon" style="background-image: url(https://assets.protown.in.ua/communications-icons/{extra}.svg)" />
 					{/each}
 				</div>
 				{/if}
@@ -528,11 +528,11 @@
 				<fieldset class="estate-comment-field">
 					<legend>
 						<a href="/contact" target="_blank" class="legend-content-wrapper">
-							<div class="avatar" style="background-image: url(https://assets.rich-house.online/avatars/default_min.jpg);" />
+							<div class="avatar" style="background-image: url(https://assets.protown.in.ua/avatars/default_min.jpg);" />
 							<div class="rieltor">
 								<span>Комментарий риелтора</span>
 								<span>{fetchedRieltor.fullName}, {formatPhoneNumber(fetchedRieltor.mobile)}</span>
-								<span class="email">{fetchedEstate.agent==="MAR"?"marina@rich-house.online":"irina@rich-house.online"}</span>
+								<span class="email">{fetchedEstate.agent==="MAR"?"marina@protown.in.ua":"irina@protown.in.ua"}</span>
 							</div>
 						</a>
 					</legend>

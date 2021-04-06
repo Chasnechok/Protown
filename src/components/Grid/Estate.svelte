@@ -11,7 +11,7 @@
     export let isAdmin;
     export let onlyControls = false;
     const { courses: changeRates } = getContext("changeRates");
-    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
+    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id: i, src:`https://assets.protown.in.ua/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     const num = new Intl.NumberFormat("en-US");
     $: priceInWords = num.format(currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates));
     let mounted = false;
@@ -144,14 +144,6 @@
         cursor: pointer;
         transition: .3s;
     }
-    .no-image {
-        background-image: url(/no-image.svg);
-        height: 100%;
-        width: 100%;
-        background-position: center;
-        background-repeat: no-repeat;
-        position: relative;
-    }
 
     a:hover, a:active, a:focus {
         letter-spacing: 1px;
@@ -261,14 +253,14 @@
 		>
 			{#each images as estateImage}
 			<SwiperSlide>
-				<div data-background={`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${estateImage.src}`} class="estate-image-lazy">
+				<div data-background={`https://assets.protown.in.ua/estates/${estate.type}/${estate._id}/${estateImage.src}`} class="estate-image-lazy">
                     <div class="swiper-lazy-preloader"></div>
                 </div>
 			</SwiperSlide>
 			{/each}
 		</Swiper>
         {:else if estate.images && estate.images[0] && isAdmin}
-        <div class="estate-image-lazy" style="background-image: url(https://assets.rich-house.online/estates/{estate.type}/{estate._id}/{estate.images[0]})" />
+        <div class="estate-image-lazy" style="background-image: url(https://assets.protown.in.ua/estates/{estate.type}/{estate._id}/{estate.images[0]})" />
         {:else}
         <div class="no-image" />
        

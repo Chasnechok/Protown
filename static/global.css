@@ -96,6 +96,14 @@ code {
 	z-index: 2;
 	position: relative;
 }
+.no-image {
+	background-image: url(/no-image.svg);
+	height: 100%;
+	width: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	position: relative;
+}
 
 @media (min-width: 400px) {
 	body {

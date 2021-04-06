@@ -23,7 +23,7 @@
         mounted=true;
         if(estateToEdit&&estateToEdit.images&&estateToEdit.images[0]){
                     estateToEdit.images = estateToEdit.images.map(el=>{
-                    let url = new URL(`https://assets.rich-house.online/estates/${estateToEdit.type}/${estateToEdit._id}/${el}`);
+                    let url = new URL(`https://assets.protown.in.ua/estates/${estateToEdit.type}/${estateToEdit._id}/${el}`);
                     return {id: el, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src="${url}" alt="${el}" />`}
                     })
                 }
@@ -162,9 +162,8 @@
                         context.fillStyle = 'white';
                         context.strokeStyle = 'black';
                         context.lineWidth = 2;
-                        context.strokeText('rich-house.net', centerX, centerY);
-                        context.fillText('rich-house.net', centerX, centerY);
-                        
+                        context.strokeText('protown.in.ua', centerX, centerY);
+                        context.fillText('protown.in.ua', centerX, centerY);
 					}, 
 					success(result) {
                         estateTemplate.images = [{id: result.lastModified, image: result, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src=${URL.createObjectURL(result)} alt="${result.lastModified}" />` }, ...estateTemplate.images]

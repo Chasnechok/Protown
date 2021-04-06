@@ -12,7 +12,7 @@
     const { courses: changeRates } = getContext("changeRates");
     onMount(()=>mounted=true)
 
-    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.rich-house.online/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
+    const images = estate.images && estate.images[0] ? estate.images.map((el,i) => ({id:i, src:`https://assets.protown.in.ua/estates/${estate.type}/${estate._id}/${el}`})) : undefined;
     const num = new Intl.NumberFormat("en-US");
     $: priceInWords = num.format(currencyCalculator(estate.price, $currencyOnPage, estate.currency, changeRates));
     //console.log(estate);
@@ -286,9 +286,7 @@
             </Swiper>
     
             {:else}
-            <div>
-                <span>Изображений нет</span>
-            </div>
+            <div class="no-image" />
             {/if}
         </div>
         <div class="properties-wrapper">

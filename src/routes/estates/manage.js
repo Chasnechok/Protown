@@ -32,7 +32,7 @@ const handleValidate = (body) => {
 /* Functions */
 const processToDO = (s3, body, id, files) => Promise.all(Object.values(files).map(image => new Promise((resolve, reject) => {
     s3.upload({
-        Bucket: "assets.rich-house.online",
+        Bucket: "assets.protown.in.ua",
         Key: `estates/${body.type}/${id}/${image.name}`,
         Body: image.data,
         ContentType: image.mimetype,
@@ -46,7 +46,7 @@ const processToDO = (s3, body, id, files) => Promise.all(Object.values(files).ma
 
 const purgeUploadedImages = async (s3, body, id, mode, toCompare) => {
     let {Contents: imagesToPurge} = await s3.listObjectsV2({
-        Bucket: "assets.rich-house.online",
+        Bucket: "assets.protown.in.ua",
         Prefix: `estates/${body.type}/${id}`
     }).promise();
     imagesToPurge = mode !== "some" ? imagesToPurge.map(im=>({Key: im.Key})) : imagesToPurge.filter(el=>!toCompare.images.includes(el.Key.match(/\/(?:.(?!\/))+$/)[0].slice(1))).map(im=>({Key: im.Key}));
@@ -54,8 +54,8 @@ const purgeUploadedImages = async (s3, body, id, mode, toCompare) => {
         // body = from, toCompare = to
         await imagesToPurge.forEach(image => {
             s3.copyObject({
-                Bucket: "assets.rich-house.online",
-                CopySource: encodeURI(`assets.rich-house.online/${image.Key}`),
+                Bucket: "assets.protown.in.ua",
+                CopySource: encodeURI(`assets.protown.in.ua/${image.Key}`),
                 Key: image.Key.replace(body.type, toCompare.type),
                 ACL: 'public-read'
             }, (copyErr, copyData) => {
@@ -66,12 +66,12 @@ const purgeUploadedImages = async (s3, body, id, mode, toCompare) => {
         })
     }
     await s3.deleteObjects({
-        Bucket: "assets.rich-house.online",
+        Bucket: "assets.protown.in.ua",
         Delete: { Objects: imagesToPurge }
     }).promise();
     if(mode!=="some"||!toCompare?.images[0]) {
         await s3.deleteObject({
-            Bucket: "assets.rich-house.online",
+            Bucket: "assets.protown.in.ua",
             Key: `estates/${body.type}/${id}`
         })
     }
