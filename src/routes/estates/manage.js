@@ -14,7 +14,7 @@ const handleValidate = (body) => {
     }
     // clean estate object
     if(body.type==="land") {
-        ["g","k","l"].forEach(prop => delete body.details&&body.details.area[prop]);
+        ["g","k","l"].forEach(prop =>  body.details&&delete body.details.area[prop]);
         ["gfloor", "floor", "sillings", "rooms", "fond"].forEach(prop=>body.details&&delete body.details[prop]);
     }
     if(body.type!=="land") ["partly", "purpose"].forEach(prop=>body.details&&delete body.details[prop]);

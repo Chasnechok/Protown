@@ -63,6 +63,14 @@
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
+        position: relative;
+    }
+    .estate-image-lazy img {
+        height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-radius: inherit;
     }
 
     .props {
@@ -260,7 +268,9 @@
 			{/each}
 		</Swiper>
         {:else if estate.images && estate.images[0] && isAdmin}
-        <div class="estate-image-lazy" style="background-image: url(https://assets.protown.in.ua/estates/{estate.type}/{estate._id}/{estate.images[0]})" />
+        <div class="estate-image-lazy">
+            <img src="https://assets.protown.in.ua/estates/{estate.type}/{estate._id}/{estate.images[0]}" alt="first img of the property">
+        </div>
         {:else}
         <div class="no-image" />
        
