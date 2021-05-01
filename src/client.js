@@ -1,5 +1,5 @@
 import * as sapper from '@sapper/app';
 
 sapper.start({
-	target: document.querySelector('#rich-house')
+	target: document.querySelector('#protown')
 });

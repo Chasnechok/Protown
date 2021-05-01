@@ -1,7 +1,8 @@
 {
-  "name": "rich-house",
-  "description": "Rich House WebApplication",
-  "version": "0.0.1",
+  "name": "protown",
+  "description": "Protown WebApplication",
+  "version": "0.9.0",
+  "repository": "https://github.com/Chasnechok/protown",
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build",
@@ -24,7 +25,6 @@
     "dotenv": "^8.2.0",
     "express-fileupload": "^1.2.1",
     "express-session": "^1.17.1",
-    "form-data": "^2.3.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.3",
     "nanoid": "^3.1.22",
@@ -55,7 +55,6 @@
     "svelte-feather-icons": "^3.3.0",
     "svelte-file-dropzone": "^0.0.15",
     "svelte-forms": "^1.1.4",
-    "svelte-infinite-scroll": "^1.5.2",
     "svelte-input-mask": "^1.1.0",
     "svelte-loading-spinners": "^0.1.4",
     "svelte-material-icons": "^1.0.3",
