@@ -18,15 +18,27 @@
     import { formatPhoneNumber } from "../helpers/converter";
     import Notification from "../components/AdminPanel/Notification.svelte";
     import axios from 'axios';
+    import { onMount, afterUpdate } from 'svelte';
 
     export let irina;
     export let marina;
     let sender, senderName, senderMobile, message, loading = false;
     let notifications = [];
-    const myForm = validator(() => ({
+    let myForm;
+    onMount(() => {
+    myForm = validator(() => ({
         senderName: { value: senderName, validators: ['required', 'min: 2'] },
         sender: { value: sender, validators: ['email'] }
-    }));
+    }),
+    {
+      validateOnChange: false
+    }
+    );
+    });
+
+    afterUpdate(() => {
+        myForm.validate();
+    });
     const handleSendMessage = () => {
         loading = true;
         handleClearTags();
@@ -53,7 +65,7 @@
     const handleMobileChange = ({ detail: {inputState: {unmaskedValue: mobile}} }) => senderMobile=mobile;
     $: warningMessage = getWarningMessage(sender, senderMobile, $myForm);
     const getWarningMessage = () => {
-        if(!senderName) return "Введите имя";
+        if(!senderName||!myForm) return "Введите имя";
         if(!$myForm.fields.sender.valid&&sender) return "E-mail адресс введен некорректно";
         if(senderMobile&&senderMobile.length<10) return "Телефон введён некорректно";
         if(!sender&&!senderMobile) return "Укажите хотя бы 1 контакт";
@@ -302,7 +314,7 @@
             <label for="senderName">Вашe имя</label>
             <input required bind:value={senderName} type="text" id="senderName">
         </div>
-        <div class="prop-vertical" class:invalid={!$myForm.fields.sender.valid&&sender}>
+        <div class="prop-vertical" class:invalid={!myForm||(!$myForm.fields.sender.valid&&sender)}>
             <label for="sender">Ваш e-mail</label>
             <input bind:value={sender} type="text" id="sender">
         </div>
@@ -318,7 +330,7 @@
             {#if warningMessage}
             <span transition:slide class="warning">{warningMessage}</span>
             {/if}
-            <button disabled={loading||(!sender&&!senderMobile)||(sender&&!$myForm.fields.sender.valid)||(senderMobile&&senderMobile.length<10)} type="submit">
+            <button disabled={!myForm||loading||(!sender&&!senderMobile)||(sender&&!$myForm.fields.sender.valid)||(senderMobile&&senderMobile.length<10)} type="submit">
             {#if !loading}
             Отправить
             {:else}
