@@ -28,7 +28,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.14",
     "nanoid": "^3.1.23",
-    "nodemailer": "^6.6.1",
+    "nodemailer": "^6.6.2",
     "polka": "next",
     "sirv": "^1.0.0",
     "striptags": "^3.2.0"
