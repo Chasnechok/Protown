@@ -13,17 +13,18 @@ const MongoStore = require('connect-mongo')(session);
 import cookieParser from "cookie-parser";
 import AWS from "aws-sdk";
 import nodemailer from "nodemailer";
+import { getCourses } from './routes/getCourses';
 
 /* CONFIG */
 dotenv.config();
-const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY, EMAIL_LOGIN, EMAIL_PASS } = process.env;
+const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY, EMAIL_LOGIN, EMAIL_PASS, S3_ENDPOINT } = process.env;
 const dev = NODE_ENV === 'development';
 
 
-/*  DIGITAL OCEAN SPACES INIT */
-const spacesEndpoint = new AWS.Endpoint('fra1.digitaloceanspaces.com');
+/* S3 INIT */
+const s3Endpoint = new AWS.Endpoint(S3_ENDPOINT);
 const s3 = new AWS.S3({
-    endpoint: spacesEndpoint,
+    endpoint: s3Endpoint,
     accessKeyId: process.env.SPACES_KEY,
     secretAccessKey: process.env.SPACES_SECRET
 });
@@ -65,6 +66,10 @@ const sessionHandler = session({
 	},
 	store: new MongoStore({ mongooseConnection: db })
   });
+
+getCourses()
+setInterval(getCourses, 6 * 60 * 60 * 100)
+
 polka()
 	.use(cookieParser(JWT_SECRET))
 	// Session middleware will be used only for following url or for any if there is a valid signed cookie named Auth

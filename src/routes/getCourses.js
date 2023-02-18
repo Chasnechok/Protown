@@ -2,10 +2,10 @@ import Course from '../models/course'
 import send from '@polka/send-type'
 import axios from 'axios'
 
-setInterval(async () => {
+export async function getCourses() {
     try {
         const actualCourses = await axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5')
-        if (actualCourses && actualCourses.length) {
+        if (actualCourses && actualCourses.data && actualCourses.data.length) {
             await Course.findOneAndUpdate(
                 { _id: { $exists: true } },
                 {
@@ -18,7 +18,7 @@ setInterval(async () => {
     } catch (error) {
         console.log(error)
     }
-}, 6 * 60 * 60 * 100)
+}
 
 export async function get(req, res) {
     try {
