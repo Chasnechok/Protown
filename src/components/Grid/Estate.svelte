@@ -261,7 +261,7 @@
 		>
 			{#each images as estateImage}
 			<SwiperSlide>
-				<div data-background={`https://assets.protown.in.ua/estates/${estate.type}/${estate._id}/${estateImage.src}`} class="estate-image-lazy">
+				<div data-background={`${estateImage.src}`} class="estate-image-lazy">
                     <div class="swiper-lazy-preloader"></div>
                 </div>
 			</SwiperSlide>
