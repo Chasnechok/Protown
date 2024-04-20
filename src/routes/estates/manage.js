@@ -1,6 +1,7 @@
 import Estate from '../../models/estate'
 import { estateValidation } from '../../validation_types/estate'
 import send from '@polka/send-type'
+import dayjs from 'dayjs'
 
 const S3_BUCKET = process.env.S3_BUCKET || 'protown'
 const handleValidate = (body) => {
@@ -21,6 +22,11 @@ const handleValidate = (body) => {
   if (body.type !== 'land') ['partly', 'purpose'].forEach((prop) => body.details && delete body.details[prop])
   if (body.type === 'house') ['fond', 'planning'].forEach((prop) => body.details && delete body.details[prop])
   if (body.type === 'flat') ['whole'].forEach((prop) => body.details && body.details.area && delete body.details.area[prop])
+  if (body.deal === 'lease' && body.extras?.top && body.realised) {
+    if (body.realised === true || (typeof body.realised != 'boolean' && dayjs(body.realised).isAfter(dayjs()))) {
+      body.extras.top = false
+    }
+  }
   // validate
   const { error } = estateValidation(body)
   if (error) {
