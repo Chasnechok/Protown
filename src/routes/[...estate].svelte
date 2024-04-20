@@ -286,9 +286,33 @@
 		flex-wrap: wrap-reverse;
 		justify-content: center;
 	}
-	.email {
-		font-size: 14px;
+	.rieltor-viber {
+		display: flex;
+		text-decoration: none;
+		align-items: center;
+		background: linear-gradient(to right, #a685e2 10%, #665CAC 90%);
+		background-size: 200% 100%;
+		background-position: right bottom;
+		color: transparent;
+		-webkit-background-clip: text;
+		background-clip: text;
+		animation: slide 5s ease-out infinite;
 	}
+	@keyframes slide {
+		from {
+			background-position: 100% center;
+		}
+		to {
+			background-position: 0% center;
+		}
+	}
+	.icon {
+        width: 20px;
+        height: 20px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0 0.3em;
+    }
 	@media only screen and (max-width: 1650px) {
 		.estate-wrapper {
 			padding: 0 2em;
@@ -324,11 +348,11 @@
 			padding: 0 0.5em;
 		}
 	}
-	@media only screen and (max-width: 364px) {
+	/* @media only screen and (max-width: 364px) {
 		legend, .email {
 			font-size: 12px;
 		}
-	}
+	} */
 
 </style>
 
@@ -528,14 +552,19 @@
 			<section class="estate-comment-section" use:viewport on:enterViewport={({target}) => !target.className.includes("inView") ? target.className += " inView" : null}>
 				<fieldset class="estate-comment-field">
 					<legend>
-						<a href="/contact" target="_blank" class="legend-content-wrapper">
+						<div class="legend-content-wrapper">
 							<div class="avatar" style="background-image: url(https://assets.protown.in.ua/avatars/default_min.jpg);" />
 							<div class="rieltor">
-								<span>Комментарий риелтора</span>
-								<span>{fetchedRieltor.fullName}, {formatPhoneNumber(fetchedRieltor.mobile)}</span>
-								<span class="email">{fetchedEstate.agent==="MAR"?"marina@protown.in.ua":"irina@protown.in.ua"}</span>
+								<span style="user-select:none;">Комментарий риелтора</span>
+								<div style="display: flex;">
+									<span>{fetchedRieltor.fullName},</span>
+									<a class="rieltor-viber" href="viber://contact?number=%2B38{fetchedRieltor.mobile}">
+										<div class="icon" style="background-image: url(/viber.svg)" />
+										{formatPhoneNumber(fetchedRieltor.mobile)}
+									</a>
+								</div>
 							</div>
-						</a>
+						</div>
 					</legend>
 					<div class="comment-wrapper">
 						<span class="comment">{fetchedEstate.extras.comment.ru?fetchedEstate.extras.comment.ru:fetchedEstate.extras.comment[Object.keys(fetchedEstate.extras.comment)[0]]}</span>
