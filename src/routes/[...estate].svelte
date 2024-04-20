@@ -277,8 +277,9 @@
 		padding: 2em;
 	}
 	span.comment {
-		line-height: 34px;
+		line-height: 32px;
 		letter-spacing: 1px;
+		white-space: pre-wrap;
 	}
 	.estate-comment-section {
 		display: flex;
