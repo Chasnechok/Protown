@@ -166,8 +166,8 @@
                         context.fillText('protown.in.ua', centerX, centerY);
 					}, 
 					success(result) {
-                        estateTemplate.images = [{id: result.lastModified, image: result, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src=${URL.createObjectURL(result)} alt="${result.lastModified}" />` }, ...estateTemplate.images]
-					},
+                        estateTemplate.images = [...estateTemplate.images, {id: result.lastModified, image: result, html: `<img style="display: block;padding: 0 1.6em;max-width:100%;" src=${URL.createObjectURL(result)} alt="${result.lastModified}" />` }]
+                    },
 					error(err) {
 					console.log(err.message);
 					}
@@ -402,8 +402,18 @@
     .area-prop input{
         max-width: 100px;
     }
+    :global(.dropzone) {
+        border-color: #c0c1c1 !important;
+        background-color: #eaeaea !important;
+        color: #6b7280 !important;
+    }
     :global(.dropzone > p){
         display: none;
+    }
+    @media (min-width: 1024px) { 
+        :global(.dropzone){
+            padding: 60px 20px !important;
+        }
     }
     :global(.dropzone.nocontent::after){
         content: "Перетащите сюда изображения объекта или кликнете что бы выбрать"
