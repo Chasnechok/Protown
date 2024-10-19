@@ -37,20 +37,20 @@ db.once('open', function () {
 })
 
 /* CONFIGURE EMAIL */
-const transporter = nodemailer.createTransport({
-  pool: true,
-  host: 'smtp.yandex.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: EMAIL_LOGIN,
-    pass: EMAIL_PASS,
-  },
-})
-transporter.verify((error, success) => {
-  if (error) console.log(error)
-  else console.log('Mail server ready!')
-})
+// const transporter = nodemailer.createTransport({
+//   pool: true,
+//   host: 'smtp.yandex.com',
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: EMAIL_LOGIN,
+//     pass: EMAIL_PASS,
+//   },
+// })
+// transporter.verify((error, success) => {
+//   if (error) console.log(error)
+//   else console.log('Mail server ready!')
+// })
 
 /* WEB SERVER START AND CONFIG */
 const sessionHandler = session({
@@ -81,10 +81,10 @@ polka()
   .use('/estates/create', auth)
   .use('/estates/manage', auth)
   .use('/estates/update', auth)
-  .use('/email', (req, res, next) => {
-    req.transporter = transporter
-    next()
-  })
+  // .use('/email', (req, res, next) => {
+  //   // req.transporter = transporter
+  //   next()
+  // })
   .use(
     compression({ threshold: 0 }),
     json(),

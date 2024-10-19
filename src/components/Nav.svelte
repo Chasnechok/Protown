@@ -130,7 +130,7 @@
 	<div class="navigation">
 		<a rel=prefetch href="/">Этапы покупки</a>
 		<a rel=prefetch href="/">О нас</a>
-		<a rel=prefetch target="_blank" href="/contact">Напишите нам</a>
+		<!-- <a rel=prefetch target="_blank" href="/contact">Напишите нам</a> -->
 		<div class="selector">
 			<span>{$currencyOnPage==="USD"?"$":$currencyOnPage==="EUR"?"€":"₴"}</span>
 			<Select on:select={({detail})=>{$currencyOnPage = detail.value}} items={currencies} isClearable={false} isSearchable={false} selectedValue={currencies.find(v=>v.value===$currencyOnPage)} />
