@@ -34,15 +34,10 @@ export async function get(req, res) {
             deal: filters.deal,
             'adress.country': filters.country,
             'adress.city.ru': filters.city.replace('+', ' '),
-            $or: [
-              {
-                'details.rooms': {
-                  $gte: filters.rooms[0],
-                  $lte: filters.rooms[1],
-                },
-              },
-              { 'details.rooms': { $exists: false } },
-            ],
+            'details.rooms': {
+              $gte: Number(filters.rooms[0]),
+              $lte: Number(filters.rooms[1]),
+            },
             $or: [
               {
                 'details.area.g': {
