@@ -106,12 +106,14 @@
       >
         {#each images as estateImage}
           <SwiperSlide>
-            <div
-              data-background={`${estateImage.src}`}
-              class="estate-image-lazy"
+            <a target="_blank" href="/{estate.type}/{estate._id}">
+              <div
+                data-background={`${estateImage.src}`}
+                class="estate-image-lazy"
+              >
+                <div class="swiper-lazy-preloader"></div>
+              </div></a
             >
-              <div class="swiper-lazy-preloader"></div>
-            </div>
           </SwiperSlide>
         {/each}
       </Swiper>
@@ -273,17 +275,19 @@
       {/if}
     </div>
     {#if !isAdmin}
-      <a href="/{estate.type}/{estate._id}">детали</a>
+      <a class="details_link" href="/{estate.type}/{estate._id}">детали</a>
     {:else}
       <div style="display: flex;justify-content: flex-end; flex-wrap: wrap;">
         <a
           style="width: unset;flex:1;"
           target="_blank"
+          class="details_link"
           href="/{estate.type}/{estate._id}">детали</a
         >
         <a
           target={onlyControls ? '_blank' : '_self'}
           style="width: unset;flex:1; margin-left: .5em;"
+          class="details_link_edit"
           href="/adminka?mode=edit&id={estate._id}">редактировать</a
         >
       </div>
@@ -410,7 +414,8 @@
     color: #6262db;
   }
 
-  a {
+  .details_link,
+  .details_link_edit {
     text-decoration: none;
     text-align: center;
     padding: 0.1em 1em;
@@ -423,12 +428,14 @@
     width: 100%;
     cursor: pointer;
     transition: 0.3s;
+  }
+  .details_link {
     font-size: 22px;
   }
 
-  a:hover,
-  a:active,
-  a:focus {
+  .details_link:hover,
+  .details_link:active,
+  .details_link:focus {
     letter-spacing: 1px;
     border-color: #6262db;
     color: #6262db;
@@ -466,7 +473,7 @@
     .props {
       margin-left: 0;
     }
-    a {
+    .details_link {
       font-size: 16px;
     }
   }

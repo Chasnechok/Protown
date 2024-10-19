@@ -161,9 +161,14 @@
         >
           {#each images as estateImage}
             <SwiperSlide>
-              <div data-background={estateImage.src} class="estate-image-lazy">
-                <div class="swiper-lazy-preloader"></div>
-              </div>
+              <a target="_blank" href="/{estate.type}/{estate._id}">
+                <div
+                  data-background={estateImage.src}
+                  class="estate-image-lazy"
+                >
+                  <div class="swiper-lazy-preloader"></div>
+                </div></a
+              >
             </SwiperSlide>
           {/each}
         </Swiper>
@@ -270,7 +275,11 @@
             </fieldset>
           {/if}
         </div>
-        <a sapper:prefetch href="/{estate.type}/{estate._id}">детали</a>
+        <a
+          class="details_link"
+          sapper:prefetch
+          href="/{estate.type}/{estate._id}">детали</a
+        >
       </div>
     </div>
   </div>
@@ -386,7 +395,7 @@
     margin-right: 1em;
     color: #5a5a5a;
   }
-  a {
+  .details_link {
     text-decoration: none;
     border-radius: 0.5em;
     text-align: center;
@@ -400,9 +409,9 @@
     cursor: pointer;
     font-size: 24px;
   }
-  a:hover,
-  a:active,
-  a:focus {
+  .details_link:hover,
+  .details_link:active,
+  .details_link:focus {
     letter-spacing: 1px;
     border-color: #6262db;
     color: #6262db;
@@ -469,7 +478,7 @@
     legend {
       padding: 0 1.5em;
     }
-    a {
+    .details_link {
       font-size: 16px;
     }
   }
