@@ -37,7 +37,8 @@ export async function post(req, res) {
   } catch (error) {
     error.code = 'Ошибка сервера'
     error.error = true
-    if (error.responseCode === 554) error.code = 'Не отправлено ввиду подозрения на спам'
+    if (error.responseCode === 554)
+      error.code = 'Не отправлено ввиду подозрения на спам'
     return send(res, 500, error)
   }
 }

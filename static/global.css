@@ -1,112 +1,118 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 :root {
-	scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
-*{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-	margin: 0;
-	font-family: 'Poppins', sans-serif;
-	font-size: 14px;
-	line-height: 1.5;
-	color: #333;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
 }
 textarea {
-	font: 400 16px Poppins !important;
-    color: #333 !important;
+  font: 400 16px Poppins !important;
+  color: #333 !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	margin: 0 0 0.5em 0;
-	font-weight: 400;
-	line-height: 1.2;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 0.5em 0;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 h1 {
-	font-size: 2em;
+  font-size: 2em;
 }
 
 a {
-	color: inherit;
+  color: inherit;
 }
 
 code {
-	font-family: menlo, inconsolata, monospace;
-	font-size: calc(1em - 2px);
-	color: #555;
-	background-color: #f0f0f0;
-	padding: 0.2em 0.4em;
-	border-radius: 2px;
+  font-family: menlo, inconsolata, monospace;
+  font-size: calc(1em - 2px);
+  color: #555;
+  background-color: #f0f0f0;
+  padding: 0.2em 0.4em;
+  border-radius: 2px;
 }
-@supports (not (backdrop-filter: blur(1.5px))) and (not (-webkit-backdrop-filter: blur(1.5px))) {
-	.hide-screen {
-		background-color: #4848488c;
-	}
+@supports (not (backdrop-filter: blur(1.5px))) and
+  (not (-webkit-backdrop-filter: blur(1.5px))) {
+  .hide-screen {
+    background-color: #4848488c;
+  }
 }
 
 .hide-screen {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: 5;
-	display: flex;
-	backdrop-filter: blur(1.5px);
-	-webkit-backdrop-filter: blur(1.5px);
-	border-radius: inherit;
-	transition: .3s;
-	
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: flex;
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  border-radius: inherit;
+  transition: 0.3s;
 }
 .hide-screen .hide-screen-content {
-	margin: auto;
-	position: relative;
+  margin: auto;
+  position: relative;
 }
 .hide-screen.realised {
-	backdrop-filter: brightness(0.7);
-	-webkit-backdrop-filter: brightness(0.7);
+  backdrop-filter: brightness(0.7);
+  -webkit-backdrop-filter: brightness(0.7);
 }
-.hide-screen.realised .hide-screen-content::before, .hide-screen.realised .hide-screen-content span {
-	content: "Сдано до";
-	line-height: 5.5em;
-	font-size: 14px; 
-	position: absolute;
-	display: flex; 
-	width: 120px;  
-	height: 105px; 
-	left: 50%;     
-	top: 50%;    
-	justify-content: center; 
-	transform: translate(-50%, -50%);
-	align-items: flex-end;
-	background-color: #fff;
+.hide-screen.realised .hide-screen-content::before,
+.hide-screen.realised .hide-screen-content span {
+  content: 'Сдано до';
+  line-height: 5.5em;
+  font-size: 14px;
+  position: absolute;
+  display: flex;
+  width: 120px;
+  height: 105px;
+  left: 50%;
+  top: 50%;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  align-items: flex-end;
+  background-color: #fff;
 }
 .hide-screen.realised .hide-screen-content span {
-	z-index: 1;
-	background-color: transparent;
-	line-height: 2em;
-	font-size: 16px !important;
+  z-index: 1;
+  background-color: transparent;
+  line-height: 2em;
+  font-size: 16px !important;
 }
 .hide-screen-content svg {
-	height: 166px;
-	z-index: 2;
-	position: relative;
+  height: 166px;
+  z-index: 2;
+  position: relative;
 }
 .no-image {
-	background-image: url(/no-image.svg);
-	height: 100%;
-	width: 100%;
-	background-position: center;
-	background-repeat: no-repeat;
-	position: relative;
+  background-image: url(/no-image.svg);
+  height: 100%;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 @media (min-width: 400px) {
-	body {
-		font-size: 16px;
-	}
+  body {
+    font-size: 16px;
+  }
 }

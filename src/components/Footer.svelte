@@ -4,7 +4,12 @@
 
 <div class="footer-content">
   <a href="https://www.country.ua/" target="_blank" class="country-ua-link"
-    ><img src="https://www.country.ua/img/logo.svg" height="25" border="0" alt="country.ua" /></a
+    ><img
+      src="https://www.country.ua/img/logo.svg"
+      height="25"
+      border="0"
+      alt="country.ua"
+    /></a
   >
   <span>© {year} Все права защищены.</span>
 </div>

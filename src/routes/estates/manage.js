@@ -9,21 +9,47 @@ const handleValidate = (body) => {
   delete body.__v
 
   for (let key in body) {
-    if (key === 'adress' || key === 'details' || key === 'extras' || key === 'images') body[key] = JSON.parse(body[key])
-    if (key === 'realised' && !isNaN(Date.parse(body[key]))) body[key] = new Date(body[key])
+    if (
+      key === 'adress' ||
+      key === 'details' ||
+      key === 'extras' ||
+      key === 'images'
+    )
+      body[key] = JSON.parse(body[key])
+    if (key === 'realised' && !isNaN(Date.parse(body[key])))
+      body[key] = new Date(body[key])
     if (key === 'realised' && body[key] === null) body[key] = false
-    if (key === 'realised' && isNaN(Date.parse(body[key]))) body[key] = JSON.parse(body[key])
+    if (key === 'realised' && isNaN(Date.parse(body[key])))
+      body[key] = JSON.parse(body[key])
   }
   // clean estate object
   if (body.type === 'land') {
-    ;['g', 'k', 'l'].forEach((prop) => body.details && delete body.details.area[prop])
-    ;['gfloor', 'floor', 'sillings', 'rooms', 'fond'].forEach((prop) => body.details && delete body.details[prop])
+    ;['g', 'k', 'l'].forEach(
+      (prop) => body.details && delete body.details.area[prop]
+    )
+    ;['gfloor', 'floor', 'sillings', 'rooms', 'fond'].forEach(
+      (prop) => body.details && delete body.details[prop]
+    )
   }
-  if (body.type !== 'land') ['partly', 'purpose'].forEach((prop) => body.details && delete body.details[prop])
-  if (body.type === 'house') ['fond', 'planning'].forEach((prop) => body.details && delete body.details[prop])
-  if (body.type === 'flat') ['whole'].forEach((prop) => body.details && body.details.area && delete body.details.area[prop])
+  if (body.type !== 'land')
+    ['partly', 'purpose'].forEach(
+      (prop) => body.details && delete body.details[prop]
+    )
+  if (body.type === 'house')
+    ['fond', 'planning'].forEach(
+      (prop) => body.details && delete body.details[prop]
+    )
+  if (body.type === 'flat')
+    ['whole'].forEach(
+      (prop) =>
+        body.details && body.details.area && delete body.details.area[prop]
+    )
   if (body.deal === 'lease' && body.extras?.top && body.realised) {
-    if (body.realised === true || (typeof body.realised != 'boolean' && dayjs(body.realised).isAfter(dayjs()))) {
+    if (
+      body.realised === true ||
+      (typeof body.realised != 'boolean' &&
+        dayjs(body.realised).isAfter(dayjs()))
+    ) {
       body.extras.top = false
     }
   }
@@ -70,7 +96,14 @@ const purgeUploadedImages = async (s3, body, id, mode, toCompare) => {
   imagesToPurge =
     mode !== 'some'
       ? imagesToPurge.map((im) => ({ Key: im.Key }))
-      : imagesToPurge.filter((el) => !toCompare.images.includes(el.Key.match(/\/(?:.(?!\/))+$/)[0].slice(1))).map((im) => ({ Key: im.Key }))
+      : imagesToPurge
+          .filter(
+            (el) =>
+              !toCompare.images.includes(
+                el.Key.match(/\/(?:.(?!\/))+$/)[0].slice(1)
+              )
+          )
+          .map((im) => ({ Key: im.Key }))
   if (mode === 'move') {
     // body = from, toCompare = to
     try {
@@ -85,7 +118,9 @@ const purgeUploadedImages = async (s3, body, id, mode, toCompare) => {
               },
               (copyErr, copyData) => {
                 if (copyErr) {
-                  console.log(`CopySource: "${encodeURI(`${S3_BUCKET}/${image.Key}`)}", Key: "${image.Key.replace(body.type, toCompare.type)}"`)
+                  console.log(
+                    `CopySource: "${encodeURI(`${S3_BUCKET}/${image.Key}`)}", Key: "${image.Key.replace(body.type, toCompare.type)}"`
+                  )
                   console.log(copyErr)
                 }
               }
@@ -134,7 +169,11 @@ export async function post(req, res) {
       await processToS3(req.s3, estate, estate._id, req.files)
     } catch (error) {
       console.log(error)
-      return send(res, 500, { error: true, message: 'Image upload failed', code: 'IMG_UPLOAD_FAIL' })
+      return send(res, 500, {
+        error: true,
+        message: 'Image upload failed',
+        code: 'IMG_UPLOAD_FAIL',
+      })
     }
   }
 
@@ -146,7 +185,8 @@ export async function post(req, res) {
       link: `/${estate.type}/${estate._id}`,
     })
   } catch (error) {
-    if (req.files) await purgeUploadedImages(req.s3, estate, estate._id).catch(console.log)
+    if (req.files)
+      await purgeUploadedImages(req.s3, estate, estate._id).catch(console.log)
     return send(res, 500, {
       error: true,
       message: `MongoDB upload failed${req.files && ', but images were uploaded with status code 200, will purge them'}.`,
@@ -169,7 +209,11 @@ export async function put(req, res) {
       await purgeUploadedImages(req.s3, estateToUpdate, id, 'some', estate)
     } catch (error) {
       console.log(error)
-      return send(res, 500, { error: true, message: 'Image upload failed', code: 'IMG_UPLOAD_FAIL' })
+      return send(res, 500, {
+        error: true,
+        message: 'Image upload failed',
+        code: 'IMG_UPLOAD_FAIL',
+      })
     }
   }
 
@@ -179,7 +223,11 @@ export async function put(req, res) {
       await purgeUploadedImages(req.s3, estateToUpdate, id, 'move', estate)
     } catch (error) {
       console.log(error)
-      return send(res, 500, { error: true, message: 'Image upload failed', code: 'IMG_UPLOAD_FAIL' })
+      return send(res, 500, {
+        error: true,
+        message: 'Image upload failed',
+        code: 'IMG_UPLOAD_FAIL',
+      })
     }
   }
 
@@ -189,7 +237,11 @@ export async function put(req, res) {
       await processToS3(req.s3, estate, id, req.files)
     } catch (error) {
       console.log(error)
-      return send(res, 500, { error: true, message: 'Image upload failed', code: 'IMG_UPLOAD_FAIL' })
+      return send(res, 500, {
+        error: true,
+        message: 'Image upload failed',
+        code: 'IMG_UPLOAD_FAIL',
+      })
     }
   }
 
@@ -201,7 +253,8 @@ export async function put(req, res) {
       link: `/${estate.type}/${id}`,
     })
   } catch (error) {
-    if (req.files) await purgeUploadedImages(req.s3, estate, id).catch(console.log)
+    if (req.files)
+      await purgeUploadedImages(req.s3, estate, id).catch(console.log)
     return send(res, 500, {
       error: true,
       message: `MongoDB upload failed${req.files && ', but images were uploaded with status code 200, will purge them'}.`,
@@ -212,7 +265,12 @@ export async function put(req, res) {
 
 export async function del(req, res) {
   const id = req.body._id
-  if (!id) return send(res, 500, { error: true, message: 'No id provided', code: 'ID_NOT_PROVIDED' })
+  if (!id)
+    return send(res, 500, {
+      error: true,
+      message: 'No id provided',
+      code: 'ID_NOT_PROVIDED',
+    })
   const estateToDelete = await Estate.findOne({ _id: id })
 
   if (estateToDelete.images && estateToDelete.images[0]) {
@@ -222,8 +280,14 @@ export async function del(req, res) {
   /* Remove from MongoDB */
   try {
     await Estate.findOneAndDelete({ _id: id })
-    return send(res, 200, { message: `Удалили ${estateToDelete.label} из списка объявлений!` })
+    return send(res, 200, {
+      message: `Удалили ${estateToDelete.label} из списка объявлений!`,
+    })
   } catch (error) {
-    return send(res, 500, { error: true, message: `MongoDB deletion failed.`, code: 'MONGO_DELETE_FAIL' })
+    return send(res, 500, {
+      error: true,
+      message: `MongoDB deletion failed.`,
+      code: 'MONGO_DELETE_FAIL',
+    })
   }
 }

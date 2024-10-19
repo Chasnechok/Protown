@@ -17,7 +17,16 @@ import { getCourses } from './routes/getCourses'
 
 /* CONFIG */
 dotenv.config()
-const { PORT, NODE_ENV, MONGO_URI, JWT_SECRET, VISIKOM_API_KEY, EMAIL_LOGIN, EMAIL_PASS, S3_ENDPOINT } = process.env
+const {
+  PORT,
+  NODE_ENV,
+  MONGO_URI,
+  JWT_SECRET,
+  VISIKOM_API_KEY,
+  EMAIL_LOGIN,
+  EMAIL_PASS,
+  S3_ENDPOINT,
+} = process.env
 const dev = NODE_ENV === 'development'
 
 /* S3 INIT */
@@ -29,7 +38,11 @@ const s3 = new AWS.S3({
 })
 
 /* MONGO DB CONNECTION */
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+})
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
 db.once('open', function () {
@@ -72,7 +85,12 @@ polka()
   .use(cookieParser(JWT_SECRET))
   // Session middleware will be used only for following url or for any if there is a valid signed cookie named Auth
   .use((req, res, next) => {
-    if (req.url.includes('/adminka') || req.url.includes('/logadmin') || req.url.includes('/auth') || (req.signedCookies && req.signedCookies.Auth)) {
+    if (
+      req.url.includes('/adminka') ||
+      req.url.includes('/logadmin') ||
+      req.url.includes('/auth') ||
+      (req.signedCookies && req.signedCookies.Auth)
+    ) {
       return sessionHandler(req, res, next)
     } else {
       next()

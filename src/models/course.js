@@ -1,13 +1,13 @@
-const {Schema, model} = require("mongoose");
+const { Schema, model } = require('mongoose')
 
 const courseSchema = new Schema({
-    courses: {
-        type: Object,
-        required: true
-    },
-    timestamp: {
-        type: Date
-    }
-});
+  courses: {
+    type: Object,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+  },
+})
 
-export default model("Course", courseSchema);
+export default model('Course', courseSchema)
