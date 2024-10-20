@@ -1,7 +1,7 @@
 {
     "name": "protown",
     "description": "Protown WebApplication",
-    "version": "0.9.3",
+    "version": "0.9.4",
     "repository": "https://github.com/Chasnechok/protown",
     "scripts": {
         "dev": "sapper dev",
